@@ -1,28 +1,28 @@
 ## Workshop Setup
 - [Setup for the workshop](setup/README.md)
-- [Exercise 1 - Google Cloud SDK Setup](exercise-1/README.md)
-- [Exercise 1 - AWS Setup](exercise-1/README_AWS.md)
+- [lab 1 - Google Cloud SDK Setup](lab-1/README.md)
+- [lab 1 - AWS Setup](lab-1/README_AWS.md)
 - [Local](lab-1/README.md)
 - [PWD](lab-1/README.md)
 
 ## Exploring Kubernetes
 
-- [Exercise 2 - Deploying a microservice to Kubernetes](exercise-2/README.md)
-- [Exercise 3 - Creating a Kubernetes Service](exercise-3/README.md)
-- [Exercise 4 - Scaling In and Out](exercise-4/README.md)
-- [Exercise 4a - Envoy](exercise-4a/README.md)
+- [lab 2 - Deploying a microservice to Kubernetes](lab-2/README.md)
+- [lab 3 - Creating a Kubernetes Service](lab-3/README.md)
+- [lab 4 - Scaling In and Out](lab-4/README.md)
+- [lab 4a - Envoy](lab-4a/README.md)
 
 ## Creating a Service Mesh with Istio
 
-- [Exercise 5 - Installing Istio](exercise-5/README.md)
-- [Exercise 6 - Creating a Service Mesh with Istio Proxy](exercise-6/README.md)
-- [Exercise 7 -  Istio Ingress Controller](exercise-7/README.md)
-- [Exercise 8 - Telemetry](exercise-8/README.md)
-- [Exercise 9 - Distributed Tracing](exercise-9/README.md)
-- [Exercise 10 - Request Routing and Canary Deployments](exercise-10/README.md)
-- [Exercise 11 - Service Isolation Using Mixer](exercise-11/README.md)
-- [Exercise 12 - Fault Injection and Rate Limiting](exercise-12/README.md)
-- [Exercise 13 - Security](exercise-13/README.md)
+- [lab 5 - Installing Istio](lab-5/README.md)
+- [lab 6 - Creating a Service Mesh with Istio Proxy](lab-6/README.md)
+- [lab 7 -  Istio Ingress Controller](lab-7/README.md)
+- [lab 8 - Telemetry](lab-8/README.md)
+- [lab 9 - Distributed Tracing](lab-9/README.md)
+- [lab 10 - Request Routing and Canary Deployments](lab-10/README.md)
+- [lab 11 - Service Isolation Using Mixer](lab-11/README.md)
+- [lab 12 - Fault Injection and Rate Limiting](lab-12/README.md)
+- [lab 13 - Security](lab-13/README.md)
 
 
 ## Authors
