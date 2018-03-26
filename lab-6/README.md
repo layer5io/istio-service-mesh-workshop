@@ -1,4 +1,4 @@
-# Exercise 6 - Creating a service mesh with Istio Proxy
+# lab 6 - Creating a service mesh with Istio Proxy
 
 ### What is a service mesh?
 
@@ -202,4 +202,4 @@ more envoy-rev6.json
 exit
 ```
 
-#### [Continue to Exercise 7 - Istio Ingress controller](../exercise-7/README.md)
+#### [Continue to lab 7 - Istio Ingress controller](../lab-7/README.md)

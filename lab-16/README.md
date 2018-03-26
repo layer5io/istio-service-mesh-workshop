@@ -109,10 +109,10 @@ spec:
 
 #### Switching it on
 
-There are some files missing from the Istio release that we require to do this exercise. You can obtain them by running the `pull-files.sh` script in this directory. It takes one argument, which should be the _root_ directory of your unpacked Istio release.
+There are some files missing from the Istio release that we require to do this lab. You can obtain them by running the `pull-files.sh` script in this directory. It takes one argument, which should be the _root_ directory of your unpacked Istio release.
 
 ```
-$ cd ~/istio-workshop/exercise-16/
+$ cd ~/istio-workshop/lab-16/
 $ ./pull-files.sh ~/istio
 Copying rbac samples to /home/ben/src/work/grcl/istio-0.5.0/samples/bookinfo/kube, continue? [Y/n] 
 Copying...

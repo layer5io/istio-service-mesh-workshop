@@ -1,4 +1,4 @@
-## Exercise 10 - Request Routing and Canary Testing
+## lab 10 - Request Routing and Canary Testing
 
 #### Inspecting Mixer
 
@@ -157,4 +157,4 @@ If you then navigate to it another browser like Firefox you will see:
 Hello sdsdffsd from helloworld-service-v1-4086392344-42q21 with 1.0
 
 
-#### [Continue to Exercise 11 - Service Isolation Using Mixer](../exercise-11/README.md)
+#### [Continue to lab 11 - Service Isolation Using Mixer](../lab-11/README.md)

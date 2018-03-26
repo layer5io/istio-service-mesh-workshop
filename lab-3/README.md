@@ -1,4 +1,4 @@
-## Exercise 3 - Creating a Kubernetes Service
+## lab 3 - Creating a Kubernetes Service
 
 Each Pod has a unique IP address - but the address is ephemeral. The Pod IP addresses are not stable and it can change when Pods start and/or restart. A service provides a single access point to a set of pods matching some constraints. A Service IP address is stable.
 
@@ -51,4 +51,4 @@ root@curl-797905165-015t4:/# curl http://helloworld-service:8080/hello/Batman
 root@curl-797905165-015t4:/# exit
 ```
 
-#### [Continue to Exercise 4 - Scaling In and Out](../exercise-4/README.md)
+#### [Continue to lab 4 - Scaling In and Out](../lab-4/README.md)

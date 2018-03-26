@@ -1,8 +1,8 @@
-## Exercise 12 - Fault Injection and Rate Limiting
+## lab 12 - Fault Injection and Rate Limiting
 
-In this exercise we will learn how to test the resiliency of an application by injecting faults.
+In this lab we will learn how to test the resiliency of an application by injecting faults.
 
-To test our guestbook application for resiliency, this exercise will test injecting different levels of delay when the user agent accessing the hello world service is mobile.
+To test our guestbook application for resiliency, this lab will test injecting different levels of delay when the user agent accessing the hello world service is mobile.
 
 
 #### Inject a route rule to delay hello world
@@ -46,4 +46,4 @@ $ curl http://$INGRESS_IP/echo/universe -A mobile
 
 If you modify the delay below the timeout configured in the applciation the service will still return.  For example if we modify it to 4 seconds, the guestbook service still returns a response.
 
-#### [Continue to Exercise 13 - Security](../exercise-13/README.md)
+#### [Continue to lab 13 - Security](../lab-13/README.md)

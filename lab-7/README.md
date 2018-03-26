@@ -1,4 +1,4 @@
-## Exercise 7 - Istio Ingress Controller
+## lab 7 - Istio Ingress Controller
 
 The components deployed on the service mesh by default are not exposed outside the cluster. External access to individual services so far has been provided by creating an external load balancer on each service.
 
@@ -19,7 +19,7 @@ kubectl get pods -n istio-system
 kubectl port-forward istio-ingress-... -n istio-system 15000:15000
 ```
 
-If you see a bind error because port `15000` is already used, it's probably the Envoy proxy from previous exercise that's still running locally. Kill the local Envoy proxy:
+If you see a bind error because port `15000` is already used, it's probably the Envoy proxy from previous lab that's still running locally. Kill the local Envoy proxy:
 
 ```sh
 docker kill proxy
@@ -160,4 +160,4 @@ curl localhost:15000/server_info
 
 See the [admin docs](https://www.envoyproxy.io/docs/envoy/v1.5.0/operations/admin) for more details.
 
-#### [Exercise 8 - Telemetry](../exercise-8/README.md)
+#### [lab 8 - Telemetry](../lab-8/README.md)

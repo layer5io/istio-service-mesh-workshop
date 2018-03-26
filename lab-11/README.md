@@ -1,4 +1,4 @@
-## Exercise 11 - Service Isolation Using Mixer
+## lab 11 - Service Isolation Using Mixer
 
 #### Service Isolation Using Mixer
 
@@ -86,4 +86,4 @@ Clean up the rule:
 istioctl delete -f guestbook/mixer-rule-denial-v2.yaml
 ```
 
-#### [Continue to Exercise 12 - Fault Injection and Rate Limiting](../exercise-12/README.md)
+#### [Continue to lab 12 - Fault Injection and Rate Limiting](../lab-12/README.md)

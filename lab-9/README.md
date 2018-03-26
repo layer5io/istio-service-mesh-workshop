@@ -1,4 +1,4 @@
-## Exercise 9 - Distributed Tracing
+## lab 9 - Distributed Tracing
 
 The sample guestbook application shows how a Spring Java application can be configured to collect trace spans using Zipkin or Jaeger.
 
@@ -47,4 +47,4 @@ kubectl port-forward -n istio-system \
 
 f you are in Cloud Shell, you'll need to use Web Preview and Change   Port to `9411`. Else, browse to http://localhost:9411
 
-#### [Continue to Exercise 10 - Request Routing and Canary Testing](../exercise-10/README.md)
+#### [Continue to lab 10 - Request Routing and Canary Testing](../lab-10/README.md)

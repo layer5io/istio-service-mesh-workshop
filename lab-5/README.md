@@ -1,4 +1,4 @@
-## Exercise 5 - Installing Istio 0.6.0
+## lab 5 - Installing Istio 0.6.0
 
 #### Clean up
 
@@ -78,4 +78,4 @@ kubectl get pods -n istio-system -w
 kubectl get services -n istio-system -w
 ```
 
-#### [Continue to Exercise 6 - Creating a Service Mesh with Istio Proxy](../exercise-6/README.md)
+#### [Continue to lab 6 - Creating a Service Mesh with Istio Proxy](../lab-6/README.md)

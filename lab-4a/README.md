@@ -1,4 +1,4 @@
-# Exercise 4a - Envoy
+# lab 4a - Envoy
 
 ### Run envoy locally using docker
 
@@ -78,4 +78,4 @@ curl -s http://localhost:15001/status/500
 curl -s http://localhost:15000/stats | grep retry
 ```
 
-#### [Continue to Exercise 5 - Installing Istio](../exercise-5/README.md)
+#### [Continue to lab 5 - Installing Istio](../lab-5/README.md)

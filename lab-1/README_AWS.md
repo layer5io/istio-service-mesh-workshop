@@ -1,4 +1,4 @@
-# Exercise 1 - Startup a Kubernetes Cluster
+# lab 1 - Startup a Kubernetes Cluster
 
 ## Pre requisite
 
@@ -122,7 +122,7 @@ export AWS_SECRET_ACCESS_KEY=XXXXX
 export KOPS_STATE_STORE=s3://mydemobucket-cloud-state-store
 ```
 
-We are now ready to launch our k8 cluster creation. In this exercise we will create a public cluster split in three AZ has bellow:
+We are now ready to launch our k8 cluster creation. In this lab we will create a public cluster split in three AZ has bellow:
 
 ![AWS K8S Overview](img/k8sdesign.png)
 

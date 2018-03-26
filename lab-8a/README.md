@@ -1,4 +1,4 @@
-## Exercise 8a - Additional Telemetry and Log
+## lab 8a - Additional Telemetry and Log
 
 First we need to configure Istio to automatically gather telemetry data for services running in the mesh.
 
@@ -26,4 +26,4 @@ The logs configuration directs Mixer to send log entries to stdout. It uses thre
 kubectl -n istio-system logs -f $(kubectl -n istio-system get pods -l istio=mixer -o jsonpath='{.items[0].metadata.name}') mixer | grep \"instance\":\"newlog.logentry.istio-system\"
 ```
 
-#### [Continue to Exercise 9 - Distributed Tracing](../exercise-9/README.md)
+#### [Continue to lab 9 - Distributed Tracing](../lab-9/README.md)

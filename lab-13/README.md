@@ -1,4 +1,4 @@
-## Exercise 13 - Istio Mutual TLS
+## lab 13 - Istio Mutual TLS
 
 #### Overview of Istio Mutual TLS
 
@@ -20,10 +20,10 @@ It's the only way for TLS to be the way it was meant to be:
 kubectl create -f install/kubernetes/istio-auth.yaml
 ```
 
-We need to (re)create the auto injector. There is a script bundled that will do this but you will need to switch back to _this_ directory and give it the location of your istio install. Or you can redo the steps from exercise 6. Your call.
+We need to (re)create the auto injector. There is a script bundled that will do this but you will need to switch back to _this_ directory and give it the location of your istio install. Or you can redo the steps from lab 6. Your call.
 
 ```
-cd ~/istio-workshop/exercise-13
+cd ~/istio-workshop/lab-13
 ./install-auto-injector.sh ~/istio
 ```
 
@@ -93,4 +93,4 @@ kubectl exec -it $tb curl -- http://details:9080/details/0
 
 Notice the protocol.
 
-#### [Continue to Exercise 14 - Ensuring security with iptables](../exercise-14/README.md)
+#### [Continue to lab 14 - Ensuring security with iptables](../lab-14/README.md)

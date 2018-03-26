@@ -68,4 +68,4 @@ Git takes care of the PATH setup during installation automatically.
 You get the GNU bash, a really powerful shell, in my opinion much better than the native Windows console.
 You get many other useful Linux tools like tail, cat, grep, gzip, pdftotext, less, sort, tar, vim and even Perl.
 
-#### [Continue to Exercise 1](../exercise-1/README.md)
+#### [Continue to lab 1](../lab-1/README.md)

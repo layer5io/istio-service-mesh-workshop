@@ -1,4 +1,4 @@
-## Exercise 2 - Deploying a microservice to Kubernetes
+## lab 2 - Deploying a microservice to Kubernetes
 
 #### Deploy Hello World
 
@@ -103,4 +103,4 @@ A pause container is how Kubernetes uses Docker containers to create shared name
 
 #### Optional - [Peering under the covers of Kubernetes](optional.md)
 
-#### [Continue to Exercise 3 - Creating a Kubernetes Service](../exercise-3/README.md)
+#### [Continue to lab 3 - Creating a Kubernetes Service](../lab-3/README.md)

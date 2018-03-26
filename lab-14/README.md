@@ -1,8 +1,8 @@
-## Exercise 14 - Ensuring security with iptables
+## lab 14 - Ensuring security with iptables
 
 #### A digression
 
-In the last exercise we saw tls enforced. A question that hasn't been answered yet, and possbily hasn't even asked yet: how is it possible for traffic to be passing through the proxy when it hasn't been referenced at all?
+In the last lab we saw tls enforced. A question that hasn't been answered yet, and possbily hasn't even asked yet: how is it possible for traffic to be passing through the proxy when it hasn't been referenced at all?
 
 #### Enter iptables
 
@@ -86,7 +86,7 @@ Chain ISTIO_REDIRECT (3 references)
     0     0 REDIRECT   tcp  --  any    any     anywhere             anywhere             /* istio/redirect-to-envoy-port */ redir ports 15001
 ```
 
-Basically there are a few rules here of interest. A complete explanation is out of the scope of this exercise but here is a summary:
+Basically there are a few rules here of interest. A complete explanation is out of the scope of this lab but here is a summary:
 
 1. In pre-routing we catch the inbound traffic. Anything coming in jumps to our redirect rule.
 2. In output we inspect outbound traffic. This is more interesting. Istio runs under uid 1337. To avoid looping, all traffic from this uid is allowed to egress. Traffic outbound not from this uid also jumps to the redirect.
@@ -98,4 +98,4 @@ This effectively forces all traffic to run through the proxy without any coopera
 
 The init container that istio injects runs a small script to setup this rules with NET\_CAP\_ADMIN. Neat, eh?
 
-#### [Continue to Exercise 15 - mTLS again, now with 100% more SPIFFE](../exercise-15/README.md)
+#### [Continue to lab 15 - mTLS again, now with 100% more SPIFFE](../lab-15/README.md)

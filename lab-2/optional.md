@@ -1,4 +1,4 @@
-## Exercise 2 - Optional
+## lab 2 - Optional
 ## Peering under the covers of node
 
 `kubectl get pods -owide`
@@ -30,4 +30,4 @@ root@helloworld-...:/data# hostname -i
 10.104.1.5
 ```
 
-#### [Continue to Exercise 3 - Creating a Kubernetes Service](../exercise-3/README.md)
+#### [Continue to lab 3 - Creating a Kubernetes Service](../lab-3/README.md)

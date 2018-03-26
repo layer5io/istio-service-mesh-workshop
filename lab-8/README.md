@@ -1,4 +1,4 @@
-## Exercise 8 - Telemetry
+## lab 8 - Telemetry
 
 #### Generate Guestbook Telemetry data
 
@@ -48,4 +48,4 @@ If you are in Cloud Shell, you'll need to use Web Preview and Change Port to `90
 
 Else, browse to http://localhost:8088/dotviz
 
-#### [Continue to Exercise 9 - Distributed Tracing](../exercise-9/README.md)
+#### [Continue to lab 9 - Distributed Tracing](../lab-9/README.md)
