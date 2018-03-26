@@ -26,4 +26,5 @@
 
 
 ## Authors
-
+[Lee Calcote](http://twitter.com/lcalcote)
+[Girish Ranganathan](#)
