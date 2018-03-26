@@ -1,4 +1,4 @@
-## Exercise 1 - Startup a Kubernetes Cluster
+## lab 1 - Startup a Kubernetes Cluster
 
 
 #### Set Default Region and Zones
@@ -55,4 +55,4 @@ gcloud container clusters create guestbook \
 
 This will take a few minutes to run. Behind the scenes, it will create Google Compute Engine instances, and configure each instance as a Kubernetes node. These instances don’t include the Kubernetes Master node. In Google Kubernetes Engine, the Kubernetes Master node is managed service so that you don’t have to worry about it!
 
-#### [Continue to Exercise 2 - Deploying a microservice to Kubernetes](../exercise-2/README.md)
+#### [Continue to lab 2 - Deploying a microservice to Kubernetes](../lab-2/README.md)
