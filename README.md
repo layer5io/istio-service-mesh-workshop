@@ -1,9 +1,7 @@
 ## Workshop Setup
 - [Setup for the workshop](setup/README.md)
-- [lab 1 - Google Cloud SDK Setup](lab-1/README.md)
-- [lab 1 - AWS Setup](lab-1/README_AWS.md)
-- [Local](lab-1/README.md)
-- [PWD](lab-1/README.md)
+- [Local setup](lab-1/README.md)
+- [Play With Docker](lab-1/README.md)
 
 ## Exploring Kubernetes
 
@@ -26,5 +24,5 @@
 
 
 ## Authors
-[Lee Calcote](http://twitter.com/lcalcote)
-[Girish Ranganathan](#)
+* [Lee Calcote](http://twitter.com/lcalcote)
+* [Girish Ranganathan](http://twitter.com/#)
