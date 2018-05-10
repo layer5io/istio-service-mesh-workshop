@@ -25,4 +25,4 @@
 
 ## Authors
 * [Lee Calcote](http://twitter.com/lcalcote)
-* [Girish Ranganathan](http://twitter.com/#)
+* [Girish Ranganathan](https://twitter.com/ingenious_G)
