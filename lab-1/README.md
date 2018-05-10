@@ -383,4 +383,4 @@ And you can use `docker stack deploy` to deploy and upgrade applications on the 
 
 ## Up Next
 
-On to [Lab 2](../lab-2/README.md) where you'll learn how to secure deployments with Docker EE, including image management with DTR and role-based access control in UCP.
+On to [Lab 2](../lab-2/README.md) where you'll learn how to deploy a microservice to Kubernetes
