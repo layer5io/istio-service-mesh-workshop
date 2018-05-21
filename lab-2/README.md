@@ -1,106 +1,84 @@
-## lab 2 - Deploying a microservice to Kubernetes
+Getting a Loggly API token for use with istio:
 
-#### Deploy Hello World
+[Loggly](https://www.loggly.com/)
+![](img/loggly.png)
 
-1 - Deploy Hello World service to Kubernetes
+To signup for [Loggly signup](https://www.loggly.com/signup/)
+![](img/loggly_signup.png)
 
-```sh
-cd istio-workshop
-kubectl apply -f kubernetes/helloworldservice-deployment.yaml --record
-```
-```sh
-kubectl get pods
+[Loggin sign in](https://www.loggly.com/login/)
+![](img/loggly_signin.png)
 
-NAME                           READY     STATUS    RESTARTS    AGE
-helloworld-service-v1-....     1/1       Running   0           20s
-```
+Loggly landing page: ![](img/loggly_landing_page.png)
 
-An important detail to note is that READY shows 1/1.  That is referring to the number of containers in the pod that are ready and this pod only has 1 container. 
+Select `Account` from the user menu
+![](img/loggly_account_menu.png)
 
-2 - Note the name of the pod above for use in the command below. Then delete one of the hello world pods.
+From the `Account` overview page select `API Tokens`
+![](img/loggly_account_overview.png)
 
-```sh
-kubectl delete pod helloworld-service-v1-...
-```
+From the `API Tokens` page let us create a new API Token by using the `Add New` button
+![](img/loggly_api_tokens.png)
 
-3 - Kubernetes will automatically restart this pod for you. Verify it is restarted
+This open a popup confirming the creation of a new token. Use the `Create` button to create a new API Token.
+![](img/loggly_create_token.png)
 
-```sh
-kubectl get pods
+Once the token is created you will be able to see it in the API Tokens table. On the left there is a `copy to clipboard` button which can help with copying the new token.
+![](img/loggly_new_token.png)
 
-NAME                           READY     STATUS    RESTARTS   AGE
-helloworld-service-v1-....    1/1       Running   0          20s
-```
-
-4 -  All of the container output to STDOUT and STDERR will be accessible as Kubernetes logs:
-
-```sh
-kubectl logs helloworld-service-v1-...
-```
-
-or to follow the log file:
-
-```sh
-kubectl logs -f helloworld-service-v1-...
-```
-
-#### Pod Details
-
-One of the key tools for troubleshooting issues when creating pods is describe which shows the pod details:
-
-```sh
-kubectl describe pods helloworld-service-v1-...
-```
-
-This shows all the details of the pod such as status, events, containers, IP and more.  
-
-An important detail to notice, that will be relevant to Istio is that the pod currently only has a single container.  
-
-```
-Containers:
-  helloworld-service:
-    Container ID:   docker://9f6dd8ffeb104541e95dd6cf5d960851840409bb9e683d79b8e604fe1af1045c
-    Image:          retroryan/helloworld:1.0
-    Image ID:       docker-pullable://retroryan/helloworld@sha256:4ab1359b88ed1e5c820c27ae2c475a816e60d4b99b1703e9223ddb4885a4d2e7
-    Port:           8080/TCP
-```
-
-When we deploy with Istio be sure to notice the additional containers that get added.
+Paste the newly created token into the istio-solarwinds.yaml file in the \<loggly token> placeholder.
 
 
-## Explanation
+Getting an Appoptics API token for use with istio:
+[Appoptics](https://www.appoptics.com/)
+![](img/ao_main.png)
 
-#### By Ray Tsang [@saturnism](https://twitter.com/saturnism)
+[appoptics signup](https://my.appoptics.com/sign_up)
+![](img/ao_signup.png)
 
-We will be using yaml files throughout this workshop. Every file describes a resource that needs to be deployed into Kubernetes. We won’t be able to go into details on the contents, but you are definitely encouraged to read them and see how pods, services, and others are declared.
+![](img/ao_login.png)
 
-The pod deploys a microservice that is a container whose images contains a self-executing JAR files. The source is available at [istio-by-example-java](https://github.com/saturnism/istio-by-example-java) if you are interested in seeing it.
 
-In this first example we deployed a Kubernetes pod by specifying a deployment using this [helloworldservice-deployment.yaml](/kubernetes/helloworldservice-deployment.yaml).
+After you have logged in you can navigate to create an API token by clicking on the `API Tokens` link at the top.
+![](img/ao_org_settings.png)
 
-A Kubernetes pod is a group of containers, tied together for the purposes of administration and networking. It can contain one or more containers. All containers within a single pod will share the same networking interface, IP address, volumes, etc. All containers within the same pod instance will live and die together. It’s especially useful when you have, for example, a container that runs the application, and another container that periodically polls logs/metrics from the application container.
+We can now generate API tokens by hitting the `Generate New API Token` button
+![](img/ao_api_token.png)
 
-You can start a single Pod in Kubernetes by creating a Pod resource. However, a Pod created this way would be known as a Naked Pod. If a Naked Pod dies/exits, it will not be restarted by Kubernetes. A better way to start a pod, is by using a higher-level construct such as Replication Controller, Replica Set, or a Deployment.
+A popup for creating a token will open where you can select the access level needed (for this workshop we need `Record only` access) and a meaningful name for your token. When you hit `Generate` a token will be created 
+![](img/ao_add_api_token.png)
 
-Prior to Kubernetes 1.2, Replication Controller is the preferred way deploy and manage your application instances. Kubernetes 1.2 introduced two new concepts - Replica Set, and Deployments.
+The created token will be shown in the popup. We can now copy the token to clipboard from here.
+![](img/ao_token_created.png)
 
-Replica Set is the next-generation Replication Controller. The only difference between a Replica Set and a Replication Controller right now is the selector support. Replica Set supports the new set-based selector requirements whereas a Replication Controller only supports equality-based selector requirements.
+The created token can also be seen in the table.
+![](img/ao_token_table.png)
 
-For example, Replication Controller can only select pods based on equality, such as "environment = prod", whereas Replica Sets can select using the "in" operator, such as "environment in (prod, qa)". Learn more about the different selectors in the [Labels guide](http://kubernetes.io/docs/user-guide/labels).
+You can now paste the copied token to the istio-solarwinds.yaml file \<appoptics token> placeholder.
 
-Deployment provides declarative updates for Pods and Replica Sets. You only need to describe the desired state in a Deployment object, and the Deployment controller will change the actual state to the desired state at a controlled rate for you. You can use deployments to easily:
-- Create a Deployment to bring up a Replica Set and Pods.
-- Check the status of a Deployment to see if it succeeds or not.
-- Later, update that Deployment to recreate the Pods (for example, to use a new image, or configuration).
-- Rollback to an earlier Deployment revision if the current Deployment isn’t stable.
-- Pause and resume a Deployment.
+Now from the left menu select `Dashboard & Metrics`.
+![](img/ao_dashboard_menu.png)
 
-In this workshop, because we are working with Kubernetes 1.7+, we will be using Deployment extensively.
+It will take you to a Dashboards page
+![](img/ao_dashboard.png)
 
-There are other containers running too. The interesting one is the pause container. The atomic unit Kubernetes can manage is actually a Pod, not a container. A Pod can be composed of multiple tightly-coupled containers that is guaranteed to scheduled onto the same node, and will share the same Pod IP address, and can mount the same volumes.. What that essentially means is that if you run multiple containers in the same Pod, they will share the same namespaces.
+Once you are in the `Dashboards` screen you can create a new dashboard by using `Create a New Dashboard` button. It will take you right to a new dashboard.
+![](img/ao_new_dashboard.png)
 
-A pause container is how Kubernetes uses Docker containers to create shared namespaces so that the actual application containers within the same Pod can share resources.
+You can now give your dashboard a suitable name. Next click on the button shown in the previous image. It will open up a menu with an option to import a dashboard.
 
-#### Optional - [Peering under the covers of Kubernetes](optional.md)
+![](img/ao_import_menu.png)
 
-#### [Continue to lab 3 - Creating a Kubernetes Service](../lab-3/README.md)
+Clicking the `Import Dashboard` menu item will open a popup where we can enter the contents of appoptics_dashboard.yaml file
+![](img/ao_import.png)
+
+After pasting the contents, we can validate it by using the `Validate` button
+
+![](img/ao_validate.png)
+
+Once validated, we can import the dashboard by using the `Import` button. You will be presented with a warning popup as shown here. Proceed by clicking `OK` here.
+
+![](img/ao_import_warning.png)
+
+You will be taken to a pre-constructed dashboard.
+![](img/ao_istio_dashboard.png)
