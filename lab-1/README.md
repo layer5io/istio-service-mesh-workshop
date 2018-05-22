@@ -5,7 +5,8 @@ We'll use a hosted lab environment called [Play with Kubernetes (PWK)](https://l
 ## Steps
 
 * [1. Set up your PWK environment](#1)
-* [2. Manage Kubernetes on Docker EE from Docker for Mac and Docker for Windows](#4)
+* [2. Install CNI](#2)
+* [3. Adding more nodes to the cluster](#3)
 
 ## <a name="1"></a> 1 - Set up your PWK environment
 
@@ -146,6 +147,7 @@ We can see that the master node is `NotReady` state. We need to install a pod ne
 Also, `kube-dns` will not start up before a network is installed. The general recommendation is to install Container Network Interface (CNI) based network. For this workshop we will go with [Weave Net](https://www.weave.works/oss/net/) from [WeaveWorks](https://www.weave.works/).
 
 
+## <a name="2"></a> 2 - Install CNI
 
 To install weave net:
 ```sh
@@ -186,7 +188,11 @@ kube-system   weave-net-wq5t5                 2/2       Running   0          2m
 
 We can see all the pods are in `Running` state.
 
+## <a name="3"></a> 3 - Adding more nodes to the cluster
+
 Now let us add more nodes to our cluster. You are free to add as many instances as you want by clicking the `ADD NEW INSTANCE` button on the left. For the purpose of this workshop let us add 2 more instances.
+
+![](img/more_nodes.png)
 
 On each of the instances let us first update the DNS settings, as before:
 ```sh
