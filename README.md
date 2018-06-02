@@ -1,3 +1,5 @@
+Initially presented at [DockerCon 2018](https://dockercon18.smarteventscloud.com/connect/sessionDetail.ww?SESSION_ID=187485).
+
 ## Workshop Setup
 - [Setup for the workshop](setup/README.md)
 - [Local setup](lab-1/README.md)
