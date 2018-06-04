@@ -1,4 +1,4 @@
-# lab 2 - Deploy Istio 0.8.0
+# lab 2 - Deploy Istio
 
 Now that we have the kubernetes cluster, we are ready to deploy Istio.
 
@@ -10,6 +10,9 @@ Now that we have the kubernetes cluster, we are ready to deploy Istio.
 * [4. Installing Add-ons](#4)
 
 ## <a name="1"></a> 1 - Installing Istio
+
+
+
 We have developed an Istio [Mixer Adapter](https://github.com/solarwinds/istio-adapter) which can ship metrics to [Appoptics](https://www.appoptics.com/) and logs to [Loggly](https://www.loggly.com/) and [Papertrail](https://papertrailapp.com). If you would like to leverage this adapter, please proceed to [Optional Lab 2](optional.md) to set things up, get the API tokens and [Installing Istio](#aolg) (OR) please proceed to [Installing Istio](#noaolg).
 
 ### <a name="aolg"></a>Installing istio with Appoptics and Loggy Tokens
@@ -56,20 +59,28 @@ istioctl -h
 
 
 ####  Install Add-ons
-For the folks who did NOT want to use Appoptics, you can deploy prometheus and grafana for viewing the metrics from istio. 
+For the folks who did NOT want to use Appoptics, you can deploy prometheus and grafana for viewing the metrics from `Istio`.
 
-For distributed tracing, you can choose between [Zipkin]() or [Jaeger]().
+For distributed tracing, you can choose between [Zipkin](https://zipkin.io/) or [Jaeger](https://www.jaegertracing.io/).
 
+On Istio 0.8.0, Jaeger is deployed as part of `istio-demo.yaml` or `istio-demo-auth.yaml`.
 
 #####Grafana, Prometheus
-To deploy prometheus and grafana, please run the following commands:
+On Istio 0.7.1, you can deploy prometheus by running the following command:
 
 ```sh
-kubectl apply -f install/kubernetes/addons/grafana.yaml
 kubectl apply -f install/kubernetes/addons/prometheus.yaml
 ```
 
-By default prometheus and grafana services are deployed as ClusterIP type. We can access the services by either changing the type to LoadBalancer or NodePort or configure Ingress. 
+On Istio 0.8.0, prometheus is deployed as part of `istio-demo.yaml` or `istio-demo-auth.yaml`.
+
+
+To deploy grafana:
+```sh
+kubectl apply -f install/kubernetes/addons/grafana.yaml
+```
+
+By default prometheus and grafana services are deployed as ClusterIP type. We can access the services outside by either changing the type to LoadBalancer or NodePort or configure Istio Ingress. 
 
 To expose them using NodePort service type, we can edit the services and change the service type from `ClusterIP` to `NodePort`
 
@@ -85,12 +96,12 @@ Once this is done the services will be assigned dedicated ports on the hosts. In
 
 ![](img/exposed_ports.png)
 
-We can click on the links now and navigate to prometheus dashboard and grafana dashboards. In grafana there is a dedicated dashboard created for Istio called `Istio Dashboard`.
+We can click on the new links now and navigate to prometheus dashboard and grafana dashboards. In grafana there is a dedicated dashboard created for Istio called `Istio Dashboard`.
 
 ![](img/Grafana_-_Istio_Dashboard.png)
 
 ##### <a name="zipkin"></a>Zipkin
-Zipkin is used for distributed tracing. We can deploy Zipkin by:
+On Istio 0.7.1, we can deploy Zipkin by:
 
 ```sh
 kubectl apply -f install/kubernetes/addons/zipkin.yaml
@@ -99,6 +110,7 @@ kubectl apply -f install/kubernetes/addons/zipkin.yaml
 You can follow similar steps as described above to expose this service as well.
 
 ##### <a name="jaeger"></a> Jaeger
+On Istio 0.7.1, we can deploy Jaeger by:
 
 ```sh
 kubectl apply -n istio-system -f https://raw.githubusercontent.com/jaegertracing/jaeger-kubernetes/master/all-in-one/jaeger-all-in-one-template.yml
@@ -106,4 +118,9 @@ kubectl apply -n istio-system -f https://raw.githubusercontent.com/jaegertracing
 
 You can follow similar steps as described above to expose this service as well.
 
+One Istio 0.8.0, Jaeger port is already exposed for you as part of `istio-demo.yaml` or `istio-demo-auth.yaml`.
+
+
 ![](img/Jaeger_UI.png)
+
+#### [Continue to lab 3 - Deploy Sample Bookinfo app](../lab-3/README.md)

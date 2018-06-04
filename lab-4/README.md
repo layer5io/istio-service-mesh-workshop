@@ -1,4 +1,4 @@
-## lab 7 - Expose Bookinfo through Istio Ingress Controller/Gateway
+## lab 4 - Expose Bookinfo site through Istio Ingress Controller/Gateway
 
 The components deployed on the service mesh by default are not exposed outside the cluster. External access to individual services so far has been provided by creating an external load balancer on each service.
 
@@ -21,6 +21,14 @@ kubectl get svc istio-ingressgateway -n istio-system -o yaml
 
 Because the Istio Ingress Controller/Gateway is an Envoy Proxy you can inspect it using the admin routes.  First find the name of the istio ingress proxy:
 
+For Istio 0.7.1:
+```sh
+kubectl get pods -n istio-system
+kubectl -n istio-system exec -it istio-ingress-... bash
+```
+
+
+For Istio 0.8.0:
 ```sh
 kubectl get pods -n istio-system
 kubectl -n istio-system exec -it istio-ingressgateway-... bash
@@ -45,41 +53,29 @@ Also it can be helpful to look at the log files of the Istio ingress controller 
 kubectl logs istio-ingressgateway-... -n istio-system
 ```
 
-#### Configure Bookinfo Ingress Routes with the Istio Ingress Controller (Istio 0.7.1)
+#### View Bookinfo Ingress Routes (Istio 0.7.1)
 
 1 - Routes for Bookinfo app have already been deployed as part of the Bookinfo deployment.
 
 In the bookinfo ingress file notice that the ingress class is specified as   `kubernetes.io/ingress.class: istio` which routes the request to Istio.
 
-The second thing to notice is that the request is routed to different services, either helloworld-service or guestbook-ui depending on the request. We can see how this works by having Kubernetes describe the ingress resource for us:
-
 ```sh
 kubectl describe ingress
 ```
 
-2 - Find the external IP of the Istio Ingress controller and export it to an environment variable (only needed if you are running:
+2 - Find the external port of the Istio Ingress controller by running:
 
 ```sh
 kubectl get service istio-ingress -n istio-system -o wide
 ```
 
-Once the Ingress is successfully configured, you can also get the Ingress IP doing:
+3 - Browse to the website of the Bookinfo: On `PWK` the exposed ingress ports are available as hyperlinks at the top of the page. Clicking on a valid ingress port will open a page.
 
-```sh
-kubectl get ingress
-```
-
-```sh
-export INGRESS_IP=$(kubectl get service istio-ingress -n istio-system --template="{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}")
-```
-
-3 - Browse to the website of the Bookinfo: On `PWK` the ingress ports are available as hyperlinks at the top of the page. Clicking on a valid ingress port will open a page.
-
-4 - You can also access the Bookinfo productpage by appending
+To view the product page, you will have to append
 `/productpage` to the url.
 
 
-5 - Now, reload the page multiple times and notice how it round robins between v1, v2 and v3 of the reviews service:
+4 - Now, reload the page multiple times and notice how it round robins between v1, v2 and v3 of the reviews service:
 
 
 #### Configure Bookinfo Ingress Routes with the Istio Ingress Controller (Istio 0.8.0)
@@ -93,6 +89,8 @@ We can create a virtualservice & gateway for bookinfo app in the ingress gateway
 istioctl create -f samples/bookinfo/routing/bookinfo-gateway.yaml
 ```
 
+2 - Viewing the gateway and virtualservices
+
 Check the created gateway and virtualservice:
 ```sh
 istioctl get gateway
@@ -101,6 +99,21 @@ istioctl get gateway -o yaml
 istioctl get virtualservices
 istioctl get virtualservices -o yaml
 ```
+
+3 - Find the external port of the Istio Ingress controller by running:
+
+```sh
+kubectl get service istio-ingressgateway -n istio-system -o wide
+```
+
+3 - Browse to the website of the Bookinfo: On `PWK` the exposed ingress ports are available as hyperlinks at the top of the page. Clicking on a valid ingress port will open a page.
+
+To view the product page, you will have to append
+`/productpage` to the url.
+
+
+4 - Now, reload the page multiple times and notice how it round robins between v1, v2 and v3 of the reviews service:
+
 
 
 #### Inspecting the Istio proxy of the productpage pod
@@ -132,4 +145,4 @@ curl localhost:15000/server_info
 
 See the [admin docs](https://www.envoyproxy.io/docs/envoy/v1.5.0/operations/admin) for more details.
 
-#### [lab 5 - Telemetry](../lab-8/README.md)
+#### [Continue to lab 5 - Telemetry](../lab-5/README.md)

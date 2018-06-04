@@ -251,6 +251,4 @@ We now have a 3 node kubernetes cluster setup and ready for us to deploy [Istio]
 
 
 
-## Up Next
-
-On to [Lab 2](../lab-2/README.md) where you'll learn how to deploy a microservice to Kubernetes
+#### [Continue to lab 2 - Deploy Istio](../lab-2/README.md)

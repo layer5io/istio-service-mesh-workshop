@@ -1,104 +1,57 @@
-## lab 5 - Installing Istio 0.7.1
+## lab 5 - Telemetry
 
-#### Clean up
+#### Generate Bookinfo Telemetry data
 
-Start with a clean slate and delete all deployed services from the cluster:
-
-```sh
-kubectl delete all --all
-```
-
-#### Download Istio 0.7.1
-
-Download Istio 0.7.1 from the following website:
-
-https://github.com/istio/istio/releases/tag/0.7.1
-
-#### Setup istioctl 0.7.1 in Google Cloud Shell
-
-For example, in Google Cloud Shell or other linux distributions, you can install Istio Linux to the home directory:
+You can do the following to get the port of the
 
 ```sh
-cd ~/
-wget https://github.com/istio/istio/releases/download/0.7.1/istio-0.7.1-linux.tar.gz
-tar -xzvf istio-0.7.1-linux.tar.gz
-ln -sf ~/istio-0.7.1 ~/istio
+export INGRESS_PORT=$(kubectl get service istio-ingressgateway -n istio-system --template='{{(index .spec.ports 0).nodePort}}')
 ```
+
+Once we have the port, we can either append `localhost` or IP of one of the nodes to get the host
+```
+export INGRESS_HOST="localhost:$INGRESS_PORT"
+```
+
+Now, let us generate a small load by using [fortio](https://github.com/istio/fortio) which is a load testing library created by `Istio` team:
 
 ```sh
-export PATH=~/istio/bin:$PATH
+docker run istio/fortio load -t 5m -qps 5 http://$INGRESS_HOST/productpage
 ```
 
-Also, save it in `.bashrc` in case you restart your shell:
+### Grafana
+
+Establish port forward from local port 3000 to the Grafana instance:
 ```sh
-echo 'export PATH=~/istio/bin:$PATH' >> ~/.bashrc
+kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=grafana \
+  -o jsonpath='{.items[0].metadata.name}') 3000:3000
 ```
 
-#### Setup istioctl 0.7.1 in Mac OSX
+If you are in Cloud Shell, you'll need to use Web Preview and Change Port to `3000`.
 
-For example on a mac osx you setup istioctl by doing the following:
+Browse to http://localhost:3000 and navigate to Istio Dashboard
 
+### Prometheus
 ```sh
-cd ~/
-wget https://github.com/istio/istio/releases/download/0.7.1/istio-0.7.1-osx.tar.gz
-tar -xzvf istio-0.7.1-osx.tar.gz
-ln -sf ~/istio-0.7.1 ~/istio
+kubectl -n istio-system port-forward \
+  $(kubectl -n istio-system get pod -l app=prometheus -o jsonpath='{.items[0].metadata.name}') \
+  9090:9090
 ```
 
-```sh
-export PATH=~/istio/bin:$PATH
-```
+If you are in Cloud Shell, you'll need to use Web Preview and Change Port to `9090`.  
 
-Also, save it in `.bashrc` in case you restart your shell:
-```sh
-echo 'export PATH=~/istio/bin:$PATH' >> ~/.bashrc
-```
+Browse to http://localhost:9090/graph and in the “Expression” input box enter: `istio_request_count`. Click the Execute button.
 
-
-#### Running istioctl
-
-Istio related commands need to have `istioctl` in the path. Verify it is available by running:
+### Service Graph
 
 ```sh
-istioctl -h
+kubectl -n istio-system port-forward \
+  $(kubectl -n istio-system get pod -l app=servicegraph -o jsonpath='{.items[0].metadata.name}') \
+  8088:8088
 ```
 
-#### Install Istio on the Kubernetes Cluster
+If you are in Cloud Shell, you'll need to use Web Preview and Change Port to `9090`. Once opened, you'll see `404 not found` error. This is normal because `/` is not handled. Append the URI with `/dotviz`, e.g.: `http://8088-dot-...-dot-devshell.appspot.com/dotviz`
 
-1 - First grant cluster admin permissions to the current user (admin permissions are required to create the necessary RBAC rules for Istio):
+Browse to http://localhost:8088/dotviz
 
-```sh
-kubectl create clusterrolebinding cluster-admin-binding \
-    --clusterrole=cluster-admin \
-    --user=$(gcloud config get-value core/account)
-```
-2 - Next install Istio on the Kubernetes cluster:
-
-For this workshop we are not using Istio Auth because we want to test using outside services accessing the cluster.  Istio Auth enables mutual TLS authentication between pods but it prevents the ability to access the services outside the cluster.
-
-To install plain istio run:
-
-```sh
-kubectl apply -f ~/istio/install/kubernetes/istio.yaml
-```
-
-
-####  Install Add-ons for Grafana, Prometheus, and Zipkin:
-
-```sh
-kubectl apply -f ~/istio/install/kubernetes/addons/zipkin.yaml
-kubectl apply -f ~/istio/install/kubernetes/addons/grafana.yaml
-kubectl apply -f ~/istio/install/kubernetes/addons/prometheus.yaml
-kubectl apply -f ~/istio/install/kubernetes/addons/servicegraph.yaml
-```
-
-#### Viewing the Istio Deployments
-
-Istio is deployed in a separate Kubernetes namespace `istio-system`  You can watch the state of Istio and other services and pods using the watch flag (`-w`) when listing Kubernetes resources. For example, in two separate terminal windows run:
-
-```sh
-kubectl get pods -n istio-system -w
-kubectl get services -n istio-system -w
-```
-
-#### [Continue to lab 6 - Creating a Service Mesh with Istio Proxy](../lab-6/README.md)
+#### [Continue to lab 6 - Distributed Tracing](../lab-6/README.md)
