@@ -69,6 +69,11 @@ kubectl describe ingress
 kubectl get service istio-ingress -n istio-system -o wide
 ```
 
+To just get the first port of istio-ingress service, we can run this:
+```sh
+kubectl get service istio-ingress -n istio-system --template='{{(index .spec.ports 0).nodePort}}'
+```
+
 3 - Browse to the website of the Bookinfo: On `PWK` the exposed ingress ports are available as hyperlinks at the top of the page. Clicking on a valid ingress port will open a page.
 
 To view the product page, you will have to append
@@ -106,6 +111,11 @@ istioctl get virtualservices -o yaml
 kubectl get service istio-ingressgateway -n istio-system -o wide
 ```
 
+To just get the first port of istio-ingressgateway service, we can run this:
+```sh
+kubectl get service istio-ingressgateway -n istio-system --template='{{(index .spec.ports 0).nodePort}}'
+```
+
 3 - Browse to the website of the Bookinfo: On `PWK` the exposed ingress ports are available as hyperlinks at the top of the page. Clicking on a valid ingress port will open a page.
 
 To view the product page, you will have to append
@@ -113,7 +123,6 @@ To view the product page, you will have to append
 
 
 4 - Now, reload the page multiple times and notice how it round robins between v1, v2 and v3 of the reviews service:
-
 
 
 #### Inspecting the Istio proxy of the productpage pod

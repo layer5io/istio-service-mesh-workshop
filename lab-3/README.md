@@ -45,7 +45,7 @@ For automatic sidecar injection kubernetes we need api server to support `admiss
 kubectl api-versions | grep admissionregistration
 ```
 
-On Istio 0.7.1, if we get back `admissionregistration.k8s.io/v1beta1` then we can proceed with [automatic sidecar injection](#injector). On Istio 0.8.0, automatic sidecar injector will be automatically deployed if installed using `istio-demo.yaml` or `istio-demo-auth.yaml`. If not, we can proceed with [manual injection](#manual).
+On Istio 0.7.1, if we get back `admissionregistration.k8s.io/v1beta1` then we can proceed with [automatic sidecar injection](#injector). On Istio 0.8.0, automatic sidecar injector will be automatically deployed if installed using `istio-0.8.0.yaml` or `istio-appoptics-loggly-0.8.0.yaml`. If not, we can proceed with [manual injection](#manual).
 
 #### <a name="injector"></a> Deploying sidecar injector with mutating webhook (Istio 0.7.1)
 

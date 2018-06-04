@@ -10,23 +10,35 @@ Now that we have the kubernetes cluster, we are ready to deploy Istio.
 * [4. Installing Add-ons](#4)
 
 ## <a name="1"></a> 1 - Installing Istio
-
-
+At the time of writing, Istio 0.8.0 was just released. Istio 0.7.1 has been around for sometime now. You can pick one of these to install on your kubernetes cluster.
 
 We have developed an Istio [Mixer Adapter](https://github.com/solarwinds/istio-adapter) which can ship metrics to [Appoptics](https://www.appoptics.com/) and logs to [Loggly](https://www.loggly.com/) and [Papertrail](https://papertrailapp.com). If you would like to leverage this adapter, please proceed to [Optional Lab 2](optional.md) to set things up, get the API tokens and [Installing Istio](#aolg) (OR) please proceed to [Installing Istio](#noaolg).
 
-### <a name="aolg"></a>Installing istio with Appoptics and Loggy Tokens
-
-```sh
-kubectl apply -f mesh-appoptics-loggly.yaml
-```
-
 ### <a name="noaolg"></a>Installing istio
 
+
+On Istio 0.7.1:
 ```sh
-kubectl apply -f mesh.yaml
+kubectl apply -f istio-0.7.1.yaml
 ```
 
+On Istio 0.8.0:
+```sh
+kubectl apply -f istio-0.8.0.yaml
+```
+
+
+### <a name="aolg"></a>Installing istio with Appoptics and Loggy Tokens
+
+On Istio 0.7.1:
+```sh
+kubectl apply -f istio-appoptics-loggly-0.7.1.yaml
+```
+
+On Istio 0.8.0:
+```sh
+kubectl apply -f istio-appoptics-loggly-0.8.0.yaml
+```
 
 ## <a name="2"></a> 2 - Verify install
 
@@ -43,8 +55,23 @@ On a *nix system, you can setup istioctl by doing the following:
 ```sh
 curl -L https://git.io/getLatestIstio | sh -
 ```
+The above command will get the latest Istio package, which at the time of this writing is 0.8.0.
+
+To get Istio 0.7.1 package, please follow these instructions:
+
+```sh
+wget https://github.com/istio/istio/releases/download/0.7.1/istio-0.7.1-linux.tar.gz
+tar -xzvf istio-0.7.1-linux.tar.gz
+```
 
 Assuming you are in the `/root` directory, adding istio executables to the PATH can be done by doing the following:
+
+For Istio 0.7.1:
+```sh
+export PATH="$PATH:/root/istio-0.7.1/bin"
+```
+
+For Istio 0.8.0:
 ```sh
 export PATH="$PATH:/root/istio-0.8.0/bin"
 ```
@@ -63,7 +90,7 @@ For the folks who did NOT want to use Appoptics, you can deploy prometheus and g
 
 For distributed tracing, you can choose between [Zipkin](https://zipkin.io/) or [Jaeger](https://www.jaegertracing.io/).
 
-On Istio 0.8.0, Jaeger is deployed as part of `istio-demo.yaml` or `istio-demo-auth.yaml`.
+On Istio 0.8.0, Jaeger is deployed as part of `istio-0.8.0.yaml` or `istio-appoptics-loggly-0.8.0.yaml`.
 
 #####Grafana, Prometheus
 On Istio 0.7.1, you can deploy prometheus by running the following command:
@@ -72,7 +99,7 @@ On Istio 0.7.1, you can deploy prometheus by running the following command:
 kubectl apply -f install/kubernetes/addons/prometheus.yaml
 ```
 
-On Istio 0.8.0, prometheus is deployed as part of `istio-demo.yaml` or `istio-demo-auth.yaml`.
+On Istio 0.8.0, prometheus is deployed as part of `istio-0.8.0.yaml` or `istio-appoptics-loggly-0.8.0.yaml`.
 
 
 To deploy grafana:
@@ -118,7 +145,7 @@ kubectl apply -n istio-system -f https://raw.githubusercontent.com/jaegertracing
 
 You can follow similar steps as described above to expose this service as well.
 
-One Istio 0.8.0, Jaeger port is already exposed for you as part of `istio-demo.yaml` or `istio-demo-auth.yaml`.
+One Istio 0.8.0, Jaeger port is already exposed for you as part of `istio-0.8.0.yaml` or `istio-appoptics-loggly-0.8.0.yaml`.
 
 
 ![](img/Jaeger_UI.png)
