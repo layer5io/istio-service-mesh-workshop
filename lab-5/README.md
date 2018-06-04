@@ -2,19 +2,19 @@
 
 #### Generate Bookinfo Telemetry data
 
-You can do the following to get the port of the
-
+Let us get the first accessible ingress port and store it in a variable:
 ```sh
 export INGRESS_PORT=$(kubectl get service istio-ingressgateway -n istio-system --template='{{(index .spec.ports 0).nodePort}}')
 ```
 
-Once we have the port, we can either append `localhost` or IP of one of the nodes to get the host
-```
+Once we have the port, we can either append `localhost` or IP of one of the nodes to get the host:
+```sh
 export INGRESS_HOST="localhost:$INGRESS_PORT"
 ```
 
-Now, let us generate a small load by using [fortio](https://github.com/istio/fortio) which is a load testing library created by `Istio` team:
+Now, let us generate a small load on the sample app by using [fortio](https://github.com/istio/fortio) which is a load testing library created by the `Istio` team:
 
+The command below will run load test by making 5 calls per second for 5 minutes:
 ```sh
 docker run istio/fortio load -t 5m -qps 5 http://$INGRESS_HOST/productpage
 ```

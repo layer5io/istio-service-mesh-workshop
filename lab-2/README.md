@@ -92,6 +92,8 @@ For distributed tracing, you can choose between [Zipkin](https://zipkin.io/) or 
 
 On Istio 0.8.0, Jaeger is deployed as part of `istio-0.8.0.yaml` or `istio-appoptics-loggly-0.8.0.yaml`.
 
+Service graph is another add-on which can be used to generate a graph of services within an Istio mesh. On Istio 0.8.0, service graph is deployed as part of `istio-0.8.0.yaml` or `istio-appoptics-loggly-0.8.0.yaml`.
+
 #####Grafana, Prometheus
 On Istio 0.7.1, you can deploy prometheus by running the following command:
 
@@ -107,8 +109,9 @@ To deploy grafana:
 kubectl apply -f install/kubernetes/addons/grafana.yaml
 ```
 
-By default prometheus and grafana services are deployed as ClusterIP type. We can access the services outside by either changing the type to LoadBalancer or NodePort or configure Istio Ingress. 
+By default prometheus and grafana are deployed as ClusterIP type services. We can access the services outside by either changing the type to LoadBalancer or NodePort or by port forwarding or configure Istio Ingress. I will briefly show using NodePort and port forwarding here.
 
+##### Exposing with NodePort
 To expose them using NodePort service type, we can edit the services and change the service type from `ClusterIP` to `NodePort`
 
 ```sh
@@ -127,6 +130,23 @@ We can click on the new links now and navigate to prometheus dashboard and grafa
 
 ![](img/Grafana_-_Istio_Dashboard.png)
 
+
+##### Exposing with port-forward
+To port-forward grafana:
+```sh
+kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=grafana \
+  -o jsonpath='{.items[0].metadata.name}') 3000:3000 &
+```
+
+To port-forward prometheus:
+```sh
+kubectl -n istio-system port-forward \
+  $(kubectl -n istio-system get pod -l app=prometheus -o jsonpath='{.items[0].metadata.name}') \
+  9090:9090 &
+```
+
+Port forward runs in the foreground. We have appeneded '&' to the end of the above 2 commands to run them in the background. If you donot want this behavior, please remove the '&'.
+
 ##### <a name="zipkin"></a>Zipkin
 On Istio 0.7.1, we can deploy Zipkin by:
 
@@ -135,6 +155,13 @@ kubectl apply -f install/kubernetes/addons/zipkin.yaml
 ```
 
 You can follow similar steps as described above to expose this service as well.
+
+Command to port-forward:
+```sh
+kubectl port-forward -n istio-system \
+  $(kubectl get pod -n istio-system -l app=zipkin -o jsonpath='{.items[0].metadata.name}') \
+  9411:9411 &
+```
 
 ##### <a name="jaeger"></a> Jaeger
 On Istio 0.7.1, we can deploy Jaeger by:
@@ -149,5 +176,29 @@ One Istio 0.8.0, Jaeger port is already exposed for you as part of `istio-0.8.0.
 
 
 ![](img/Jaeger_UI.png)
+
+Command to port-forward:
+```sh
+kubectl port-forward -n istio-system $(kubectl get pod -n istio-system -l app=jaeger -o jsonpath='{.items[0].metadata.name}') 16686:16686 &
+```
+
+
+##### Service Graph
+On Istio 0.7.1, we can deploy service graph by:
+
+```sh
+kubectl apply -f install/kubernetes/addons/servicegraph.yaml
+```
+
+You can follow similar steps as described above to expose this service as well.
+
+Command to port-forward:
+```sh
+kubectl -n istio-system port-forward \
+  $(kubectl -n istio-system get pod -l app=servicegraph -o jsonpath='{.items[0].metadata.name}') \
+  8088:8088 &
+```
+
+
 
 #### [Continue to lab 3 - Deploy Sample Bookinfo app](../lab-3/README.md)
