@@ -1,6 +1,8 @@
-## lab 1 - Startup a Kubernetes Cluster
+# lab 1 - Startup a Kubernetes Cluster
 
-We'll use a hosted lab environment called [Play with Kubernetes (PWK)](https://labs.play-with-k8s.com/).
+In this lab we'll use a hosted lab environment called [Play with Kubernetes (PWK)](https://workshop.play-with-k8s.com/) which is version of their [labs.play-with-k8s.com](https://labs.play-with-k8s.com/). If you would like to use a different kubenetes cluster (like your lab cluster or your local Kubernetes on docker or minikube), you can skip this lab.
+
+
 
 ## Steps
 

@@ -1,84 +1,109 @@
-Getting a Loggly API token for use with istio:
+# lab 2 - Deploy Istio 0.8.0
 
-[Loggly](https://www.loggly.com/)
-![](img/loggly.png)
+Now that we have the kubernetes cluster, we are ready to deploy Istio.
 
-To signup for [Loggly signup](https://www.loggly.com/signup/)
-![](img/loggly_signup.png)
+## Steps
 
-[Loggin sign in](https://www.loggly.com/login/)
-![](img/loggly_signin.png)
+* [1. Installing Istio](#1)
+* [2. Seting up istioctl](#2)
+* [3. Verify install](#3)
+* [4. Installing Add-ons](#4)
 
-Loggly landing page: ![](img/loggly_landing_page.png)
+## <a name="1"></a> 1 - Installing Istio
+We have developed an Istio [Mixer Adapter](https://github.com/solarwinds/istio-adapter) which can ship metrics to [Appoptics](https://www.appoptics.com/) and logs to [Loggly](https://www.loggly.com/) and [Papertrail](https://papertrailapp.com). If you would like to leverage this adapter, please proceed to [Optional Lab 2](optional.md) to set things up, get the API tokens and [Installing Istio](#aolg) (OR) please proceed to [Installing Istio](#noaolg).
 
-Select `Account` from the user menu
-![](img/loggly_account_menu.png)
+### <a name="aolg"></a>Installing istio with Appoptics and Loggy Tokens
 
-From the `Account` overview page select `API Tokens`
-![](img/loggly_account_overview.png)
+```sh
+kubectl apply -f mesh-appoptics-loggly.yaml
+```
 
-From the `API Tokens` page let us create a new API Token by using the `Add New` button
-![](img/loggly_api_tokens.png)
+### <a name="noaolg"></a>Installing istio
 
-This open a popup confirming the creation of a new token. Use the `Create` button to create a new API Token.
-![](img/loggly_create_token.png)
-
-Once the token is created you will be able to see it in the API Tokens table. On the left there is a `copy to clipboard` button which can help with copying the new token.
-![](img/loggly_new_token.png)
-
-Paste the newly created token into the istio-solarwinds.yaml file in the \<loggly token> placeholder.
+```sh
+kubectl apply -f mesh.yaml
+```
 
 
-Getting an Appoptics API token for use with istio:
-[Appoptics](https://www.appoptics.com/)
-![](img/ao_main.png)
+## <a name="2"></a> 2 - Verify install
 
-[appoptics signup](https://my.appoptics.com/sign_up)
-![](img/ao_signup.png)
+Istio is deployed in a separate Kubernetes namespace `istio-system`. To check if Istio is deployed and also to see all the pieces that are deployed, we can do the following:
 
-![](img/ao_login.png)
+```sh
+watch kubectl get all -n istio-system
+```
 
 
-After you have logged in you can navigate to create an API token by clicking on the `API Tokens` link at the top.
-![](img/ao_org_settings.png)
+## <a name="3"></a> 3 - Setting up istioctl
+On a *nix system, you can setup istioctl by doing the following: 
 
-We can now generate API tokens by hitting the `Generate New API Token` button
-![](img/ao_api_token.png)
+```sh
+curl -L https://git.io/getLatestIstio | sh -
+```
 
-A popup for creating a token will open where you can select the access level needed (for this workshop we need `Record only` access) and a meaningful name for your token. When you hit `Generate` a token will be created 
-![](img/ao_add_api_token.png)
+Assuming you are in the `/root` directory, adding istio executables to the PATH can be done by doing the following:
+```sh
+export PATH="$PATH:/root/istio-0.8.0/bin"
+```
 
-The created token will be shown in the popup. We can now copy the token to clipboard from here.
-![](img/ao_token_created.png)
+To verify `istioctl` is setup lets try to print out the command help
+```sh
+istioctl -h
+```
 
-The created token can also be seen in the table.
-![](img/ao_token_table.png)
 
-You can now paste the copied token to the istio-solarwinds.yaml file \<appoptics token> placeholder.
 
-Now from the left menu select `Dashboard & Metrics`.
-![](img/ao_dashboard_menu.png)
 
-It will take you to a Dashboards page
-![](img/ao_dashboard.png)
 
-Once you are in the `Dashboards` screen you can create a new dashboard by using `Create a New Dashboard` button. It will take you right to a new dashboard.
-![](img/ao_new_dashboard.png)
+####  Install Add-ons
+For the folks who did NOT want to use Appoptics, you can deploy prometheus and grafana for viewing the metrics from istio. 
 
-You can now give your dashboard a suitable name. Next click on the button shown in the previous image. It will open up a menu with an option to import a dashboard.
+For distributed tracing, you can choose between [Zipkin]() or [Jaeger]().
 
-![](img/ao_import_menu.png)
 
-Clicking the `Import Dashboard` menu item will open a popup where we can enter the contents of appoptics_dashboard.yaml file
-![](img/ao_import.png)
+#####Grafana, Prometheus
+To deploy prometheus and grafana, please run the following commands:
 
-After pasting the contents, we can validate it by using the `Validate` button
+```sh
+kubectl apply -f install/kubernetes/addons/grafana.yaml
+kubectl apply -f install/kubernetes/addons/prometheus.yaml
+```
 
-![](img/ao_validate.png)
+By default prometheus and grafana services are deployed as ClusterIP type. We can access the services by either changing the type to LoadBalancer or NodePort or configure Ingress. 
 
-Once validated, we can import the dashboard by using the `Import` button. You will be presented with a warning popup as shown here. Proceed by clicking `OK` here.
+To expose them using NodePort service type, we can edit the services and change the service type from `ClusterIP` to `NodePort`
 
-![](img/ao_import_warning.png)
+```sh
+kubectl -n istio-system edit svc prometheus
+```
 
-You will be taken to a pre-constructed dashboard.
-![](img/ao_istio_dashboard.png)
+```sh
+kubectl -n istio-system edit svc grafana
+```
+
+Once this is done the services will be assigned dedicated ports on the hosts. In `PWK`, once a port is exposed it will appear on top of the page as shown below as clickable hyperlinks:
+
+![](img/exposed_ports.png)
+
+We can click on the links now and navigate to prometheus dashboard and grafana dashboards. In grafana there is a dedicated dashboard created for Istio called `Istio Dashboard`.
+
+![](img/Grafana_-_Istio_Dashboard.png)
+
+##### <a name="zipkin"></a>Zipkin
+Zipkin is used for distributed tracing. We can deploy Zipkin by:
+
+```sh
+kubectl apply -f install/kubernetes/addons/zipkin.yaml
+```
+
+You can follow similar steps as described above to expose this service as well.
+
+##### <a name="jaeger"></a> Jaeger
+
+```sh
+kubectl apply -n istio-system -f https://raw.githubusercontent.com/jaegertracing/jaeger-kubernetes/master/all-in-one/jaeger-all-in-one-template.yml
+```
+
+You can follow similar steps as described above to expose this service as well.
+
+![](img/Jaeger_UI.png)
