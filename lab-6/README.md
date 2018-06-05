@@ -1,10 +1,8 @@
-## lab 6 - Distributed Tracing
+# lab 6 - Distributed Tracing
 
-The sample guestbook application shows how a Spring Java application can be configured to collect trace spans using Zipkin or Jaeger.
+The sample Bookinfo application is configured to collect trace spans using Zipkin or Jaeger. Although Istio proxies are able to automatically send spans, it needs help from the application to tie together the entire trace. To do this applications need to propagate the appropriate HTTP headers so that when the proxies send span information to Zipkin or Jaeger, the spans can be correlated correctly into a single trace.
 
-Although Istio proxies are able to automatically send spans, it needs help from the application to tie together the entire trace. To do this applications need to propagate the appropriate HTTP headers so that when the proxies send span information to Zipkin or Jaeger, the spans can be correlated correctly into a single trace.
-
-To do this the guestbook application collects and propagate the following headers from the incoming request to any outgoing requests:
+To do this the application collects and propagates the following headers from the incoming request to any outgoing requests:
 
 - `x-request-id`
 - `x-b3-traceid`
@@ -14,37 +12,37 @@ To do this the guestbook application collects and propagate the following header
 - `x-b3-flags`
 - `x-ot-span-context`
 
-This is done with the Spring Istio Support written by Ray Tsang:
 
-https://github.com/retroryan/istio-by-example-java/tree/master/spring-boot-example/spring-istio-support/src/main/java/com/example/istio
+## View Traces
 
-#### View Guestbook Traces
-
-Generate a small load to the application either using a shell script or fortio:
-
-With shell script:
+Now, let us generate a small load on the sample app by using [fortio](https://github.com/istio/fortio) (for more details on this, please refer back to [lab-5](../lab-5/README.md)):
 
 ```sh
-while sleep 0.5; do curl http://$INGRESS_IP/echo/universe -A mobile; done
+docker run istio/fortio load -t 5m -qps 5 http://$INGRESS_HOST/productpage
 ```
-
-Or, with fortio:
-
-```sh
-docker run istio/fortio load -t 5m -qps 5 \
-  http://$INGRESS_IP/echo/universe
-```
-
 
 ### Zipkin
-Establish port forward from local port:
+If you have not already deployed and exposed zipkin, please follow [lab-2](../lab-2/README.md). 
+In `PWK`, once you have exposed zipkin on a port by using any of the specified methods, it will appear at the top of the page as a hyperlink. You can click on the link at the top of the page which maps to the right port and it will open zipkin web UI.
+![](img/zipkin_1.png)
 
-```sh
-kubectl port-forward -n istio-system \
-  $(kubectl get pod -n istio-system -l app=zipkin -o jsonpath='{.items[0].metadata.name}') \
-  9411:9411
-```
+![](img/zipkin.png)
 
-If you are in Cloud Shell, you'll need to use Web Preview and Change   Port to `9411`. Else, browse to http://localhost:9411
+![](img/zipkin_2.png)
 
-#### [Continue to lab 10 - Request Routing and Canary Testing](../lab-10/README.md)
+### Jaeger
+If you have deployed Istio 0.8.0 using `istio-0.8.0.yaml` or `istio-appoptics-loggly-0.8.0.yaml`, jaeger service should already be exposed.
+
+On Istio 0.7.1, if you have not already deployed and exposed jaeger, please follow [lab-2](../lab-2/README.md). 
+
+In `PWK`, once jaeger service is exposed on a port by using any of the specified methods, it will appear at the top of the page as a hyperlink. You can click on the link at the top of the page which maps to the right port and it will open Jaeger UI in a new tab. 
+
+![](img/jaeger.png)
+
+![](img/jaeger_1.png)
+
+![](img/jaeger_2.png)
+
+
+
+#### [Continue to lab 7 - Request Routing and Canary Testing](../lab-7/README.md)
