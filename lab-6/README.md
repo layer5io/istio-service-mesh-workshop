@@ -1,4 +1,4 @@
-## lab 9 - Distributed Tracing
+## lab 6 - Distributed Tracing
 
 The sample guestbook application shows how a Spring Java application can be configured to collect trace spans using Zipkin or Jaeger.
 

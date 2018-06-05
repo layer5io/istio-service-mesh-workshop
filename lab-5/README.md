@@ -1,15 +1,22 @@
-## lab 5 - Telemetry
+# lab 5 - Telemetry
 
-#### Generate Bookinfo Telemetry data
+## Generate Bookinfo Telemetry data
 
 Let us get the first accessible ingress port and store it in a variable:
+
+Istio 0.7.1:
+```sh
+export INGRESS_PORT=$(kubectl get service istio-ingress -n istio-system --template='{{(index .spec.ports 0).nodePort}}')
+```
+
+Istio 0.8.0:
 ```sh
 export INGRESS_PORT=$(kubectl get service istio-ingressgateway -n istio-system --template='{{(index .spec.ports 0).nodePort}}')
 ```
 
-Once we have the port, we can either append `localhost` or IP of one of the nodes to get the host:
+Once we have the port, we can append the IP of one of the nodes to get the host. in `PWK` we can get the ip from the host list on the left.
 ```sh
-export INGRESS_HOST="localhost:$INGRESS_PORT"
+export INGRESS_HOST="<IP>:$INGRESS_PORT"
 ```
 
 Now, let us generate a small load on the sample app by using [fortio](https://github.com/istio/fortio) which is a load testing library created by the `Istio` team:
@@ -19,39 +26,35 @@ The command below will run load test by making 5 calls per second for 5 minutes:
 docker run istio/fortio load -t 5m -qps 5 http://$INGRESS_HOST/productpage
 ```
 
-### Grafana
+## Appoptics
+If you had followed [optional lab-2](../lab-2/optional.md), created or have an Appoptics account, created a dashboard, obtained a valid Appoptics API token and deployed Istio with [solarwinds mixer adapter](https://github.com/solarwinds/istio-adapter), you will be able to view the metrics data from Istio in the Appoptics Dashboard.
 
-Establish port forward from local port 3000 to the Grafana instance:
-```sh
-kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=grafana \
-  -o jsonpath='{.items[0].metadata.name}') 3000:3000
-```
+![](img/AO_Dashboard.png)
 
-If you are in Cloud Shell, you'll need to use Web Preview and Change Port to `3000`.
+## Loggly
+If you had followed [optional lab-2](../lab-2/optional.md), created or have an Loggly account, obtained a valid Loggly API token and deployed Istio with [solarwinds mixer adapter](https://github.com/solarwinds/istio-adapter), you will be able to view the access logs from Istio in Loggly.
 
-Browse to http://localhost:3000 and navigate to Istio Dashboard
+![](img/Loggly.png)
 
-### Prometheus
-```sh
-kubectl -n istio-system port-forward \
-  $(kubectl -n istio-system get pod -l app=prometheus -o jsonpath='{.items[0].metadata.name}') \
-  9090:9090
-```
 
-If you are in Cloud Shell, you'll need to use Web Preview and Change Port to `9090`.  
+## Grafana
 
-Browse to http://localhost:9090/graph and in the “Expression” input box enter: `istio_request_count`. Click the Execute button.
+If you have not already deployed and exposed grafana, please follow [lab-2](../lab-2/README.md). 
+In `PWK`, once you have exposed grafana on a port by using any of the specified methods, it will appear at the top of the page as a hyperlink. You can click on the link at the top of the page which maps to the right port and it will open grafana in new tab. You can then navigate to the `Istio Dashboard`.
 
-### Service Graph
+![](img/Grafana_Istio_Dashboard.png)
 
-```sh
-kubectl -n istio-system port-forward \
-  $(kubectl -n istio-system get pod -l app=servicegraph -o jsonpath='{.items[0].metadata.name}') \
-  8088:8088
-```
+## Prometheus
+If you have not already deployed and exposed prometheus, please follow [lab-2](../lab-2/README.md). 
+In `PWK`, once you have exposed prometheus on a port by using any of the specified methods, it will appear at the top of the page as a hyperlink. You can click on the link at the top of the page which maps to the right port and it will open prometheus in new tab. 
+Browse to `/graph` and in the `Expression` input box enter: `istio_request_count`. Click the Execute button.
+![](img/Prometheus.png)
 
-If you are in Cloud Shell, you'll need to use Web Preview and Change Port to `9090`. Once opened, you'll see `404 not found` error. This is normal because `/` is not handled. Append the URI with `/dotviz`, e.g.: `http://8088-dot-...-dot-devshell.appspot.com/dotviz`
+## Service Graph
 
-Browse to http://localhost:8088/dotviz
+If you have not already deployed and exposed servicegraph, please follow [lab-2](../lab-2/README.md). 
+In `PWK`, once you have exposed servicegraph on a port by using any of the specified methods, it will appear at the top of the page as a hyperlink. You can click on the link at the top of the page which maps to the right port and it will open a new tab but will show an error page with `404 not found`. 
+Update the URI to `/dotviz` and you will see the generated service graph.
+![](img/servicegraph.png)
 
 #### [Continue to lab 6 - Distributed Tracing](../lab-6/README.md)

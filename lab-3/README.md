@@ -4,7 +4,7 @@ To play with Istio and demonstrate some of it's capabilities we will deploy the 
 
 
 
-#### <a name="injector"></a> Bookinfo application
+## <a name="injector"></a> Bookinfo application
 
 The bookinfo application that displays information about a book, similar to a single catalog entry of an online book store. Displayed on the page is a description of the book, book details (ISBN, number of pages, and so on), and a few book reviews.
 
@@ -47,6 +47,12 @@ kubectl api-versions | grep admissionregistration
 
 On Istio 0.7.1, if we get back `admissionregistration.k8s.io/v1beta1` then we can proceed with [automatic sidecar injection](#injector). On Istio 0.8.0, automatic sidecar injector will be automatically deployed if installed using `istio-0.8.0.yaml` or `istio-appoptics-loggly-0.8.0.yaml`. If not, we can proceed with [manual injection](#manual).
 
+
+
+### <a name="auto"></a> With Automatic sidecar injection
+
+For deploying Istio with automatic sidecar injection we need to first deploy the sidecar injector with mutating webhook.
+
 #### <a name="injector"></a> Deploying sidecar injector with mutating webhook (Istio 0.7.1)
 
 Istio sidecars can also be automatically injected into a pod at creation time using a feature in Kubernetes called a mutating webhook admission controller.   Note that unlike manual injection, automatic injection occurs at the pod-level. You won't see any change to the deployment itself. Instead you'll want to check individual pods (via kubectl describe) to see the injected proxy.
@@ -59,7 +65,7 @@ MutatingWebhookConfiguration describes the configuration of and admission webhoo
 
 For Istio the webhook is the sidecar injector webhook deployment called "istio-sidecar-injector".  It will modify a pod before it is started to inject an istio init container and istio proxy container.
 
-##### Installing the Webhook
+#### Installing the Webhook
 
 Webhooks requires a signed cert/key pair. Use install/kubernetes/webhook-create-signed-cert.sh to generate a cert/key pair signed by the Kubernetes’ CA. The resulting cert/key file is stored as a Kubernetes secret for the sidecar injector webhook to consume.
 
@@ -116,9 +122,15 @@ kube-public    Active    1h
 kube-system    Active    1h
 ```
 
-Then you can proceed to deploying Bookinfo app with [auto sidecar injection](#auto)
+#### Deploy sample app
+Now that we have the sidecar injector with mutating webhook in place and the namespace labelled for automatic sidecar injection, we can proceed to deploy the sample app:
 
-#### <a name="manual"></a> With manual sidecar injection
+```sh
+kubectl apply -f samples/bookinfo/kube/bookinfo.yaml
+```
+
+
+### <a name="manual"></a> With manual sidecar injection
 
 To do a manual sidecar injection we will be using `istioctl` command:
 ```sh
@@ -143,13 +155,7 @@ To do both in a single command:
 kubectl apply -f <(istioctl kube-inject -f samples/bookinfo/kube/bookinfo.yaml)
 ```
 
-#### <a name="auto"></a> With Automatic sidecar injection
-
-```sh
-kubectl apply -f samples/bookinfo/kube/bookinfo.yaml
-```
-
-#### Verify Bookinfo deployment
+### Verify Bookinfo deployment
 
 1. Verify that previous deployments are all in a state of AVAILABLE before continuing. **Do not procede until they are up and running.**
 

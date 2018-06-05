@@ -1,11 +1,11 @@
-## lab 4 - Expose Bookinfo site through Istio Ingress Controller/Gateway
+# lab 4 - Expose Bookinfo site through Istio Ingress Controller/Gateway
 
 The components deployed on the service mesh by default are not exposed outside the cluster. External access to individual services so far has been provided by creating an external load balancer on each service.
 
 In Istio-0.7.1, a Kubernetes Ingress rule can be created that routes external requests through the Istio Ingress Controller to the backing services.
 In Istio-0.8.0, things are a little different. An ingress gateway service is deployed as a LoadBalancer service. For making Bookinfo accessible from outside, we create an `Istio Gateway` for the service and also define a `Istio VirtualService` for Bookinfo with the routes we need.
 
-#### Inspecting the Istio Ingress controller/gateway
+## Inspecting the Istio Ingress controller/gateway
 
 The ingress controller/gateway gets expossed as a normal kubernetes service load balancer:
 
@@ -53,7 +53,7 @@ Also it can be helpful to look at the log files of the Istio ingress controller 
 kubectl logs istio-ingressgateway-... -n istio-system
 ```
 
-#### View Bookinfo Ingress Routes (Istio 0.7.1)
+## View Bookinfo Ingress Routes (Istio 0.7.1)
 
 1 - Routes for Bookinfo app have already been deployed as part of the Bookinfo deployment.
 
@@ -83,7 +83,7 @@ To view the product page, you will have to append
 4 - Now, reload the page multiple times and notice how it round robins between v1, v2 and v3 of the reviews service:
 
 
-#### Configure Bookinfo Ingress Routes with the Istio Ingress Controller (Istio 0.8.0)
+## Configure Bookinfo Ingress Routes with the Istio Ingress Controller (Istio 0.8.0)
 
 
 1 - Configure the Bookinfo route with the Istio Ingress gateway:
@@ -125,7 +125,7 @@ To view the product page, you will have to append
 4 - Now, reload the page multiple times and notice how it round robins between v1, v2 and v3 of the reviews service:
 
 
-#### Inspecting the Istio proxy of the productpage pod
+## Inspecting the Istio proxy of the productpage pod
 
 To better understand the istio proxy, let's inspect the details.  exec into the productpage pod to find the proxy details.  First find the full pod name and then exec into the istio-proxy container:
 
