@@ -1,5 +1,28 @@
 # lab 5 - Telemetry
 
+
+## Inspecting Mixer
+
+Envoy proxies call Mixer to report statistics and check for route rules. We can get an idea on what it is collecting:
+
+```sh
+kubectl get pods -n istio-system
+```
+
+Istio 0.7.1:
+```sh
+kubectl -n istio-system exec -it istio-mixer-... -c istio-proxy -- sh
+```
+
+Istio 0.8.0:
+```sh
+kubectl -n istio-system exec -it istio-policy-... -c istio-proxy -- sh
+```
+
+```sh
+curl localhost:9093/metrics
+```
+
 ## Generate Bookinfo Telemetry data
 
 Let us get the first accessible ingress port and store it in a variable:
@@ -56,5 +79,6 @@ If you have not already deployed and exposed servicegraph, please follow [lab-2]
 In `PWK`, once you have exposed servicegraph on a port by using any of the specified methods, it will appear at the top of the page as a hyperlink. You can click on the link at the top of the page which maps to the right port and it will open a new tab but will show an error page with `404 not found`. 
 Update the URI to `/dotviz` and you will see the generated service graph.
 ![](img/servicegraph.png)
+
 
 #### [Continue to lab 6 - Distributed Tracing](../lab-6/README.md)
