@@ -81,11 +81,11 @@ It will take you to a Dashboards page
 Once you are in the `Dashboards` screen you can create a new dashboard by using `Create a New Dashboard` button. It will take you right to a new dashboard.
 ![](img/ao_new_dashboard.png)
 
-You can now give your dashboard a suitable name. Next click on the button shown in the previous image. It will open up a menu with an option to import a dashboard.
+You can now give your dashboard a temporary name. Next click on the button shown in the previous image. It will open up a menu with an option to import a dashboard.
 
 ![](img/ao_import_menu.png)
 
-Clicking the `Import Dashboard` menu item will open a popup where we can enter the contents of appoptics_dashboard.yaml file
+Clicking the `Import Dashboard` menu item will open a popup where we can enter the contents of `deployment_files/appoptics_dashboard.yaml` file
 ![](img/ao_import.png)
 
 After pasting the contents, we can validate it by using the `Validate` button

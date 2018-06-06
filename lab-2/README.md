@@ -19,12 +19,12 @@ We have developed an Istio [Mixer Adapter](https://github.com/solarwinds/istio-a
 
 On Istio 0.7.1:
 ```sh
-kubectl apply -f istio-0.7.1.yaml
+kubectl apply -f deployment_files/istio-0.7.1/istio-0.7.1.yaml
 ```
 
 On Istio 0.8.0:
 ```sh
-kubectl apply -f istio-0.8.0.yaml
+kubectl apply -f deployment_files/istio-0.8.0/istio-0.8.0.yaml
 ```
 
 
@@ -32,12 +32,12 @@ kubectl apply -f istio-0.8.0.yaml
 
 On Istio 0.7.1:
 ```sh
-kubectl apply -f istio-appoptics-loggly-0.7.1.yaml
+kubectl apply -f deployment_files/istio-0.7.1/istio-solarwinds-0.7.1.yaml
 ```
 
 On Istio 0.8.0:
 ```sh
-kubectl apply -f istio-appoptics-loggly-0.8.0.yaml
+kubectl apply -f deployment_files/istio-0.8.0/istio-solarwinds-0.8.0.yaml
 ```
 
 ## <a name="2"></a> 2 - Verify install
@@ -91,9 +91,9 @@ For the folks who did NOT want to use Appoptics, you can deploy prometheus and g
 
 For distributed tracing, you can choose between [Zipkin](https://zipkin.io/) or [Jaeger](https://www.jaegertracing.io/).
 
-On Istio 0.8.0, Jaeger is deployed as part of `istio-0.8.0.yaml` or `istio-appoptics-loggly-0.8.0.yaml`.
+On Istio 0.8.0, Jaeger is deployed as part of `istio-0.8.0.yaml` or `istio-solarwinds-0.8.0.yaml`.
 
-Service graph is another add-on which can be used to generate a graph of services within an Istio mesh. On Istio 0.8.0, service graph is deployed as part of `istio-0.8.0.yaml` or `istio-appoptics-loggly-0.8.0.yaml`.
+Service graph is another add-on which can be used to generate a graph of services within an Istio mesh. On Istio 0.8.0, service graph is deployed as part of `istio-0.8.0.yaml` or `istio-solarwinds-0.8.0.yaml`.
 
 ### Grafana, Prometheus
 On Istio 0.7.1, you can deploy prometheus by running the following command:
@@ -102,7 +102,7 @@ On Istio 0.7.1, you can deploy prometheus by running the following command:
 kubectl apply -f install/kubernetes/addons/prometheus.yaml
 ```
 
-On Istio 0.8.0, prometheus is deployed as part of `istio-0.8.0.yaml` or `istio-appoptics-loggly-0.8.0.yaml`.
+On Istio 0.8.0, prometheus is deployed as part of `istio-0.8.0.yaml` or `istio-solarwinds-0.8.0.yaml`.
 
 
 To deploy grafana:
@@ -185,7 +185,7 @@ kubectl apply -n istio-system -f https://raw.githubusercontent.com/jaegertracing
 
 You can follow similar steps as described above to expose this service as well.
 
-One Istio 0.8.0, Jaeger port is already exposed for you as part of `istio-0.8.0.yaml` or `istio-appoptics-loggly-0.8.0.yaml`.
+One Istio 0.8.0, Jaeger port is already exposed for you as part of `istio-0.8.0.yaml` or `istio-solarwinds-0.8.0.yaml`.
 
 
 ![](img/Jaeger_UI.png)

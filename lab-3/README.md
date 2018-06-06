@@ -46,7 +46,7 @@ kubectl api-versions | grep admissionregistration
 ```
 
 On Istio 0.7.1, if we get back `admissionregistration.k8s.io/v1beta1` then we can proceed with [automatic sidecar injection](#injector). 
-On Istio 0.8.0, automatic sidecar injector will be automatically deployed if installed using `istio-0.8.0.yaml` or `istio-appoptics-loggly-0.8.0.yaml`. If not, we can proceed with [manual injection](#manual).
+On Istio 0.8.0, automatic sidecar injector will be automatically deployed if installed using `istio-0.8.0.yaml` or `istio-solarwinds-0.8.0.yaml`. If not, we can proceed with [manual injection](#manual).
 
 
 
@@ -54,7 +54,7 @@ On Istio 0.8.0, automatic sidecar injector will be automatically deployed if ins
 
 For deploying Istio with automatic sidecar injection we need to first deploy the sidecar injector with mutating webhook.
 
-#### <a name="injector"></a> Deploying sidecar injector with mutating webhook (Istio 0.7.1)
+#### <a name="injector"></a> Deploying sidecar injector with mutating webhook
 
 Istio sidecars can also be automatically injected into a pod at creation time using a feature in Kubernetes called a mutating webhook admission controller.   Note that unlike manual injection, automatic injection occurs at the pod-level. You won't see any change to the deployment itself. Instead you'll want to check individual pods (via kubectl describe) to see the injected proxy.
 
@@ -66,7 +66,9 @@ MutatingWebhookConfiguration describes the configuration of and admission webhoo
 
 For Istio the webhook is the sidecar injector webhook deployment called "istio-sidecar-injector".  It will modify a pod before it is started to inject an istio init container and istio proxy container.
 
-#### Installing the Webhook
+Istio 0.8.0, if deployed using `istio-0.8.0.yaml` or `istio-solarwinds-0.8.0.yaml` will also deploy the sidecar injector. You can skip to [verifying and labelling namespace for sidecar injection](#verify)
+
+#### Installing the Webhook (Istio 0.7.1)
 
 Webhooks requires a signed cert/key pair. Use install/kubernetes/webhook-create-signed-cert.sh to generate a cert/key pair signed by the Kubernetes’ CA. The resulting cert/key file is stored as a Kubernetes secret for the sidecar injector webhook to consume.
 
@@ -98,6 +100,8 @@ Install the sidecar injector webhook.
 ```sh
 kubectl apply -f istio-sidecar-injector-with-ca-bundle.yaml
 ```
+
+#### <a name="#verify"></a> Verify sidecar injector & Label namespace for automatic sidecar injection (for both Istio 0.7.1 and Istio 0.8.0)
 
 The sidecar injector webhook should now be running.
 

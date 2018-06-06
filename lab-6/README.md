@@ -31,7 +31,7 @@ In `PWK`, once you have exposed zipkin on a port by using any of the specified m
 ![](img/zipkin_2.png)
 
 ### Jaeger
-If you have deployed Istio 0.8.0 using `istio-0.8.0.yaml` or `istio-appoptics-loggly-0.8.0.yaml`, jaeger service should already be exposed.
+If you have deployed Istio 0.8.0 using `istio-0.8.0.yaml` or `istio-solarwinds-0.8.0.yaml`, jaeger service should already be exposed.
 
 On Istio 0.7.1, if you have not already deployed and exposed jaeger, please follow [lab-2](../lab-2/README.md). 
 
