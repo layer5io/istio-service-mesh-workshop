@@ -294,7 +294,7 @@ spec:
         - name: config-volume
           mountPath: /etc/statsd
       - name: mixer
-        image: solarwinds/istio-adapter:latest # docker.io/istio/mixer:0.7.1
+        image: docker.io/istio/mixer:0.7.1
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9091
@@ -314,9 +314,9 @@ spec:
         - proxy
         - mixer
         - --controlPlaneAuthPolicy
-        - NONE #--controlPlaneAuthPolicy
+        - MUTUAL_TLS
         - --customConfigFile
-        - /etc/istio/proxy/envoy_mixer.json
+        - /etc/istio/proxy/envoy_mixer_auth.json
         volumeMounts:
         - name: istio-certs
           mountPath: /etc/certs
@@ -516,23 +516,6 @@ spec:
     kind: prometheus
     plural: prometheuses
     singular: prometheus
-  scope: Namespaced
-  version: v1alpha2
----
-
-kind: CustomResourceDefinition
-apiVersion: apiextensions.k8s.io/v1beta1
-metadata:
-  name: solarwindses.config.istio.io
-  labels:
-    package: solarwinds
-    istio: mixer-adapter
-spec:
-  group: config.istio.io
-  names:
-    kind: solarwinds
-    plural: solarwindses
-    singular: solarwinds
   scope: Namespaced
   version: v1alpha2
 ---
@@ -1230,119 +1213,6 @@ spec:
 ---
 
 apiVersion: "config.istio.io/v1alpha2"
-kind: solarwinds
-metadata:
-  name: handler
-  namespace: istio-system
-spec:
-  appoptics_access_token: <appoptics token>
-  loggly_token: <loggly token>
-  metrics:
-    requestcount.metric.istio-system:
-      label_names:
-      - source_service
-      - source_version
-      - destination_service
-      - destination_version
-      - response_code
-      - connection_mtls
-    requestduration.metric.istio-system:
-      label_names:
-      - source_service
-      - source_version
-      - destination_service
-      - destination_version
-      - response_code
-      - connection_mtls
-    requestsize.metric.istio-system:
-      label_names:
-      - source_service
-      - source_version
-      - destination_service
-      - destination_version
-      - response_code
-      - connection_mtls
-    responsesize.metric.istio-system:
-      label_names:
-      - source_service
-      - source_version
-      - destination_service
-      - destination_version
-      - response_code
-      - connection_mtls
-    tcpbytesent.metric.istio-system:
-      label_names:
-      - source_service
-      - source_version
-      - destination_service
-      - destination_version
-      - connection_mtls
-    tcpbytereceived.metric.istio-system:
-      label_names:
-      - source_service
-      - source_version
-      - destination_service
-      - destination_version
-      - connection_mtls
-  logs:
-    solarwindslogentry.logentry.istio-system:
-      payloadTemplate: '{{or (.originIp) "-"}} - {{or (.sourceUser) "-"}} [{{or (.timestamp.Format "2006-01-02T15:04:05Z07:00") "-"}}] "{{or (.method) "-"}} {{or (.url) "-"}} {{or (.protocol) "-"}}" {{or (.responseCode) "-"}} {{or (.responseSize) "-"}}'
----
-apiVersion: "config.istio.io/v1alpha2"
-kind: rule
-metadata:
-  name: solarwindshttp
-  namespace: istio-system
-spec:
-  match: context.protocol == "http"
-  actions:
-  - handler: handler.solarwinds
-    instances:
-    - requestcount.metric
-    - requestduration.metric
-    - requestsize.metric
-    - responsesize.metric
-    - solarwindslogentry.logentry
----
-apiVersion: "config.istio.io/v1alpha2"
-kind: rule
-metadata:
-  name: solarwindstcp
-  namespace: istio-system
-spec:
-  match: context.protocol == "tcp"
-  actions:
-  - handler: handler.solarwinds
-    instances:
-    - tcpbytesent.metric
-    - tcpbytereceived.metric
-    - solarwindslogentry.logentry
----
-apiVersion: "config.istio.io/v1alpha2"
-kind: logentry
-metadata:
-  name: solarwindslogentry
-  namespace: istio-system
-spec:
-  severity: '"Default"'
-  timestamp: request.time
-  variables:
-    originIp: origin.ip | source.ip | ip("0.0.0.0")
-    targetIp: destination.ip | ip("0.0.0.0")
-    sourceUser: origin.user | source.uid | ""
-    method: request.method | ""
-    url: request.path | ""
-    protocol: request.scheme | "http"
-    responseCode: response.code | 0
-    responseSize: response.size | 0
-    requestSize: request.size | 0
-    latency: response.duration | "0ms"
-  monitoredResourceType: '"ao"'
-  # monitoredResourceDimensions:
-  #   project_id: '"<your project ID>"'
----
-
-apiVersion: "config.istio.io/v1alpha2"
 kind: kubernetesenv
 metadata:
   name: handler
@@ -1418,7 +1288,7 @@ metadata:
 data:
   mesh: |-
     # Uncomment the following line to enable mutual TLS between proxies
-    # authPolicy: MUTUAL_TLS
+    authPolicy: MUTUAL_TLS
     #
     # Edit this list to avoid using mTLS to connect to these services.
     # Typically, these are control services (e.g kubernetes API server) that don't have Istio sidecar
@@ -1474,7 +1344,7 @@ data:
       proxyAdminPort: 15000
       #
       # Address where Istio Pilot service is running
-      discoveryAddress: istio-pilot.istio-system:8080 #--controlPlaneAuthPolicy
+      discoveryAddress: istio-pilot.istio-system:15005
       #
       # Zipkin trace collector
       zipkinAddress: zipkin.istio-system:9411
@@ -1484,7 +1354,7 @@ data:
       statsdUdpAddress: istio-mixer.istio-system:9125
       # Uncomment the following line to enable mutual TLS authentication between
       # sidecars and istio control plane.
-      # controlPlaneAuthPolicy: MUTUAL_TLS
+      controlPlaneAuthPolicy: MUTUAL_TLS
 ---
 ################################
 # Pilot
@@ -1657,11 +1527,11 @@ spec:
         - proxy
         - pilot
         - --discoveryAddress
-        - istio-pilot:15007
+        - istio-pilot:15005
         - --controlPlaneAuthPolicy
-        - NONE #--controlPlaneAuthPolicy
+        - MUTUAL_TLS
         - --customConfigFile
-        - /etc/istio/proxy/envoy_pilot.json
+        - /etc/istio/proxy/envoy_pilot_auth.json
         volumeMounts:
         - name: istio-certs
           mountPath: /etc/certs
@@ -1724,7 +1594,7 @@ spec:
         - proxy
         - ingress
         - --discoveryAddress
-        - istio-pilot:8080 #--controlPlaneAuthPolicy
+        - istio-pilot:15005
         - --discoveryRefreshDelay
         - '1s' #discoveryRefreshDelay
         - --drainDuration
@@ -1742,7 +1612,7 @@ spec:
         - --proxyAdminPort
         - "15000"
         - --controlPlaneAuthPolicy
-        - NONE #--controlPlaneAuthPolicy
+        - MUTUAL_TLS
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80

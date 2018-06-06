@@ -21,7 +21,9 @@ istioctl replace -f samples/bookinfo/routing/route-rule-ratings-test-delay.yaml
 To confirm the rule is in place:
 ```sh
 istioctl get virtualservice ratings -o yaml
-
+```
+Output:
+```yaml
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
@@ -63,7 +65,9 @@ istioctl replace -f samples/bookinfo/routing/route-rule-ratings-test-abort.yaml
 To confirm the rule is in place:
 ```sh
 istioctl get virtualservice ratings -o yaml
-
+```
+Output:
+```yaml
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:

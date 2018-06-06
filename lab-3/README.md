@@ -6,7 +6,7 @@ To play with Istio and demonstrate some of it's capabilities we will deploy the 
 
 ## <a name="injector"></a> Bookinfo application
 
-The bookinfo application that displays information about a book, similar to a single catalog entry of an online book store. Displayed on the page is a description of the book, book details (ISBN, number of pages, and so on), and a few book reviews.
+The sample bookinfo application displays information about a book, similar to a single catalog entry of an online book store. Displayed on the page is a description of the book, book details (ISBN, number of pages, and so on), and a few book reviews.
 
 The Bookinfo application is broken into four separate microservices:
 
@@ -45,7 +45,8 @@ For automatic sidecar injection kubernetes we need api server to support `admiss
 kubectl api-versions | grep admissionregistration
 ```
 
-On Istio 0.7.1, if we get back `admissionregistration.k8s.io/v1beta1` then we can proceed with [automatic sidecar injection](#injector). On Istio 0.8.0, automatic sidecar injector will be automatically deployed if installed using `istio-0.8.0.yaml` or `istio-appoptics-loggly-0.8.0.yaml`. If not, we can proceed with [manual injection](#manual).
+On Istio 0.7.1, if we get back `admissionregistration.k8s.io/v1beta1` then we can proceed with [automatic sidecar injection](#injector). 
+On Istio 0.8.0, automatic sidecar injector will be automatically deployed if installed using `istio-0.8.0.yaml` or `istio-appoptics-loggly-0.8.0.yaml`. If not, we can proceed with [manual injection](#manual).
 
 
 
@@ -102,7 +103,9 @@ The sidecar injector webhook should now be running.
 
 ```sh
 kubectl -n istio-system get deployment -listio=sidecar-injector
-
+```
+Output:
+```sh
 NAME                     DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 istio-sidecar-injector   1         1         1            1           1d
 ```
@@ -113,8 +116,14 @@ Label the default namespace with istio-injection=enabled
 
 ```sh
 kubectl label namespace default istio-injection=enabled
-kubectl get namespace -L istio-injection
+```
 
+```sh
+kubectl get namespace -L istio-injection
+```
+
+Output:
+```sh
 NAME           STATUS    AGE       ISTIO-INJECTION
 default        Active    1h        enabled
 istio-system   Active    1h        

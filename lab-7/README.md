@@ -17,6 +17,9 @@ This creates a bunch of `virtualservice` entries which route calls to v1 of the 
 To view the applied rule:
 ```sh
 istioctl get virtualservice reviews -o yaml
+```
+Output:
+```yaml
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
@@ -49,6 +52,9 @@ istioctl replace -f samples/bookinfo/routing/route-rule-reviews-test-v2.yaml
 To view the applied rule:
 ```sh
 istioctl get virtualservice reviews -o yaml
+```
+Output:
+```yaml
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
@@ -97,6 +103,9 @@ istioctl replace -f samples/bookinfo/routing/route-rule-reviews-50-v3.yaml
 To confirm the rule was applied:
 ```sh
 istioctl get virtualservice reviews -o yaml
+```
+Output
+```yaml
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
@@ -130,7 +139,9 @@ istioctl replace -f samples/bookinfo/routing/route-rule-reviews-v3.yaml
 To confirm the rule was applied:
 ```sh
 istioctl get virtualservice reviews -o yaml
-
+```
+Output:
+```yaml
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:

@@ -39,7 +39,7 @@ This open a popup confirming the creation of a new token. Use the `Create` butto
 Once the token is created you will be able to see it in the API Tokens table. On the left there is a `copy to clipboard` button which can help with copying the new token.
 ![](img/loggly_new_token.png)
 
-Paste the newly created token into the istio-solarwinds.yaml file in the \<loggly token> placeholder.
+Paste the newly created token into the istio-solarwinds-0.7.1.yaml for Istio 0.7.1 or into istio-solarwinds-0.8.0.yaml for Istio 0.8.0 file in the \<loggly token> placeholder.
 
 
 ## <a name="2"></a> 2 - Setup Appoptics API Token
@@ -68,7 +68,7 @@ The created token will be shown in the popup. We can now copy the token to clipb
 The created token can also be seen in the table.
 ![](img/ao_token_table.png)
 
-You can now paste the copied token to the istio-solarwinds.yaml file \<appoptics token> placeholder.
+You can now paste the copied token into istio-solarwinds-0.7.1.yaml for Istio 0.7.1 or into istio-solarwinds-0.8.0.yaml for Istio 0.8.0 file \<appoptics token> placeholder.
 
 ## <a name="3"></a> 3 - Setup Appoptics Dashboard
 

@@ -41,7 +41,10 @@ EOF
 To confirm the rule is in place:
 ```sh
 istioctl get destinationrule httpbin -o yaml
+```
 
+Output:
+```yaml
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
@@ -74,7 +77,7 @@ Let us make a call to the httpbin service from the client using the `alias` we j
 load -curl  http://httpbin:8000/get
 ```
 
-You should an output similar to this:
+You should see an output similar to this:
 ```sh
 HTTP/1.1 200 OK
 server: envoy
