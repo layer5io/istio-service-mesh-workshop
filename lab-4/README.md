@@ -1,79 +1,157 @@
-# lab 4 - Scaling in and out
+# lab 4 - Expose Bookinfo site through Istio Ingress Controller/Gateway
 
-### Scale the number of Hello World service pods
+The components deployed on the service mesh by default are not exposed outside the cluster. External access to individual services so far has been provided by creating an external load balancer on each service.
 
-1. Scale the number of replicas of your Hello World service by running the following commands:
+In Istio-0.7.1, a Kubernetes Ingress rule can be created that routes external requests through the Istio Ingress Controller to the backing services.
+In Istio-0.8.0, things are a little different. An ingress gateway service is deployed as a LoadBalancer service. For making Bookinfo accessible from outside, we create an `Istio Gateway` for the service and also define a `Istio VirtualService` for Bookinfo with the routes we need.
 
-    ```sh
-    kubectl get deployment
+## Inspecting the Istio Ingress controller/gateway
 
-    NAME                    DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-    helloworld-service-v1   1         1         1            1           1m
-    ```
+The ingress controller/gateway gets expossed as a normal kubernetes service load balancer:
 
-    ```sh
-    kubectl scale deployment helloworld-service-v1 --replicas=4
-    ```
+Istio-0.7.1
+```sh
+kubectl get svc istio-ingress -n istio-system -o yaml
+```
 
-    ```sh
-    kubectl get deployment
+Istio-0.8.0
+```sh
+kubectl get svc istio-ingressgateway -n istio-system -o yaml
+```
 
-    NAME                    DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-    helloworld-service-v1   4         4         4            4           1m
-    ```
+Because the Istio Ingress Controller/Gateway is an Envoy Proxy you can inspect it using the admin routes.  First find the name of the istio ingress proxy:
 
-    ```sh
-    kubectl get pods
+For Istio 0.7.1:
+```sh
+kubectl get pods -n istio-system
+kubectl -n istio-system exec -it istio-ingress-... bash
+```
 
-    NAME                          READY     STATUS    RESTARTS   AGE
-    helloworld-service-v1-...    1/1       Running   0          1m
-    helloworld-service-v1-...    1/1       Running   0          1m
-    helloworld-service-v1-...    1/1       Running   0          1m
-    helloworld-service-v1-...    1/1       Running   0          2m
-    ```
 
-2. Try scaling out further.
+For Istio 0.8.0:
+```sh
+kubectl get pods -n istio-system
+kubectl -n istio-system exec -it istio-ingressgateway-... bash
+```
 
-    ```
-    kubectl scale deployment helloworld-service-v1 --replicas=17
-    ```
+You can view the statistics, listeners, routes, clusters and server info for the envoy proxy by forwarding the local port:
 
-If you look at the pod status, some of the pods will show a `Pending` state. That is because we only have four physical nodes, and the underlying infrastructure has run out of capacity to run the containers with the requested resources. And the underlying infrastructure has run out of capacity to run the containers with the requested resources.
+```sh
+curl localhost:15000/help
+curl localhost:15000/stats
+curl localhost:15000/listeners
+curl localhost:15000/routes
+curl localhost:15000/clusters
+curl localhost:15000/server_info
+```
 
-3. Pick a pod name that has a `Pending` state to confirm the lack of resources in the detailed status.
+See the [admin docs](https://www.envoyproxy.io/docs/envoy/latest/operations/admin) for more details.
 
-    ```
-    kubectl describe pod helloworld-service...
-    ```
+Also it can be helpful to look at the log files of the Istio ingress controller to see what request is being routed.  First find the ingress pod and output the log files:
 
-4. We can easily spin up another Compute Engine instance to append to the cluster.
+```sh
+kubectl logs istio-ingressgateway-... -n istio-system
+```
 
-    ```
-    gcloud container clusters resize guestbook --size=5
-    gcloud compute instances list
-    ```
+## View Bookinfo Ingress Routes (Istio 0.7.1)
 
-    Open another terminal and run:
+1 - Routes for Bookinfo app have already been deployed as part of the Bookinfo deployment.
 
-    ```
-    kubectl get pods -w -o wide
-    ```
+In the bookinfo ingress file notice that the ingress class is specified as   `kubernetes.io/ingress.class: istio` which routes the request to Istio.
 
-    This will monitor the recovering process.
+```sh
+kubectl describe ingress
+```
 
-5. Verify the new instance has joined the Kubernetes cluster, you’ll should be able to see it with this command:    
+2 - Find the external port of the Istio Ingress controller by running:
 
-    ```
-    kubectl get nodes
-    kubectl get pods -o wide
-    ```
+```sh
+kubectl get service istio-ingress -n istio-system -o wide
+```
 
-6. Scale back the number of replicas before moving on!
+To just get the first port of istio-ingress service, we can run this:
+```sh
+kubectl get service istio-ingress -n istio-system --template='{{(index .spec.ports 0).nodePort}}'
+```
 
-    ```
-    kubectl scale deployment helloworld-service-v1 --replicas=2
-    ```
+3 - Browse to the website of the Bookinfo: On `PWK` the exposed ingress ports are available as hyperlinks at the top of the page. Clicking on a valid ingress port will open a page.
 
-    Kubernetes will only keep 2 of the Hello World instances and terminate the rest.
+To view the product page, you will have to append
+`/productpage` to the url.
 
-#### [Continue to lab 4a - Envoy](../lab-4a/README.md)
+
+4 - Now, reload the page multiple times and notice how it round robins between v1, v2 and v3 of the reviews service:
+
+
+## Configure Bookinfo Ingress Routes with the Istio Ingress Controller (Istio 0.8.0)
+
+
+1 - Configure the Bookinfo route with the Istio Ingress gateway:
+
+We can create a virtualservice & gateway for bookinfo app in the ingress gateway by running the following:
+
+```sh
+istioctl create -f deployment_files/istio-0.8.0/bookinfo-gateway.yaml
+```
+
+2 - Viewing the gateway and virtualservices
+
+Check the created gateway and virtualservice:
+```sh
+istioctl get gateway
+istioctl get gateway -o yaml
+
+istioctl get virtualservices
+istioctl get virtualservices -o yaml
+```
+
+3 - Find the external port of the Istio Ingress controller by running:
+
+```sh
+kubectl get service istio-ingressgateway -n istio-system -o wide
+```
+
+To just get the first port of istio-ingressgateway service, we can run this:
+```sh
+kubectl get service istio-ingressgateway -n istio-system --template='{{(index .spec.ports 0).nodePort}}'
+```
+
+3 - Browse to the website of the Bookinfo: On `PWK` the exposed ingress ports are available as hyperlinks at the top of the page. Clicking on a valid ingress port will open a page.
+
+To view the product page, you will have to append
+`/productpage` to the url.
+
+
+4 - Now, reload the page multiple times and notice how it round robins between v1, v2 and v3 of the reviews service:
+
+
+## Inspecting the Istio proxy of the productpage pod
+
+To better understand the istio proxy, let's inspect the details.  exec into the productpage pod to find the proxy details.  First find the full pod name and then exec into the istio-proxy container:
+
+```sh
+kubectl get pods
+kubectl exec -it productpage-v1-... -c istio-proxy  sh
+```
+
+Once in the container look at some of the envoy proxy details:
+
+```sh
+ps aux
+ls -l /etc/istio/proxy
+cat /etc/istio/proxy/envoy-rev0.json
+```
+
+You can also view the statistics, listeners, routes, clusters and server info for the envoy proxy by forwarding the local port:
+
+```sh
+curl localhost:15000/stats
+curl localhost:15000/listeners
+curl localhost:15000/routes
+curl localhost:15000/clusters
+curl localhost:15000/server_info
+```
+
+See the [admin docs](https://www.envoyproxy.io/docs/envoy/v1.5.0/operations/admin) for more details.
+
+#### [Continue to lab 5 - Telemetry](../lab-5/README.md)

@@ -1,50 +1,148 @@
-## lab 9 - Distributed Tracing
+# lab 9 - Circuit Breaking
 
-The sample guestbook application shows how a Spring Java application can be configured to collect trace spans using Zipkin or Jaeger.
+In this lab we will configure circuit breaking using Istio.
 
-Although Istio proxies are able to automatically send spans, it needs help from the application to tie together the entire trace. To do this applications need to propagate the appropriate HTTP headers so that when the proxies send span information to Zipkin or Jaeger, the spans can be correlated correctly into a single trace.
+## Configure circuit breaking
+Let us start by deploying a simpler application to test circuit breaking:
 
-To do this the guestbook application collects and propagate the following headers from the incoming request to any outgoing requests:
 
-- `x-request-id`
-- `x-b3-traceid`
-- `x-b3-spanid`
-- `x-b3-parentspanid`
-- `x-b3-sampled`
-- `x-b3-flags`
-- `x-ot-span-context`
-
-This is done with the Spring Istio Support written by Ray Tsang:
-
-https://github.com/retroryan/istio-by-example-java/tree/master/spring-boot-example/spring-istio-support/src/main/java/com/example/istio
-
-#### View Guestbook Traces
-
-Generate a small load to the application either using a shell script or fortio:
-
-With shell script:
-
+With manual sidecar injection:
+Istio 0.7.1:
 ```sh
-while sleep 0.5; do curl http://$INGRESS_IP/echo/universe -A mobile; done
+kubectl apply -f <(istioctl kube-inject --debug -f deployment_files/istio-0.7.1/httpbin.yaml)
 ```
 
-Or, with fortio:
-
+Istio 0.8.0:
 ```sh
-docker run istio/fortio load -t 5m -qps 5 \
-  http://$INGRESS_IP/echo/universe
+kubectl apply -f <(istioctl kube-inject --debug -f deployment_files/istio-0.8.0/httpbin.yaml)
+```
+
+With automatic sidecar injector:
+Istio 0.7.1:
+```sh
+kubectl apply -f deployment_files/istio-0.7.1/httpbin.yaml
+```
+
+Istio 0.8.0:
+```sh
+kubectl apply -f deployment_files/istio-0.8.0/httpbin.yaml
 ```
 
 
-### Zipkin
-Establish port forward from local port:
-
+Let us then deploy a client which is capable of talking to the httpbin service:
+With manual sidecar injection:
+Istio 0.7.1:
 ```sh
-kubectl port-forward -n istio-system \
-  $(kubectl get pod -n istio-system -l app=zipkin -o jsonpath='{.items[0].metadata.name}') \
-  9411:9411
+kubectl apply -f <(istioctl kube-inject --debug -f deployment_files/istio-0.7.1/fortio-deploy.yaml)
 ```
 
-If you are in Cloud Shell, you'll need to use Web Preview and Change   Port to `9411`. Else, browse to http://localhost:9411
+Istio 0.8.0:
+```sh
+kubectl apply -f <(istioctl kube-inject --debug -f deployment_files/istio-0.8.0/fortio-deploy.yaml)
+```
 
-#### [Continue to lab 10 - Request Routing and Canary Testing](../lab-10/README.md)
+With automatic sidecar injector:
+Istio 0.7.1:
+```sh
+kubectl apply -f deployment_files/istio-0.7.1/fortio-deploy.yaml
+```
+
+Istio 0.8.0:
+```sh
+kubectl apply -f deployment_files/istio-0.8.0/fortio-deploy.yaml
+```
+
+It is time to configure circuit breaking using a destination rule:
+Istio 0.7.1:
+```sh
+istioctl create -f deployment_files/istio-0.7.1/circuit-breaking.yaml
+```
+
+Istio 0.8.0:
+```sh
+istioctl create -f deployment_files/istio-0.8.0/circuit-breaking.yaml
+```
+
+To confirm the rule is in place:
+```sh
+istioctl get destinationrule httpbin -o yaml
+```
+
+Output:
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: httpbin
+  ...
+spec:
+  host: httpbin
+  trafficPolicy:
+    connectionPool:
+      http:
+        http1MaxPendingRequests: 1
+        maxRequestsPerConnection: 1
+      tcp:
+        maxConnections: 100
+    outlierDetection:
+      http:
+        baseEjectionTime: 180.000s
+        consecutiveErrors: 1
+        interval: 1.000s
+        maxEjectionPercent: 100
+```
+
+To make testing easier, let us create an alias to execute `load` inside the httpbin client we created above:
+```sh
+alias load="kubectl exec -it $(kubectl get pod | grep fortio | awk '{ print $1 }') -c fortio /usr/local/bin/fortio -- load"
+```
+
+Let us make a call to the httpbin service from the client using the `alias` we just created:
+```sh
+load -curl  http://httpbin:8000/get
+```
+
+You should see an output similar to this:
+```sh
+HTTP/1.1 200 OK
+server: envoy
+date: Tue, 16 Jan 2018 23:47:00 GMT
+content-type: application/json
+access-control-allow-origin: *
+access-control-allow-credentials: true
+content-length: 445
+x-envoy-upstream-service-time: 36
+
+{
+  "args": {},
+  "headers": {
+    "Content-Length": "0",
+    "Host": "httpbin:8000",
+    "User-Agent": "istio/fortio-0.6.2",
+    "X-B3-Sampled": "1",
+    "X-B3-Spanid": "824fbd828d809bf4",
+    "X-B3-Traceid": "824fbd828d809bf4",
+    "X-Ot-Span-Context": "824fbd828d809bf4;824fbd828d809bf4;0000000000000000",
+    "X-Request-Id": "1ad2de20-806e-9622-949a-bd1d9735a3f4"
+  },
+  "origin": "127.0.0.1",
+  "url": "http://httpbin:8000/get"
+}
+```
+
+## Time to trip the circuit
+In the circuit-breaking settings, we specified maxRequestsPerConnection: 1 and http1MaxPendingRequests: 1. This should mean that if we exceed more than one request per connection and more than one pending request, we should see the istio-proxy sidecar open the circuit for further requests/connections. 
+
+Let us make 50 calls using 4 concurrent connections:
+```sh
+load -c 4 -qps 0 -n 50 -loglevel Warning http://httpbin:8000/get
+```
+
+To view the results of the test we can talk to the istio-proxy sidecar for some stats:
+```sh
+kubectl exec -it $(kubectl get pod | grep fortio | awk '{ print $1 }')  -c istio-proxy  -- sh -c 'curl localhost:15000/stats' | grep httpbin | grep pending
+```
+
+The stats will give you the exact number of requests which overflew.
+
+#### [Continue to lab 10 - Istio Mutual TLS](../lab-10/README.md)

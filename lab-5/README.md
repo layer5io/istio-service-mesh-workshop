@@ -1,104 +1,84 @@
-## lab 5 - Installing Istio 0.7.1
+# lab 5 - Telemetry
 
-#### Clean up
 
-Start with a clean slate and delete all deployed services from the cluster:
+## Inspecting Mixer
+
+Envoy proxies call Mixer to report statistics and check for route rules. We can get an idea on what it is collecting:
 
 ```sh
-kubectl delete all --all
+kubectl get pods -n istio-system
 ```
 
-#### Download Istio 0.7.1
-
-Download Istio 0.7.1 from the following website:
-
-https://github.com/istio/istio/releases/tag/0.7.1
-
-#### Setup istioctl 0.7.1 in Google Cloud Shell
-
-For example, in Google Cloud Shell or other linux distributions, you can install Istio Linux to the home directory:
-
+Istio 0.7.1:
 ```sh
-cd ~/
-wget https://github.com/istio/istio/releases/download/0.7.1/istio-0.7.1-linux.tar.gz
-tar -xzvf istio-0.7.1-linux.tar.gz
-ln -sf ~/istio-0.7.1 ~/istio
+kubectl -n istio-system exec -it istio-mixer-... -c istio-proxy -- sh
+```
+
+Istio 0.8.0:
+```sh
+kubectl -n istio-system exec -it istio-policy-... -c istio-proxy -- sh
 ```
 
 ```sh
-export PATH=~/istio/bin:$PATH
+curl localhost:9093/metrics
 ```
 
-Also, save it in `.bashrc` in case you restart your shell:
+## Generate Bookinfo Telemetry data
+
+Let us get the first accessible ingress port and store it in a variable:
+
+Istio 0.7.1:
 ```sh
-echo 'export PATH=~/istio/bin:$PATH' >> ~/.bashrc
+export INGRESS_PORT=$(kubectl get service istio-ingress -n istio-system --template='{{(index .spec.ports 0).nodePort}}')
 ```
 
-#### Setup istioctl 0.7.1 in Mac OSX
-
-For example on a mac osx you setup istioctl by doing the following:
-
+Istio 0.8.0:
 ```sh
-cd ~/
-wget https://github.com/istio/istio/releases/download/0.7.1/istio-0.7.1-osx.tar.gz
-tar -xzvf istio-0.7.1-osx.tar.gz
-ln -sf ~/istio-0.7.1 ~/istio
+export INGRESS_PORT=$(kubectl get service istio-ingressgateway -n istio-system --template='{{(index .spec.ports 0).nodePort}}')
 ```
 
+Once we have the port, we can append the IP of one of the nodes to get the host. in `PWK` we can get the ip from the host list on the left.
 ```sh
-export PATH=~/istio/bin:$PATH
+export INGRESS_HOST="<IP>:$INGRESS_PORT"
 ```
 
-Also, save it in `.bashrc` in case you restart your shell:
+Now, let us generate a small load on the sample app by using [fortio](https://github.com/istio/fortio) which is a load testing library created by the `Istio` team:
+
+The command below will run load test by making 5 calls per second for 5 minutes:
 ```sh
-echo 'export PATH=~/istio/bin:$PATH' >> ~/.bashrc
+docker run istio/fortio load -t 5m -qps 5 http://$INGRESS_HOST/productpage
 ```
 
+## Appoptics
+If you had followed [optional lab-2](../lab-2/optional.md), created or have an Appoptics account, created a dashboard, obtained a valid Appoptics API token and deployed Istio with [solarwinds mixer adapter](https://github.com/solarwinds/istio-adapter), you will be able to view the metrics data from Istio in the Appoptics Dashboard.
 
-#### Running istioctl
+![](img/AO_Dashboard.png)
 
-Istio related commands need to have `istioctl` in the path. Verify it is available by running:
+## Loggly
+If you had followed [optional lab-2](../lab-2/optional.md), created or have an Loggly account, obtained a valid Loggly API token and deployed Istio with [solarwinds mixer adapter](https://github.com/solarwinds/istio-adapter), you will be able to view the access logs from Istio in Loggly.
 
-```sh
-istioctl -h
-```
-
-#### Install Istio on the Kubernetes Cluster
-
-1 - First grant cluster admin permissions to the current user (admin permissions are required to create the necessary RBAC rules for Istio):
-
-```sh
-kubectl create clusterrolebinding cluster-admin-binding \
-    --clusterrole=cluster-admin \
-    --user=$(gcloud config get-value core/account)
-```
-2 - Next install Istio on the Kubernetes cluster:
-
-For this workshop we are not using Istio Auth because we want to test using outside services accessing the cluster.  Istio Auth enables mutual TLS authentication between pods but it prevents the ability to access the services outside the cluster.
-
-To install plain istio run:
-
-```sh
-kubectl apply -f ~/istio/install/kubernetes/istio.yaml
-```
+![](img/Loggly.png)
 
 
-####  Install Add-ons for Grafana, Prometheus, and Zipkin:
+## Grafana
 
-```sh
-kubectl apply -f ~/istio/install/kubernetes/addons/zipkin.yaml
-kubectl apply -f ~/istio/install/kubernetes/addons/grafana.yaml
-kubectl apply -f ~/istio/install/kubernetes/addons/prometheus.yaml
-kubectl apply -f ~/istio/install/kubernetes/addons/servicegraph.yaml
-```
+If you have not already deployed and exposed grafana, please follow [lab-2](../lab-2/README.md). 
+In `PWK`, once you have exposed grafana on a port by using any of the specified methods, it will appear at the top of the page as a hyperlink. You can click on the link at the top of the page which maps to the right port and it will open grafana in new tab. You can then navigate to the `Istio Dashboard`.
 
-#### Viewing the Istio Deployments
+![](img/Grafana_Istio_Dashboard.png)
 
-Istio is deployed in a separate Kubernetes namespace `istio-system`  You can watch the state of Istio and other services and pods using the watch flag (`-w`) when listing Kubernetes resources. For example, in two separate terminal windows run:
+## Prometheus
+If you have not already deployed and exposed prometheus, please follow [lab-2](../lab-2/README.md). 
+In `PWK`, once you have exposed prometheus on a port by using any of the specified methods, it will appear at the top of the page as a hyperlink. You can click on the link at the top of the page which maps to the right port and it will open prometheus in new tab. 
+Browse to `/graph` and in the `Expression` input box enter: `istio_request_count`. Click the Execute button.
+![](img/Prometheus.png)
 
-```sh
-kubectl get pods -n istio-system -w
-kubectl get services -n istio-system -w
-```
+## Service Graph
 
-#### [Continue to lab 6 - Creating a Service Mesh with Istio Proxy](../lab-6/README.md)
+If you have not already deployed and exposed servicegraph, please follow [lab-2](../lab-2/README.md). 
+In `PWK`, once you have exposed servicegraph on a port by using any of the specified methods, it will appear at the top of the page as a hyperlink. You can click on the link at the top of the page which maps to the right port and it will open a new tab but will show an error page with `404 not found`. 
+Update the URI to `/dotviz` and you will see the generated service graph.
+![](img/servicegraph.png)
+
+
+#### [Continue to lab 6 - Distributed Tracing](../lab-6/README.md)

@@ -1,0 +1,150 @@
+---
+name: DockerCon 2018 - Istio Dashboard
+charts:
+- name: Request Count by Destination Service
+  type: line
+  streams:
+  - group_function: sum
+    summary_function: sum
+    tags:
+    - name: destination_service
+      grouped: true
+      values:
+      - "*"
+    - name: destination_version
+      grouped: true
+      values:
+      - "*"
+    metric: requestcount.metric.istio-system
+- name: Request duration by destination service (seconds)
+  type: line
+  streams:
+  - group_function: sum
+    summary_function: sum
+    tags:
+    - name: destination_service
+      grouped: true
+      values:
+      - "*"
+    - name: destination_version
+      grouped: true
+      values:
+      - "*"
+    metric: requestduration.metric.istio-system
+- name: Request Size by Destination Service
+  type: line
+  streams:
+  - group_function: sum
+    summary_function: sum
+    tags:
+    - name: destination_service
+      grouped: true
+      values:
+      - "*"
+    - name: destination_version
+      grouped: true
+      values:
+      - "*"
+    metric: requestsize.metric.istio-system
+- name: Response size by destination service
+  type: line
+  streams:
+  - group_function: sum
+    summary_function: sum
+    tags:
+    - name: destination_service
+      grouped: true
+      values:
+      - "*"
+    - name: destination_version
+      grouped: true
+      values:
+      - "*"
+    metric: responsesize.metric.istio-system
+- name: Response Size for Successful Responses
+  type: line
+  streams:
+  - group_function: average
+    summary_function: average
+    tags:
+    - name: response_code
+      values:
+      - '200'
+    - name: destination_service
+      grouped: true
+    - name: destination_version
+      grouped: true
+    metric: responsesize.metric.istio-system
+- name: Response Size for failures
+  type: line
+  streams:
+  - group_function: average
+    summary_function: average
+    tags:
+    - name: destination_service
+      grouped: true
+    - name: destination_version
+      grouped: true
+    - name: response_code
+      values:
+      - '503'
+    metric: responsesize.metric.istio-system
+- name: Successful requests
+  type: bignumber
+  streams:
+  - group_function: sum
+    summary_function: sum
+    tags:
+    - name: response_code
+      values:
+      - '200'
+    metric: requestcount.metric.istio-system
+  use_last_value: true
+  format: 
+  enable_format: false
+- name: Request Errors
+  type: bignumber
+  streams:
+  - group_function: sum
+    summary_function: sum
+    tags:
+    - name: response_code
+      values:
+      - '503'
+    metric: requestcount.metric.istio-system
+  use_last_value: true
+  format: 
+  enable_format: false
+layout:
+- col: 1
+  row: 4
+  width: 3
+  height: 3
+- col: 7
+  row: 1
+  width: 3
+  height: 3
+- col: 4
+  row: 4
+  width: 3
+  height: 3
+- col: 7
+  row: 4
+  width: 3
+  height: 3
+- col: 4
+  row: 1
+  width: 3
+  height: 3
+- col: 10
+  row: 4
+  width: 3
+  height: 3
+- col: 1
+  row: 1
+  width: 3
+  height: 3
+- col: 10
+  row: 1
+  width: 3
+  height: 3

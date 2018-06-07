@@ -1,160 +1,139 @@
-## lab 10 - Request Routing and Canary Testing
+# lab 10 - Mutual TLS
 
-#### Inspecting Mixer
+Istio provides transparent, and frankly magical, mutal TLS to services inside the service mesh when asked. By mutual TLS we understand that both the client and the server authenticate each others certificates as part of the TLS handshake.
 
-Envoy proxies call Mixer to report statistics and check for route rules. By opening up some of the mixer ports we can get an of idea what calls its seeing:
 
+
+replacing sidecars with debug sidecars
 ```sh
-kubectl get pods -n istio-system
-kubectl port-forward -n istio-system istio-mixer-... 9093:9093
-curl localhost:9093/metrics
+kubectl apply -f <(istioctl kube-inject --debug -f samples/bookinfo/kube/bookinfo.yaml)
 ```
 
-#### Configure the default route for Hello World service V1
 
-Because there are 2 version of the HelloWorld Service Deployment (v1 and v2), before modifying any of the routes a default route needs to be set to just V1. Otherwise it will just round robin between V1 and V2
-
-1 - Set the default version for all requests to the hello world service using :
-
+To verify mTLS is enabled:
 ```sh
-istioctl create -f guestbook/route-rule-force-hello-v1.yaml
+kubectl get configmap istio -o yaml -n istio-system | grep authPolicy | head -1
 ```
 
-This ingress rule forces `v1` of the service by giving it a weight of 100. We can see this by describing the resource we created:
+
+ssh into a sidecar
 ```sh
-kubectl describe routerules helloworld-default
-
-Name:         helloworld-default
-Namespace:    default
-Labels:       <none>
-Annotations:  <none>
-API Version:  config.istio.io/v1alpha2
-Kind:         RouteRule
-Metadata:
-  ...
-Spec:
-  Destination:
-    Name:      helloworld-service
-  Precedence:  1
-  Route:
-    Labels:
-      Version:  1.0
+kubectl exec -it $(kubectl get pod | grep productpage | awk '{ print $1 }') -c istio-proxy -- /bin/bash
 ```
 
-2 - Now when you curl the echo service it should always return V1 of the hello world service:
-
+view the generated certs
 ```sh
-curl http://$INGRESS_IP/echo/universe  
-
-{"greeting":{"hostname":"helloworld-service-v1-286408581-9204h","greeting":"Hello universe from helloworld-service-v1-286408581-9204h with 1.0","version":"1.0"},"
+ls /etc/certs/
 ```
+
+test with curl
 ```sh
-curl http://$INGRESS_IP/echo/universe
-
-{"greeting":{"hostname":"helloworld-service-v1-286408581-9204h","greeting":"Hello universe from helloworld-service-v1-286408581-9204h with 1.0","version":"1.0"},"
+curl https://details:9080/details/0 -k
 ```
 
-#### Skip running this section - Canary Testing
-
-Currently the routing rule only routes to `v1` of the hello world service which. What we want to do is a deployment of `v2` of the Hello World service by allowing only a small amount of traffic to it from a small group. This can be done by creating another rule with a higher precedence that routes some of the traffic to `v2`. We can do canary testing by splitting traffic between the 2 versions:
-
-```yaml
-  destination: helloworld-service.default.svc.cluster.local
-  precedence: 1
-  route:
-  - tags:
-      version: "1.0"
-    weight: 80
-  - tags:
-      version: "2.0"
-    weight: 20
-```
-
-You can apply this rule from an existing configuration:
+test curl with certs
 ```sh
-istioctl create -f guestbook/route-rule-80-20.yaml
+curl https://details:9080/details/0 -v --key /etc/certs/key.pem --cert /etc/certs/cert-chain.pem --cacert /etc/certs/root-cert.pem -k
 ```
 
-Then try a few calls to the service:
-```sh
-curl http://$INGRESS_IP/echo/universe
 
-{"greeting":{"hostname":"helloworld-service-v1-286408581-9204h","greeting":"Hello universe from helloworld-service-v1-286408581-9204h with 1.0","version":"1.0"},"
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Overview of Istio Mutual TLS
+
+#### Enable Mutual TLS
+
+Let the past go. Kill it, if you have to:
+```
+cd ~/istio
+kubectl delete -f install/kubernetes/istio.yaml
+kubectl delete all --all
 ```
 
-#### Route based on HTTP header
+It's the only way for TLS to be the way it was meant to be:
 
-We can also canary test based on HTTP headers: if the user-agent is "mobile" it'll go to `v2`, otherwise requests will go to `v1`. Written as a route rule, this looks like:
-
-```yaml
-destination:
-  name: helloworld-service
-match:
-  request:
-    headers:
-      user-agent:
-        exact: mobile
-precedence: 2
-route:
-  - labels:
-      version: "2.0"
+```
+# (from istio install root)
+kubectl create -f install/kubernetes/istio-auth.yaml
 ```
 
-Note that rules with a higher precedence number are applied first. If a precedence is not specified then it defaults to 0. So with these two rules in place the one with precedence 2 will be applied before the rule with precedence 1.
+We need to (re)create the auto injector. Use the lab 6 instructions.
 
-Test this out by creating the rule:
-```sh
-istioctl create -f guestbook/route-rule-user-mobile.yaml
+Finally enable injection and deploy the thrilling Book Info sample.
+
+```
+# (from istio install root)
+cd ~/istio
+kubectl label namespace default istio-injection=enabled
+kubectl create -f samples/bookinfo/kube/bookinfo.yaml
 ```
 
-Now when you curl the end point set the user agent to be mobile and you should only see V2:
+#### Take it for a spin
 
-```sh
-curl http://$INGRESS_IP/echo/universe -A mobile
+At this point it might seem like nothing changed, but it has.
+Let's disable the webhook in default for a second.
 
-{"greeting":{"hostname":"helloworld-service-v2-3297856697-6m4bp","greeting":"Hello dog2 from helloworld-service-v2-3297856697-6m4bp with 2.0","version":"2.0"}
+```
+kubectl label namespace default istio-injection-
 ```
 
-```sh
-curl http://$INGRESS_IP/echo/universe
+Now lets give ourselves a space to play
 
-{"greeting":{"hostname":"helloworld-service-v1-286408581-9204h","greeting":"Hello universe from helloworld-service-v1-286408581-9204h with 1.0","version":"1.0"},"
+```
+kubectl run toolbox -l app=toolbox  --image centos:7 /bin/sh -- -c 'sleep 84600'
 ```
 
-An important point to note is that the user-agent http header is propagated in the span baggage. Look at these two classes for details on how the header is [injected](https://github.com/retroryan/istio-by-example-java/blob/master/spring-boot-example/spring-istio-support/src/main/java/com/example/istio/IstioHttpSpanInjector.java) and [extracted](https://github.com/retroryan/istio-by-example-java/blob/master/spring-boot-example/spring-istio-support/src/main/java/com/example/istio/IstioHttpSpanExtractor.java):
+First: let's prove to ourselves that we really are doing something with tls. From here on out assume names like foo-XXXX need to be replaced with the foo podname you have in your cluster. We pass `-k` to `curl` to convince it to be a bit laxer about cert checking.
 
-#### Route based on the browser
-
-It is also possible to route it based on the Web Browser. For example the following routes to version 2.0 if the browser is chrome:
-
-```yaml
-match:
-  request:
-    headers:
-      user-agent:
-        regex: ".*Chrome.*"
-route:
-- labels:
-    version: "2.0"
+```
+tb=$(kubectl get po -l app=toolbox -o template --template '{{(index .items 0).metadata.name}}')
+kubectl exec -it $tb curl -- https://details:9080/details/0 -k
 ```
 
-To apply this route run:
+Denied!
 
-```sh
-istioctl create -f guestbook/route-rule-user-agent-chrome.yaml
+Let's exfiltrate the certificates out of a proxy so we can pretend to be them (incidentally I hope this serves as a cautionary tale about the importance locking down pods).
+
+```
+pp=$(kubectl get po -l app=productpage -o template --template '{{(index .items 0).metadata.name}}')
+mkdir ~/tmp # or wherever you want to stash these certs
+cd ~/tmp
+fs=(key.pem cert-chain.pem root-cert.pem)
+for f in ${fs[@]}; do kubectl exec -c istio-proxy $pp /bin/cat -- /etc/certs/$f >$f; done
 ```
 
-Test this by first navigating to the echo service in Chrome:
+This should give you the certs. Now let us copy them into our toolbox.
 
-http://INGRESS_IP/echo/universe
+```
+for f in ${fs[@]}; do kubectl cp $f default/$tb:$f; done
+```
 
-You should see:
+Try once more to talk to the details service, but this time with feeling:
 
-Hola test from helloworld-service-v2-87744028-x20j0 version 2.0
+```
+kubectl exec -it $tb curl -- https://details:9080/details/0 -v --key ./key.pem --cert ./cert-chain.pem --cacert ./root-cert.pem -k
+```
 
-If you then navigate to it another browser like Firefox you will see:
+Success! We really are protecting our connections with tls. Time to enjoy its magic from the inside. Let's enable the webhook and roll our pod:
 
-Hello sdsdffsd from helloworld-service-v1-4086392344-42q21 with 1.0
+```
+kubectl label namespace default istio-injection=enabled
+kubectl delete po $tb
+tb=$(kubectl get po -l app=toolbox -o template --template '{{(index .items 0).metadata.name}}')
+kubectl exec -it $tb curl -- http://details:9080/details/0
+```
 
+Notice the protocol.
 
-#### [Continue to lab 11 - Fault Injection and Rate Limiting](../lab-11/README.md)
+#### [Continue to lab 14 - Ensuring security with iptables](../lab-14/README.md)

@@ -1,55 +1,124 @@
-## lab 8 - Telemetry
+# lab 8 - Fault Injection
 
-#### Generate Guestbook Telemetry data
+In this lab we will learn how to test the resiliency of an application by injecting systematic faults.
 
-Generate a small load to the application either using a shell script or fortio:
-
-With simple shell script:
-
+Before we start let us reset the route rules:
+Istio 0.7.1:
 ```sh
-while sleep 0.5; do curl http://$INGRESS_IP/echo/universe; done
+istioctl delete -f deployment_files/istio-0.7.1/route-rule-all-v1.yaml
+
+istioctl create -f deployment_files/istio-0.7.1/route-rule-all-v1.yaml
+istioctl replace -f deployment_files/istio-0.7.1/route-rule-reviews-test-v2.yaml
 ```
 
-Or, with fortio:
-
+Istio 0.8.0:
 ```sh
-docker run istio/fortio load -t 5m -qps 5 \
-  http://$INGRESS_IP/echo/universe
+istioctl delete -f deployment_files/istio-0.8.0/route-rule-all-v1.yaml
+
+istioctl create -f deployment_files/istio-0.8.0/route-rule-all-v1.yaml
+istioctl replace -f deployment_files/istio-0.8.0/route-rule-reviews-test-v2.yaml
 ```
 
-### Grafana
+## Inject a route rule to create a fault using HTTP delay
 
-Establish port forward from local port 3000 to the Grafana instance:
+To start, we will inject a 7s delay between the reviews v2 and ratings service for user `jason`. reviews v2 service has a 10s hard-coded connection timeout for its calls to the ratings service.
+
+Istio 0.7.1:
 ```sh
-kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=grafana \
-  -o jsonpath='{.items[0].metadata.name}') 3000:3000
+istioctl replace -f deployment_files/istio-0.7.1/route-rule-ratings-test-delay.yaml
 ```
 
-If you are in Cloud Shell, you'll need to use Web Preview and Change Port to `3000`.
-
-Browse to http://localhost:3000 and navigate to Istio Dashboard
-
-### Prometheus
+Istio 0.8.0:
 ```sh
-kubectl -n istio-system port-forward \
-  $(kubectl -n istio-system get pod -l app=prometheus -o jsonpath='{.items[0].metadata.name}') \
-  9090:9090
+istioctl replace -f deployment_files/istio-0.8.0/route-rule-ratings-test-delay.yaml
 ```
 
-If you are in Cloud Shell, you'll need to use Web Preview and Change Port to `9090`.  
 
-Browse to http://localhost:9090/graph and in the “Expression” input box enter: `istio_request_count`. Click the Execute button.
-
-### Service Graph
-
+To confirm the rule is in place:
 ```sh
-kubectl -n istio-system port-forward \
-  $(kubectl -n istio-system get pod -l app=servicegraph -o jsonpath='{.items[0].metadata.name}') \
-  8088:8088
+istioctl get virtualservice ratings -o yaml
+```
+Output:
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: ratings
+  ...
+spec:
+  hosts:
+  - ratings
+  http:
+  - fault:
+      delay:
+        fixedDelay: 7s
+        percent: 100
+    match:
+    - headers:
+        cookie:
+          regex: ^(.*?;)?(user=jason)(;.*)?$
+    route:
+    - destination:
+        host: ratings
+        subset: v1
+  - route:
+    - destination:
+        host: ratings
+        subset: v1
 ```
 
-If you are in Cloud Shell, you'll need to use Web Preview and Change Port to `9090`. Once opened, you'll see `404 not found` error. This is normal because `/` is not handled. Append the URI with `/dotviz`, e.g.: `http://8088-dot-...-dot-devshell.appspot.com/dotviz`
+Now we login to `/productpage` as user `jason` and observe that the page loads but because of the induced delay between services the reviews section will show `Sorry, product reviews are currently unavailable for this book`.
+If you logout or login as a different user, the page should load normally without any errors.
 
-Browse to http://localhost:8088/dotviz
+## Inject a route rule to create a fault using HTTP abort
 
-#### [Continue to lab 9 - Distributed Tracing](../lab-9/README.md)
+In this section, , we will introduce an HTTP abort to the ratings microservices for the user `jason`.
+
+Istio 0.7.1:
+```sh
+istioctl replace -f deployment_files/istio-0.7.1/route-rule-ratings-test-abort.yaml
+```
+
+Istio 0.8.0:
+```sh
+istioctl replace -f deployment_files/istio-0.8.0/route-rule-ratings-test-abort.yaml
+```
+
+To confirm the rule is in place:
+```sh
+istioctl get virtualservice ratings -o yaml
+```
+Output:
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: ratings
+  ...
+spec:
+  hosts:
+  - ratings
+  http:
+  - fault:
+      abort:
+        httpStatus: 500
+        percent: 100
+    match:
+    - headers:
+        cookie:
+          regex: ^(.*?;)?(user=jason)(;.*)?$
+    route:
+    - destination:
+        host: ratings
+        subset: v1
+  - route:
+    - destination:
+        host: ratings
+        subset: v1
+```
+
+Now we login to `/productpage` as user `jason` and observe that the page loads without any new delays but because of the induced fault between services the reviews section will show `product ratings not available`.
+If you logout or login as a different user, the page should load normally without any errors.
+
+
+#### [Continue to lab 9 - Circuit Breaking](../lab-9/README.md)

@@ -1,163 +1,200 @@
-## lab 7 - Istio Ingress Controller
+# lab 7 - Request Routing and Canary Testing
 
-The components deployed on the service mesh by default are not exposed outside the cluster. External access to individual services so far has been provided by creating an external load balancer on each service.
+In this lab we are going to get our hands on some of the traffic management capabilities of Istio.
 
-A Kubernetes Ingress rule can be created that routes external requests through the Istio Ingress Controller to the backing services.
+## Configure the default route for all services to V1
 
-#### Inspecting the Istio Ingress controller
+As part of the bookinfo sample app, there are multiple versions of reviews service. When we load the `/productpage` in the browser multiple times we have seen the reviews service round robin between v1, v2 or v3. As the first exercise, let us first restrict traffic to just V1 of all the services.
 
-The ingress controller gets expossed as a normal kubernetes service load balancer:
+Set the default version for all requests to v1 of all service using :
 
+Istio 0.7.1:
 ```sh
-kubectl get svc istio-ingress -n istio-system -o yaml
+istioctl create -f deployment_files/istio-0.7.1/route-rule-all-v1.yaml
 ```
 
-Because the Istio Ingress Controller is an Envoy Proxy you can inspect it using the admin routes.  First find the name of the istio ingress proxy:
-
+Istio 0.8.0:
 ```sh
-kubectl get pods -n istio-system
-kubectl port-forward istio-ingress-... -n istio-system 15000:15000
+istioctl create -f deployment_files/istio-0.8.0/route-rule-all-v1.yaml
 ```
 
-If you see a bind error because port `15000` is already used, it's probably the Envoy proxy from previous lab that's still running locally. Kill the local Envoy proxy:
 
+
+This creates a bunch of `virtualservice` entries which route calls to v1 of the services.
+
+To view the applied rule:
 ```sh
-docker kill proxy
+istioctl get virtualservice reviews -o yaml
+```
+Output:
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  creationTimestamp: null
+  name: reviews
+  namespace: default
+  resourceVersion: "6141"
+spec:
+  hosts:
+  - reviews
+  http:
+  - route:
+    - destination:
+        host: reviews
+        subset: v1
+---
 ```
 
-You can view the statistics, listeners, routes, clusters and server info for the envoy proxy by forwarding the local port:
+Now when we reload the `/productpage` several times, we will ONLY be viewing the data from v1 of all the services.
 
+
+## Content based routing
+
+Lets enable the ratings service for test user `jason` by routing productpage traffic to reviews v2.
+
+Istio 0.7.1:
 ```sh
-curl localhost:15000/help
-curl localhost:15000/stats
-curl localhost:15000/listeners
-curl localhost:15000/routes
-curl localhost:15000/clusters
-curl localhost:15000/server_info
+istioctl replace -f deployment_files/istio-0.8.0/route-rule-reviews-test-v2.yaml
 ```
 
-See the [admin docs](https://www.envoyproxy.io/docs/envoy/v1.5.0/operations/admin) for more details.
-
-Also it can be helpful to look at the log files of the Istio ingress controller to see what request is being routed.  First find the ingress pod and the output the log files:
-
+Istio 0.8.0:
 ```sh
-kubectl logs istio-ingress-... -n istio-system
+istioctl replace -f deployment_files/istio-0.8.0/route-rule-reviews-test-v2.yaml
 ```
 
-#### Configure Guest Book Ingress Routes with the Istio Ingress Controller
-
-1 - Configure the Guess Book UI default route with the Istio Ingress Controller:
-
-First look at what the current route is using the admin interface above.  Then run the following command to change the routes:
-
+To view the applied rule:
 ```sh
-kubectl apply -f guestbook/guestbook-ingress.yaml
+istioctl get virtualservice reviews -o yaml
+```
+Output:
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  creationTimestamp: null
+  name: reviews
+  namespace: default
+  resourceVersion: "7765"
+spec:
+  hosts:
+  - reviews
+  http:
+  - match:
+    - headers:
+        cookie:
+          regex: ^(.*?;)?(user=jason)(;.*)?$
+    route:
+    - destination:
+        host: reviews
+        subset: v2
+  - route:
+    - destination:
+        host: reviews
+        subset: v1
+---
 ```
 
-After applying the routes you can see the routes have changed in the admin interface.
+Now if we login as user `jason` you will be able to see data from reviews v2. While if you NOT logged in or logged in as a different user, you will see data from reviews v1.
 
-In the guestbook ingress file notice that the ingress class is specified as   `kubernetes.io/ingress.class: istio` which routes the request to Istio.
 
-The second thing to notice is that the request is routed to different services, either helloworld-service or guestbook-ui depending on the request. We can see how this works by having Kubernetes describe the ingress resource for us:
 
+## Canary Testing - Traffic Shifting
+
+Before we start the next exercise, lets first reset the routing rules created in the previous section:
+
+Istio 0.7.1:
 ```sh
-kubectl describe ingress
-
-Name:             simple-ingress
-Namespace:        default
-Address:          
-Default backend:  default-http-backend:80 (<none>)
-Rules:
-  Host  Path  Backends
-  ----  ----  --------
-  *     
-        /hello/.*   helloworld-service:8080 (<none>)
-        /.*         guestbook-ui:80 (<none>)
-Annotations:
-Events:  <none>
-
+istioctl delete -f deployment_files/istio-0.7.1/route-rule-all-v1.yaml
+istioctl create -f deployment_files/istio-0.7.1/route-rule-all-v1.yaml
 ```
 
-2 - Find the external IP of the Istio Ingress controller and export it to an environment variable:
-
+Istio 0.8.0:
 ```sh
-kubectl get service istio-ingress -n istio-system -o wide
-
-NAMESPACE      NAME                   CLUSTER-IP      EXTERNAL-IP      PORT(S)                       AGE
-istio-system   istio-ingress          10.31.244.185   35.188.171.180   80:31920/TCP,443:32165/TCP    1h
+istioctl delete -f deployment_files/istio-0.8.0/route-rule-all-v1.yaml
+istioctl create -f deployment_files/istio-0.8.0/route-rule-all-v1.yaml
 ```
 
-Once the Ingress is successfully configured, you can also get the Ingress IP doing:
+Currently the routing rule only routes to `v1` of all the services. 
 
+First, lets transfer 50% of the traffic from reviews:v1 to reviews:v3 with the following command:
+
+Istio 0.7.1:
 ```sh
-kubectl get ingress
-
-NAME             HOSTS     ADDRESS          PORTS     AGE
-simple-ingress   *         35.224.145.187   80        2m
+istioctl replace -f deployment_files/istio-0.7.1/route-rule-reviews-50-v3.yaml
 ```
 
+Istio 0.8.0:
 ```sh
-export INGRESS_IP=$(kubectl get service istio-ingress -n istio-system --template="{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}")
+istioctl replace -f deployment_files/istio-0.8.0/route-rule-reviews-50-v3.yaml
 ```
 
-3 - Browse to the website of the guest Book using the INGRESS IP to see the Guest Book UI: `http://INGRESS_IP`
-
-4 - You can also access the Hello World service and see the json in the browser:
-`http://INGRESS_IP/hello/world`
-
-
-5 - curl the Guest Book Service:
-```
-curl http://$INGRESS_IP/echo/universe
-```
-
-And the Hello World service:
-```
-curl http://$INGRESS_IP/hello/world
-```
-
-6 - Then curl the echo endpoint multiple times and notice how it round robins between v1 and v2 of the Hello World service:
-
+To confirm the rule was applied:
 ```sh
-curl http://$INGRESS_IP/echo/universe
-
-{"greeting":{"hostname":"helloworld-service-v1-286408581-9204h","greeting":"Hello universe from helloworld-service-v1-286408581-9204h with 1.0","version":"1.0"},
+istioctl get virtualservice reviews -o yaml
+```
+Output
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: reviews
+  ...
+spec:
+  hosts:
+  - reviews
+  http:
+  - route:
+    - destination:
+        host: reviews
+        subset: v1
+      weight: 50
+  - route:
+    - destination:
+        host: reviews
+        subset: v3
+      weight: 50
 ```
 
+Now, if we reload the `/productpage` in your browser several times, you should now see red colored star ratings approximately 50% of the time.
+
+
+When version v3 of the reviews microservice is considered stable, we can route 100% of the traffic to reviews:v3:
+
+Istio 0.7.1:
 ```sh
-curl http://$INGRESS_IP/echo/universe
-
-{"greeting":{"hostname":"helloworld-service-v2-1009285752-n2tpb","greeting":"Hello universe from helloworld-service-v2-1009285752-n2tpb with 2.0","version":"2.0"}
+istioctl replace -f deployment_files/istio-0.7.1/route-rule-reviews-v3.yaml
 ```
 
-#### Inspecting the Istio proxy of the Hello World service pod
-
-To better understand the istio proxy, let's inspect the details.  exec into the hellworld service pod to find the proxy details.  First find the full pod name and then exec into the istio-proxy container:
-
+Istio 0.8.0:
 ```sh
-kubectl get pods
-kubectl exec -it helloworld-service-v1-... -c istio-proxy  sh
+istioctl replace -f deployment_files/istio-0.8.0/route-rule-reviews-v3.yaml
 ```
 
-Once in the container look at some of the envoy proxy details:
-
+To confirm the rule was applied:
 ```sh
-$  ps aux
-$  ls -l /etc/istio/proxy
-$  cat /etc/istio/proxy/envoy-rev0.json
+istioctl get virtualservice reviews -o yaml
+```
+Output:
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  creationTimestamp: null
+  name: reviews
+  namespace: default
+  resourceVersion: "9396"
+spec:
+  hosts:
+  - reviews
+  http:
+  - route:
+    - destination:
+        host: reviews
+        subset: v3
+---
 ```
 
-You can also view the statistics, listeners, routes, clusters and server info for the envoy proxy by forwarding the local port:
+Now, if we reload the `/productpage` in your browser several times, you should now see red colored star ratings 100% of the time.
 
-```sh
-kubectl port-forward helloworld-service-v1-... 15000:15000
-curl localhost:15000/stats
-curl localhost:15000/listeners
-curl localhost:15000/routes
-curl localhost:15000/clusters
-curl localhost:15000/server_info
-```
-
-See the [admin docs](https://www.envoyproxy.io/docs/envoy/v1.5.0/operations/admin) for more details.
-
-#### [lab 8 - Telemetry](../lab-8/README.md)
+#### [Continue to lab 8 - Fault Injection and Rate Limiting](../lab-8/README.md)

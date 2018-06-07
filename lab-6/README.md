@@ -1,205 +1,48 @@
-# lab 6 - Creating a service mesh with Istio Proxy
+# lab 6 - Distributed Tracing
 
-### What is a service mesh?
+The sample Bookinfo application is configured to collect trace spans using Zipkin or Jaeger. Although Istio proxies are able to automatically send spans, it needs help from the application to tie together the entire trace. To do this applications need to propagate the appropriate HTTP headers so that when the proxies send span information to Zipkin or Jaeger, the spans can be correlated correctly into a single trace.
 
-Cloud-native applications require a new approach to managing the communication between each service. This problem is best solved by creating a dedicated infrastructure layer that handles service-to-service communication. With Istio, this infrastructure layer is created by deploying a lightweight proxy alongside each application service. This is done in a way that the application does not need to be aware of the proxy.
+To do this the application collects and propagates the following headers from the incoming request to any outgoing requests:
 
-Moving the service communication to a separate layer provides a separation of concerns. The monitoring, management and security of communication can be handled outside of the application logic.
+- `x-request-id`
+- `x-b3-traceid`
+- `x-b3-spanid`
+- `x-b3-parentspanid`
+- `x-b3-sampled`
+- `x-b3-flags`
+- `x-ot-span-context`
 
-### What is a Kubernetes sidecar?
 
-A Kubernetes pod is a group of containers, tied together for the purposes of administration and networking. Each pod can contain one or more containers.  Small containers are often used to provide common utilities for the pod. These sidecar containers extend and enhance the main container. Sidecar containers are a crosscutting concern and can be used across multiple pods.
+## View Traces
 
-### The Istio Proxy sidecar
-
-To create a service mesh with Istio, you update the deployment of the pods to add the Istio Proxy (based on the Lyft Envoy Proxy) as a side car to each pod. The Proxy is then run as a separate container that manages all communication with that pod. This can be done either manually or with the latest version of Kubernetes automatically.
-
-#### Manual sidecar injection
-
-The side car can be injected manually by running the istioctl kube-inject command, which modifies the YAML file before creating the deployments. This injects the Proxy into the deployment by updating the YAML to add the Proxy as a sidecar. When this command is used, the microservices are now packaged with an Proxy sidecar that manages incoming and outgoing calls for the service. To see how the deployment YAML is modified, run thw following from the `istio-workshop` dir:
-
-```sh
-istioctl kube-inject -f guestbook/helloworld-deployment.yaml
-```
-
-This adds the Istio Proxy as an additional container to the Pod and setups the necessary configuration. Inside the YAML there is now an additional container:
-
-```
-image: docker.io/istio/proxy_debug:0.2.12
-imagePullPolicy: IfNotPresent
-name: istio-proxy
-```
-
-#### Automatic sidecar injection
-
-Istio sidecars can also be automatically injected into a pod at creation time using a feature in Kubernetes called a mutating webhook admission controller.   Note that unlike manual injection, automatic injection occurs at the pod-level. You won't see any change to the deployment itself. Instead you'll want to check individual pods (via kubectl describe) to see the injected proxy.
-
-An admission controller is a piece of code that intercepts requests to the Kubernetes API server prior to persistence of the object, but after the request is authenticated and authorized. Admission controllers may be “validating”, “mutating”, or both. Mutating controllers may modify the objects they admit; validating controllers may not.
-
-The admission control process proceeds in two phases. In the first phase, mutating admission controllers are run. In the second phase, validating admission controllers are run.
-
-MutatingWebhookConfiguration describes the configuration of and admission webhook that accept or reject and may change the object.  
-
-For Istio the webhook is the sidecar injector webhook deployment called "istio-sidecar-injector".  It will modify a pod before it is started to inject an istio init container and istio proxy container.
-
-#### Installing the Webhook
-
-Webhooks requires a signed cert/key pair. Use install/kubernetes/webhook-create-signed-cert.sh to generate a cert/key pair signed by the Kubernetes’ CA. The resulting cert/key file is stored as a Kubernetes secret for the sidecar injector webhook to consume.
+Now, let us generate a small load on the sample app by using [fortio](https://github.com/istio/fortio) (for more details on this, please refer back to [lab-5](../lab-5/README.md)):
 
 ```sh
-cd ~/istio/install/kubernetes
-
-./webhook-create-signed-cert.sh \
-    --service istio-sidecar-injector \
-    --namespace istio-system \
-    --secret sidecar-injector-certs
+docker run istio/fortio load -t 5m -qps 5 http://$INGRESS_HOST/productpage
 ```
 
-Install the sidecar injection configmap:
+### Zipkin
+If you have not already deployed and exposed zipkin, please follow [lab-2](../lab-2/README.md). 
+In `PWK`, once you have exposed zipkin on a port by using any of the specified methods, it will appear at the top of the page as a hyperlink. You can click on the link at the top of the page which maps to the right port and it will open zipkin web UI.
+![](img/zipkin_1.png)
 
-```sh
-kubectl apply -f istio-sidecar-injector-configmap-release.yaml
-```
+![](img/zipkin.png)
 
-Set the caBundle in the webhook install YAML that the Kubernetes api-server uses to invoke the webhook.
+![](img/zipkin_2.png)
 
-```sh
-cat istio-sidecar-injector.yaml | \
-     ./webhook-patch-ca-bundle.sh > \
-     istio-sidecar-injector-with-ca-bundle.yaml
-```     
+### Jaeger
+If you have deployed Istio 0.8.0 using `istio-0.8.0.yaml` or `istio-solarwinds-0.8.0.yaml`, jaeger service should already be exposed.
 
-Install the sidecar injector webhook.
+On Istio 0.7.1, if you have not already deployed and exposed jaeger, please follow [lab-2](../lab-2/README.md). 
 
-```sh
-kubectl apply -f istio-sidecar-injector-with-ca-bundle.yaml
-```
+In `PWK`, once jaeger service is exposed on a port by using any of the specified methods, it will appear at the top of the page as a hyperlink. You can click on the link at the top of the page which maps to the right port and it will open Jaeger UI in a new tab. 
 
-The sidecar injector webhook should now be running.
+![](img/jaeger.png)
 
-```sh
-kubectl -n istio-system get deployment -listio=sidecar-injector
+![](img/jaeger_1.png)
 
-NAME                     DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-istio-sidecar-injector   1         1         1            1           1d
-```
+![](img/jaeger_2.png)
 
-NamespaceSelector decides whether to run the webhook on an object based on whether the namespace for that object matches the selector (see https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors).
 
-Label the default namespace with istio-injection=enabled
 
-```sh
-kubectl label namespace default istio-injection=enabled
-kubectl get namespace -L istio-injection
-
-NAME           STATUS    AGE       ISTIO-INJECTION
-default        Active    1h        enabled
-istio-system   Active    1h        
-kube-public    Active    1h        
-kube-system    Active    1h
-```
-
-### Deploy Guestbook services
-
-To demonstrate Istio, we’re going to use [this guestbook example](https://github.com/retroryan/spring-boot-docker). This example is built with Spring Boot, a frontend using Spring MVC and Thymeleaf, and two microservices. The 3 microservices that we are going to deploy are:
-
-* Hello World service - A simple service that returns a greeting back to the user.
-
-* Guestbook service - A service that keeps a registry of guests and the message they left.
-
-* Guestbook UI - The front end to the application that calls to the other microservices to get the list of guests, register a new guest, and get the greeting for the user when they register.
-
-The guestbook example requires MySQL to store guestbook entries and Redis to store session information.
-
-Note that the services must be started in a fixed order because they depend on other services being started first.
-
-1. Deploy MySQL, Redis, the Hello World microservices, and the associated Kubernetes Services from the `istio-workshop` dir:
-
-    ```sh
-    cd ~/istio-workshop
-    kubectl apply -f guestbook/mysql-deployment.yaml -f guestbook/mysql-service.yaml
-    kubectl apply -f guestbook/redis-deployment.yaml -f guestbook/redis-service.yaml
-    kubectl apply -f guestbook/helloworld-deployment.yaml -f guestbook/helloworld-service.yaml
-    kubectl apply -f guestbook/helloworld-deployment-v2.yaml
-    ```
-
-2. Notice that each of the pods now has one Istio init container and two running containers. One is the main application container and the second is the istio proxy container.
-
-```sh
-kubectl get pod
-```
-
-When you get the pods you should see in the READY column 2/2 meaning that 2 of 2 containers are in the running state (it might take a minute or two to get to that state).  
-
-When you describe the pod what that shows is the details of the additional containers.
-
-```sh
-kubectl describe pods helloworld-service-v1.....
-```
-
-3. Verify that previous deployments are all in a state of AVAILABLE before continuing. **Do not procede until they are up and running.**
-
-    ```
-    kubectl get -w deployment
-    ```
-
-4. Deploy the guestbook microservice.
-
-    ```sh
-    kubectl apply -f guestbook/guestbook-deployment.yaml -f guestbook/guestbook-service.yaml
-    ```
-
-5. Verify that guestbook is available before continuing. **Do not procede until the microservice is up and running.**
-
-    ```
-    kubectl get -w deployment
-    ```
-
-6. Deploy the guestbook UI:
-
-    ```sh
-    kubectl apply -f guestbook/guestbook-ui-deployment.yaml -f guestbook/guestbook-ui-service.yaml
-    ```
-7. Access the guestbook UI in the web browser:
-
-The guestbook UI kubernetes service has a type of LoadBalancer.  This creates an external ip through which the ui can be accessed:
-
-```sh
-kubectl get svc guestbook-ui
-
-NAME           TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)        AGE
-guestbook-ui   LoadBalancer   10.59.245.13   35.197.94.184   80:30471/TCP   2m
-```
-
-You can test access via a web browser and curl.  You should be able to navigate to that IP to access the guestbook ui.
-
-To curl the guest book endpoint use:
-
-```sh
-curl 35.230.4.192/echo/world
-```
-
-Also the Hello World service is declared with an external ip which can be curled:
-
-```sh
-kubectl get svc helloworld-service
-NAME                 TYPE           CLUSTER-IP      EXTERNAL-IP      PORT(S)          AGE
-helloworld-service   LoadBalancer   10.59.242.178   35.185.201.165   8080:31255/TCP   14m
-
-curl 35.185.201.165:8080/hello/world
-{"hostname":"helloworld-service-v2-744696b8cb-lwdng","greeting":"Hola world from helloworld-service-v2-744696b8cb-lwdng version 2.0","version":"2.0"}
-```
-
-8.  Inspect the details of the pods
-
-Look at the details of the pod and then inspect the envoy config:
-
-```
-kubectl describe pod helloworld-service-v1.....
-kubectl exec -it helloworld-service-v1..... -c istio-proxy bash
-cd /etc/istio/proxy
-more envoy-rev6.json
-exit
-```
-
-#### [Continue to lab 7 - Istio Ingress controller](../lab-7/README.md)
+#### [Continue to lab 7 - Request Routing and Canary Testing](../lab-7/README.md)

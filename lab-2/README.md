@@ -1,106 +1,217 @@
-## lab 2 - Deploying a microservice to Kubernetes
+# lab 2 - Deploy Istio
 
-#### Deploy Hello World
+Now that we have the kubernetes cluster, we are ready to deploy Istio.
 
-1 - Deploy Hello World service to Kubernetes
+## Steps
+
+* [1. Installing Istio](#1)
+* [2. Seting up istioctl](#2)
+* [3. Verify install](#3)
+* [4. Installing Add-ons](#4)
+
+## <a name="1"></a> 1 - Installing Istio
+At the time of writing, Istio 0.8.0 was just released. Istio 0.7.1 has been around for sometime now. You can pick one of these to install on your kubernetes cluster.
+
+We have developed an Istio [Mixer Adapter](https://github.com/solarwinds/istio-adapter) which can ship metrics to [Appoptics](https://www.appoptics.com/) and logs to [Loggly](https://www.loggly.com/) and [Papertrail](https://papertrailapp.com). If you would like to leverage this adapter, please proceed to [Optional Lab 2](optional.md) to set things up, get the API tokens and [Installing Istio](#aolg) (OR) please proceed to [Installing Istio](#noaolg).
+
+### <a name="noaolg"></a>Installing istio **WITHOUT** Appoptics and Loggly Tokens
+
+
+On Istio 0.7.1:
+```sh
+kubectl apply -f deployment_files/istio-0.7.1/istio-0.7.1.yaml
+```
+
+On Istio 0.8.0:
+```sh
+kubectl apply -f deployment_files/istio-0.8.0/istio-0.8.0.yaml
+```
+
+
+### <a name="aolg"></a>Installing istio with Appoptics and Loggy Tokens
+
+On Istio 0.7.1:
+```sh
+kubectl apply -f deployment_files/istio-0.7.1/istio-solarwinds-0.7.1.yaml
+```
+
+On Istio 0.8.0:
+```sh
+kubectl apply -f deployment_files/istio-0.8.0/istio-solarwinds-0.8.0.yaml
+```
+
+## <a name="2"></a> 2 - Verify install
+
+Istio is deployed in a separate Kubernetes namespace `istio-system`. To check if Istio is deployed and also to see all the pieces that are deployed, we can do the following:
 
 ```sh
-cd istio-workshop
-kubectl apply -f kubernetes/helloworldservice-deployment.yaml --record
-```
-```sh
-kubectl get pods
-
-NAME                           READY     STATUS    RESTARTS    AGE
-helloworld-service-v1-....     1/1       Running   0           20s
+watch kubectl get all -n istio-system
 ```
 
-An important detail to note is that READY shows 1/1.  That is referring to the number of containers in the pod that are ready and this pod only has 1 container. 
 
-2 - Note the name of the pod above for use in the command below. Then delete one of the hello world pods.
+## <a name="3"></a> 3 - Setting up istioctl
+On a *nix system, you can setup istioctl by doing the following: 
 
 ```sh
-kubectl delete pod helloworld-service-v1-...
+curl -L https://git.io/getLatestIstio | sh -
 ```
+The above command will get the latest Istio package, which at the time of this writing is 0.8.0.
 
-3 - Kubernetes will automatically restart this pod for you. Verify it is restarted
+To get Istio 0.7.1 package, please follow these instructions:
 
 ```sh
-kubectl get pods
-
-NAME                           READY     STATUS    RESTARTS   AGE
-helloworld-service-v1-....    1/1       Running   0          20s
+yum install -y wget
+wget https://github.com/istio/istio/releases/download/0.7.1/istio-0.7.1-linux.tar.gz
+tar -xzvf istio-0.7.1-linux.tar.gz
 ```
 
-4 -  All of the container output to STDOUT and STDERR will be accessible as Kubernetes logs:
+Assuming you are in the `/root` directory, adding istio executables to the PATH can be done by doing the following:
+
+For Istio 0.7.1:
+```sh
+export PATH="$PATH:/root/istio-0.7.1/bin"
+```
+
+For Istio 0.8.0:
+```sh
+export PATH="$PATH:/root/istio-0.8.0/bin"
+```
+
+To verify `istioctl` is setup lets try to print out the command help
+```sh
+istioctl -h
+```
+
+
+
+
+
+## Install Add-ons
+For the folks who did NOT want to use Appoptics, you can deploy prometheus and grafana for viewing the metrics from `Istio`.
+
+For distributed tracing, you can choose between [Zipkin](https://zipkin.io/) or [Jaeger](https://www.jaegertracing.io/).
+
+On Istio 0.8.0, Jaeger is deployed as part of `istio-0.8.0.yaml` or `istio-solarwinds-0.8.0.yaml`.
+
+Service graph is another add-on which can be used to generate a graph of services within an Istio mesh. On Istio 0.8.0, service graph is deployed as part of `istio-0.8.0.yaml` or `istio-solarwinds-0.8.0.yaml`.
+
+### Grafana, Prometheus
+On Istio 0.7.1, you can deploy prometheus by running the following command:
 
 ```sh
-kubectl logs helloworld-service-v1-...
+kubectl apply -f deployment_files/istio-0.7.1/prometheus.yaml
 ```
 
-or to follow the log file:
+On Istio 0.8.0, prometheus is deployed as part of `istio-0.8.0.yaml` or `istio-solarwinds-0.8.0.yaml`.
+
+
+To deploy grafana:
+```sh
+kubectl apply -f deployment_files/istio-0.7.1/grafana.yaml
+```
+
+By default prometheus and grafana are deployed as ClusterIP type services. We can access the services outside by either changing the type to LoadBalancer or NodePort or by port forwarding or configure Istio Ingress. I will briefly show using NodePort and port forwarding here.
+
+#### Exposing with NodePort
+To expose them using NodePort service type, we can edit the services and change the service type from `ClusterIP` to `NodePort`
 
 ```sh
-kubectl logs -f helloworld-service-v1-...
+kubectl -n istio-system edit svc prometheus
 ```
-
-#### Pod Details
-
-One of the key tools for troubleshooting issues when creating pods is describe which shows the pod details:
 
 ```sh
-kubectl describe pods helloworld-service-v1-...
+kubectl -n istio-system edit svc grafana
 ```
 
-This shows all the details of the pod such as status, events, containers, IP and more.  
+Once this is done the services will be assigned dedicated ports on the hosts. 
 
-An important detail to notice, that will be relevant to Istio is that the pod currently only has a single container.  
-
-```
-Containers:
-  helloworld-service:
-    Container ID:   docker://9f6dd8ffeb104541e95dd6cf5d960851840409bb9e683d79b8e604fe1af1045c
-    Image:          retroryan/helloworld:1.0
-    Image ID:       docker-pullable://retroryan/helloworld@sha256:4ab1359b88ed1e5c820c27ae2c475a816e60d4b99b1703e9223ddb4885a4d2e7
-    Port:           8080/TCP
+To find the assigned ports for grafana:
+```sh
+kubectl -n istio-system get svc grafana
 ```
 
-When we deploy with Istio be sure to notice the additional containers that get added.
+To find the assigned ports for prometheus:
+```sh
+kubectl -n istio-system get svc prometheus
+```
+
+In `PWK`, once a port is exposed it will appear on top of the page as shown below as clickable hyperlinks:
+
+![](img/exposed_ports.png)
+
+We can click on the new relevant links now and navigate to prometheus dashboard and grafana dashboards. In grafana there is a dedicated dashboard created for Istio called `Istio Dashboard`.
+
+![](img/Grafana_-_Istio_Dashboard.png)
 
 
-## Explanation
+#### Exposing with port-forward
+To port-forward grafana:
+```sh
+kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=grafana \
+  -o jsonpath='{.items[0].metadata.name}') 3000:3000 &
+```
 
-#### By Ray Tsang [@saturnism](https://twitter.com/saturnism)
+To port-forward prometheus:
+```sh
+kubectl -n istio-system port-forward \
+  $(kubectl -n istio-system get pod -l app=prometheus -o jsonpath='{.items[0].metadata.name}') \
+  9090:9090 &
+```
 
-We will be using yaml files throughout this workshop. Every file describes a resource that needs to be deployed into Kubernetes. We won’t be able to go into details on the contents, but you are definitely encouraged to read them and see how pods, services, and others are declared.
+Port forward runs in the foreground. We have appeneded '&' to the end of the above 2 commands to run them in the background. If you donot want this behavior, please remove the '&'.
 
-The pod deploys a microservice that is a container whose images contains a self-executing JAR files. The source is available at [istio-by-example-java](https://github.com/saturnism/istio-by-example-java) if you are interested in seeing it.
+### <a name="zipkin"></a>Zipkin
+On Istio 0.7.1, we can deploy Zipkin by:
 
-In this first example we deployed a Kubernetes pod by specifying a deployment using this [helloworldservice-deployment.yaml](/kubernetes/helloworldservice-deployment.yaml).
+```sh
+kubectl apply -f deployment_files/istio-0.7.1/zipkin.yaml
+```
 
-A Kubernetes pod is a group of containers, tied together for the purposes of administration and networking. It can contain one or more containers. All containers within a single pod will share the same networking interface, IP address, volumes, etc. All containers within the same pod instance will live and die together. It’s especially useful when you have, for example, a container that runs the application, and another container that periodically polls logs/metrics from the application container.
+You can follow similar steps as described above to expose this service as well.
 
-You can start a single Pod in Kubernetes by creating a Pod resource. However, a Pod created this way would be known as a Naked Pod. If a Naked Pod dies/exits, it will not be restarted by Kubernetes. A better way to start a pod, is by using a higher-level construct such as Replication Controller, Replica Set, or a Deployment.
+Command to port-forward:
+```sh
+kubectl port-forward -n istio-system \
+  $(kubectl get pod -n istio-system -l app=zipkin -o jsonpath='{.items[0].metadata.name}') \
+  9411:9411 &
+```
 
-Prior to Kubernetes 1.2, Replication Controller is the preferred way deploy and manage your application instances. Kubernetes 1.2 introduced two new concepts - Replica Set, and Deployments.
+### <a name="jaeger"></a> Jaeger
+On Istio 0.7.1, we can deploy Jaeger by:
 
-Replica Set is the next-generation Replication Controller. The only difference between a Replica Set and a Replication Controller right now is the selector support. Replica Set supports the new set-based selector requirements whereas a Replication Controller only supports equality-based selector requirements.
+```sh
+kubectl apply -n istio-system -f https://raw.githubusercontent.com/jaegertracing/jaeger-kubernetes/master/all-in-one/jaeger-all-in-one-template.yml
+```
 
-For example, Replication Controller can only select pods based on equality, such as "environment = prod", whereas Replica Sets can select using the "in" operator, such as "environment in (prod, qa)". Learn more about the different selectors in the [Labels guide](http://kubernetes.io/docs/user-guide/labels).
+You can follow similar steps as described above to expose this service as well.
 
-Deployment provides declarative updates for Pods and Replica Sets. You only need to describe the desired state in a Deployment object, and the Deployment controller will change the actual state to the desired state at a controlled rate for you. You can use deployments to easily:
-- Create a Deployment to bring up a Replica Set and Pods.
-- Check the status of a Deployment to see if it succeeds or not.
-- Later, update that Deployment to recreate the Pods (for example, to use a new image, or configuration).
-- Rollback to an earlier Deployment revision if the current Deployment isn’t stable.
-- Pause and resume a Deployment.
+One Istio 0.8.0, Jaeger port is already exposed for you as part of `istio-0.8.0.yaml` or `istio-solarwinds-0.8.0.yaml`.
 
-In this workshop, because we are working with Kubernetes 1.7+, we will be using Deployment extensively.
 
-There are other containers running too. The interesting one is the pause container. The atomic unit Kubernetes can manage is actually a Pod, not a container. A Pod can be composed of multiple tightly-coupled containers that is guaranteed to scheduled onto the same node, and will share the same Pod IP address, and can mount the same volumes.. What that essentially means is that if you run multiple containers in the same Pod, they will share the same namespaces.
+![](img/Jaeger_UI.png)
 
-A pause container is how Kubernetes uses Docker containers to create shared namespaces so that the actual application containers within the same Pod can share resources.
+Command to port-forward:
+```sh
+kubectl port-forward -n istio-system $(kubectl get pod -n istio-system -l app=jaeger -o jsonpath='{.items[0].metadata.name}') 16686:16686 &
+```
 
-#### Optional - [Peering under the covers of Kubernetes](optional.md)
 
-#### [Continue to lab 3 - Creating a Kubernetes Service](../lab-3/README.md)
+### Service Graph
+On Istio 0.7.1, we can deploy service graph by:
+
+```sh
+kubectl apply -f deployment_files/istio-0.7.1/servicegraph.yaml
+```
+
+You can follow similar steps as described above to expose this service as well.
+
+Command to port-forward:
+```sh
+kubectl -n istio-system port-forward \
+  $(kubectl -n istio-system get pod -l app=servicegraph -o jsonpath='{.items[0].metadata.name}') \
+  8088:8088 &
+```
+
+
+
+#### [Continue to lab 3 - Deploy Sample Bookinfo app](../lab-3/README.md)
