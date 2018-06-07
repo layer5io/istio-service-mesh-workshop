@@ -91,7 +91,7 @@ To view the product page, you will have to append
 We can create a virtualservice & gateway for bookinfo app in the ingress gateway by running the following:
 
 ```sh
-istioctl create -f samples/bookinfo/routing/bookinfo-gateway.yaml
+istioctl create -f deployment_files/istio-0.8.0/bookinfo-gateway.yaml
 ```
 
 2 - Viewing the gateway and virtualservices

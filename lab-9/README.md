@@ -4,38 +4,63 @@ In this lab we will configure circuit breaking using Istio.
 
 ## Configure circuit breaking
 Let us start by deploying a simpler application to test circuit breaking:
+
+
+With manual sidecar injection:
+Istio 0.7.1:
 ```sh
-kubectl apply -f <(istioctl kube-inject --debug -f samples/httpbin/httpbin.yaml)
+kubectl apply -f <(istioctl kube-inject --debug -f deployment_files/istio-0.7.1/httpbin.yaml)
 ```
 
-Let us then deploy a client which is capable of talking to the httpbin service:
+Istio 0.8.0:
 ```sh
-kubectl apply -f <(istioctl kube-inject --debug -f samples/httpbin/sample-client/fortio-deploy.yaml)
+kubectl apply -f <(istioctl kube-inject --debug -f deployment_files/istio-0.8.0/httpbin.yaml)
+```
+
+With automatic sidecar injector:
+Istio 0.7.1:
+```sh
+kubectl apply -f deployment_files/istio-0.7.1/httpbin.yaml
+```
+
+Istio 0.8.0:
+```sh
+kubectl apply -f deployment_files/istio-0.8.0/httpbin.yaml
+```
+
+
+Let us then deploy a client which is capable of talking to the httpbin service:
+With manual sidecar injection:
+Istio 0.7.1:
+```sh
+kubectl apply -f <(istioctl kube-inject --debug -f deployment_files/istio-0.7.1/fortio-deploy.yaml)
+```
+
+Istio 0.8.0:
+```sh
+kubectl apply -f <(istioctl kube-inject --debug -f deployment_files/istio-0.8.0/fortio-deploy.yaml)
+```
+
+With automatic sidecar injector:
+Istio 0.7.1:
+```sh
+kubectl apply -f deployment_files/istio-0.7.1/fortio-deploy.yaml
+```
+
+Istio 0.8.0:
+```sh
+kubectl apply -f deployment_files/istio-0.8.0/fortio-deploy.yaml
 ```
 
 It is time to configure circuit breaking using a destination rule:
+Istio 0.7.1:
 ```sh
-cat <<EOF | istioctl create -f -
-apiVersion: networking.istio.io/v1alpha3
-kind: DestinationRule
-metadata:
-  name: httpbin
-spec:
-  host: httpbin
-  trafficPolicy:
-    connectionPool:
-      tcp:
-        maxConnections: 100
-      http:
-        http1MaxPendingRequests: 1
-        maxRequestsPerConnection: 1
-    outlierDetection:
-      http:
-        consecutiveErrors: 1
-        interval: 1s
-        baseEjectionTime: 3m
-        maxEjectionPercent: 100
-EOF
+istioctl create -f deployment_files/istio-0.7.1/circuit-breaking.yaml
+```
+
+Istio 0.8.0:
+```sh
+istioctl create -f deployment_files/istio-0.8.0/circuit-breaking.yaml
 ```
 
 To confirm the rule is in place:

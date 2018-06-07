@@ -31,8 +31,9 @@ When you created your first instance it will have the name `node1`. The instance
 Also, instructions for bootstrapping a kubernetes cluster with `kubeadm` will be presented. We will be following these instructions to setup the cluster next.
 ![](img/pwk_instance1.png)
 
+*Warning:* Please donot follow the instructions as it is. We will be following similar but slightly different instructions described below.
 
-Let us use `node1` as the master node for our cluster. Please note: setting up a multi-master cluster is out of the scope of this workshop.
+Let us use `node1` as the master node for our cluster. Please note: setting up a multi-master cluster is out of the scope of this workshop, but we will be creating a multi-node cluster in this lab.
 
 Before we start bootstrapping the cluster let us first update DNS settings on the node. This step is needed to get external network connectivity from within the kuberentes cluster we are about to setup. You are free to use any public DNS but for the purpose of this workshop we will use Google's public DNS.
 
@@ -45,7 +46,8 @@ Next, let us bootstrap the kubernetes cluster by initializing cluster master (`n
 kubeadm init --apiserver-advertise-address $(hostname -i)
 ```
 
-The output from initialization:
+
+Sample output from initialization:
 ```sh
 Initializing machine ID from random generator.
 [kubeadm] WARNING: kubeadm is in beta, please do not use it for production clusters.
@@ -106,9 +108,9 @@ daemonset "kube-proxy" configured
 No resources found
 ```
 
-As part of the initialization `kubeadm` has writen config files needed, deployed kubernetes control plane components (like `kube-apiserver`, `kube-dns`, `kube-proxy`, `etcd`, etc.) as `docker` containers, sets up needed RBAC and also set up `kubectl` for admin user.
+As part of the initialization `kubeadm` has written config files needed, deployed kubernetes control plane components (like `kube-apiserver`, `kube-dns`, `kube-proxy`, `etcd`, etc.) as `docker` containers, sets up needed RBAC and also set up `kubectl` for admin user.
 
-Please make a note of the `kubeadm` join command from the previous output for later use:
+Please make a note of the `kubeadm` join command from the previous output for later use. The command should look like the one below (please do not use the exact command though):
 ```sh
 kubeadm join --token 0c6e9e.607906dbdcacbf64 192.168.0.8:6443 --discovery-token-ca-cert-hash sha256:b8116ec1b224d82983b10353498d222f6f2e8fcbdf5d1075b4eece0f37df5896
 ```
