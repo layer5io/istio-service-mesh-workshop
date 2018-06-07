@@ -1,139 +1,145 @@
 # lab 10 - Mutual TLS
 
-Istio provides transparent, and frankly magical, mutal TLS to services inside the service mesh when asked. By mutual TLS we understand that both the client and the server authenticate each others certificates as part of the TLS handshake.
+Istio provides transparent mutal TLS to services inside the service mesh where both the client and the server authenticate each others certificates as part of the TLS handshake.
 
+As part of our deployment with `istio-0.7.1.yaml` or `istio-0.8.0.yaml` or 
+`istio-solarwinds-0.7.1.yaml` or `istio-solarwinds-0.8.0.yaml`, we have deployed Istio with mTLS.
 
-
-replacing sidecars with debug sidecars
-```sh
-kubectl apply -f <(istioctl kube-inject --debug -f samples/bookinfo/kube/bookinfo.yaml)
-```
-
-
+## Verify mTLS
 To verify mTLS is enabled:
 ```sh
 kubectl get configmap istio -o yaml -n istio-system | grep authPolicy | head -1
 ```
 
+If it is enabled you will see output similar to the below from above command:
+```sh
+    authPolicy: MUTUAL_TLS
+```
 
-ssh into a sidecar
+To experiment with mTLS, let us get into the sidecar proxy of productpage page by running the command below:
 ```sh
 kubectl exec -it $(kubectl get pod | grep productpage | awk '{ print $1 }') -c istio-proxy -- /bin/bash
 ```
 
-view the generated certs
+We are now in the sidecar of the productpage pod. Let us check all the ceritificates loaded in the sidecar:
 ```sh
 ls /etc/certs/
 ```
 
-test with curl
+You should see 3 entries:
+```sh
+cert-chain.pem  key.pem  root-cert.pem
+```
+
+Let us try to make a curl call to the details service over HTTP
+```sh
+curl http://details:9080/details/0
+```
+
+Since, we have TLS between the sidecar's, an HTTP call will not work. You will see an error like the one below:
+```sh
+curl: (56) Recv failure: Connection reset by peer
+```
+
+Let us try to make a curl call to the details service over HTTPS but **WITHOUT** certs:
 ```sh
 curl https://details:9080/details/0 -k
 ```
 
-test curl with certs
+The request will be denied and you will see an error like the one below:
+```sh
+curl: (35) gnutls_handshake() failed: Handshake failed
+```
+
+Now, let us use curl over HTTPS with certificates to the details service:
 ```sh
 curl https://details:9080/details/0 -v --key /etc/certs/key.pem --cert /etc/certs/cert-chain.pem --cacert /etc/certs/root-cert.pem -k
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## Overview of Istio Mutual TLS
-
-#### Enable Mutual TLS
-
-Let the past go. Kill it, if you have to:
-```
-cd ~/istio
-kubectl delete -f install/kubernetes/istio.yaml
-kubectl delete all --all
-```
-
-It's the only way for TLS to be the way it was meant to be:
-
-```
-# (from istio install root)
-kubectl create -f install/kubernetes/istio-auth.yaml
-```
-
-We need to (re)create the auto injector. Use the lab 6 instructions.
-
-Finally enable injection and deploy the thrilling Book Info sample.
-
-```
-# (from istio install root)
-cd ~/istio
-kubectl label namespace default istio-injection=enabled
-kubectl create -f samples/bookinfo/kube/bookinfo.yaml
+Output will be similar to this:
+```sh
+*   Trying 10.107.35.26...
+* Connected to details (10.107.35.26) port 9080 (#0)
+* found 1 certificates in /etc/certs/root-cert.pem
+* found 0 certificates in /etc/ssl/certs
+* ALPN, offering http/1.1
+* SSL connection using TLS1.2 / ECDHE_RSA_AES_128_GCM_SHA256
+*        server certificate verification SKIPPED
+*        server certificate status verification SKIPPED
+* error fetching CN from cert:The requested data were not available.
+*        common name:  (does not match 'details')
+*        server certificate expiration date OK
+*        server certificate activation date OK
+*        certificate public key: RSA
+*        certificate version: #3
+*        subject: O=#1300
+*        start date: Thu, 07 Jun 2018 14:36:56 GMT
+*        expire date: Wed, 05 Sep 2018 14:36:56 GMT
+*        issuer: O=k8s.cluster.local
+*        compression: NULL
+* ALPN, server accepted to use http/1.1
+> GET /details/0 HTTP/1.1
+> Host: details:9080
+> User-Agent: curl/7.47.0
+> Accept: */*
+>
+< HTTP/1.1 200 OK
+< content-type: application/json
+< server: envoy
+< date: Thu, 07 Jun 2018 15:19:46 GMT
+< content-length: 178
+< x-envoy-upstream-service-time: 1
+< x-envoy-decorator-operation: default-route
+<
+* Connection #0 to host details left intact
+{"id":0,"author":"William Shakespeare","year":1595,"type":"paperback","pages":200,"publisher":"PublisherA","language":"English","ISBN-10":"1234567890","ISBN-13":"123-1234567890"}
 ```
 
-#### Take it for a spin
+This proves the existence of mTLS between the services on the Istio mesh.
 
-At this point it might seem like nothing changed, but it has.
-Let's disable the webhook in default for a second.
 
-```
-kubectl label namespace default istio-injection-
-```
+## SPIFFE
 
-Now lets give ourselves a space to play
+Istio uses SPIFFE to assert the identify of workloads on the cluster. SPIFFE is a very simple standard. It consists of a notion of identity and a method of proving it. A SPIFFE identity consists of an authority part and a path. The meaning of the path in spiffe land is implementation defined. In k8s it takes the form `/ns/$namespace/sa/$service-account` with the expected meaning. A SPIFFE identify is embedded in a document. This document in principle can take many forms but currently the only defined format is x509. Let's see what an SPIFFE x509 looks like. Remember those certificates we stole earlier? Execute the below snippet either in the directory where you have the certificates locally, if you have `openssl` installed.
 
-```
-kubectl run toolbox -l app=toolbox  --image centos:7 /bin/sh -- -c 'sleep 84600'
-```
 
-First: let's prove to ourselves that we really are doing something with tls. From here on out assume names like foo-XXXX need to be replaced with the foo podname you have in your cluster. We pass `-k` to `curl` to convince it to be a bit laxer about cert checking.
-
-```
-tb=$(kubectl get po -l app=toolbox -o template --template '{{(index .items 0).metadata.name}}')
-kubectl exec -it $tb curl -- https://details:9080/details/0 -k
-```
-
-Denied!
-
-Let's exfiltrate the certificates out of a proxy so we can pretend to be them (incidentally I hope this serves as a cautionary tale about the importance locking down pods).
-
-```
-pp=$(kubectl get po -l app=productpage -o template --template '{{(index .items 0).metadata.name}}')
-mkdir ~/tmp # or wherever you want to stash these certs
+Let us grab the certs from the productpage sidecar place it in `tmp` directory:
+```sh
+mkdir ~/tmp
 cd ~/tmp
 fs=(key.pem cert-chain.pem root-cert.pem)
 for f in ${fs[@]}; do kubectl exec -c istio-proxy $pp /bin/cat -- /etc/certs/$f >$f; done
 ```
 
-This should give you the certs. Now let us copy them into our toolbox.
 
+To investigate the ceritificate we need openssl. `PWK` hosts don't come installed with openssl. Let us proceed with installing it:
 ```
-for f in ${fs[@]}; do kubectl cp $f default/$tb:$f; done
-```
-
-Try once more to talk to the details service, but this time with feeling:
-
-```
-kubectl exec -it $tb curl -- https://details:9080/details/0 -v --key ./key.pem --cert ./cert-chain.pem --cacert ./root-cert.pem -k
+yum install -y openssl
 ```
 
-Success! We really are protecting our connections with tls. Time to enjoy its magic from the inside. Let's enable the webhook and roll our pod:
-
+Now that we have openssl installed and the certificate files in place, let us investigate the certificate:
 ```
-kubectl label namespace default istio-injection=enabled
-kubectl delete po $tb
-tb=$(kubectl get po -l app=toolbox -o template --template '{{(index .items 0).metadata.name}}')
-kubectl exec -it $tb curl -- http://details:9080/details/0
+openssl x509 -in cert-chain.pem -text | less
 ```
 
-Notice the protocol.
+The important thing to notice is that the subject isn't what you'd normally expect. It has no meaning here. What is interesting is the URI SAN extension. Note the SPIFFE identify. 
 
-#### [Continue to lab 14 - Ensuring security with iptables](../lab-14/README.md)
+```sh
+    X509v3 Subject Alternative Name:
+        URI:spiffe://cluster.local/ns/default/sa/default
+```
+
+
+
+There is one more part to SPIFFE identity, and that's a signing authority. This a CA certificate with a SPIFFE identify with _no_ path component.
+
+```
+openssl verify -CAfile root-cert.pem cert-chain.pem
+```
+
+
+This wraps up this lab and the workshop.
+
+Thanks a lot for trying out our workshop.
+
+For more details, please checkout [layer5.io](http://layer5.io).
