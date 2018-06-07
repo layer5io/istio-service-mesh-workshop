@@ -1,4 +1,4 @@
-Initially presented at [DockerCon 2018](https://dockercon18.smarteventscloud.com/connect/sessionDetail.ww?SESSION_ID=187485). For additional resources, see [layer5.io]](http://layer5.io).
+Initially presented at [DockerCon 2018](https://dockercon18.smarteventscloud.com/connect/sessionDetail.ww?SESSION_ID=187485). For additional resources, see [layer5.io](http://layer5.io).
 
 ## Workshop Setup
 - [Setup Kubernetes](lab-1/README.md)
