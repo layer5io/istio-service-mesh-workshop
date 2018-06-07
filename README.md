@@ -28,3 +28,7 @@ Initially presented at [DockerCon 2018](https://dockercon18.smarteventscloud.com
 ## Authors
 * [Lee Calcote](http://twitter.com/lcalcote)
 * [Girish Ranganathan](https://twitter.com/ingenious_G)
+
+
+## Resources
+* [Slides](http://calcotestudios.com/talks/slides-dockercon-18-using-istio.html)
