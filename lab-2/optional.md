@@ -85,7 +85,7 @@ You can now give your dashboard a temporary name. Next click on the button shown
 
 ![](img/ao_import_menu.png)
 
-Clicking the `Import Dashboard` menu item will open a popup where we can enter the contents of `deployment_files/appoptics_dashboard.yaml` file
+Clicking the `Import Dashboard` menu item will open a popup where we can enter the contents of `https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/appoptics_dashboard.yaml` file
 ![](img/ao_import.png)
 
 After pasting the contents, we can validate it by using the `Validate` button

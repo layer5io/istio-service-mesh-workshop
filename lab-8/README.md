@@ -5,18 +5,18 @@ In this lab we will learn how to test the resiliency of an application by inject
 Before we start let us reset the route rules:
 Istio 0.7.1:
 ```sh
-istioctl delete -f deployment_files/istio-0.7.1/route-rule-all-v1.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/route-rule-all-v1.yaml | istioctl delete -f - 
 
-istioctl create -f deployment_files/istio-0.7.1/route-rule-all-v1.yaml
-istioctl replace -f deployment_files/istio-0.7.1/route-rule-reviews-test-v2.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/route-rule-all-v1.yaml | istioctl create -f - 
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/route-rule-reviews-test-v2.yaml | istioctl replace -f - 
 ```
 
 Istio 0.8.0:
 ```sh
-istioctl delete -f deployment_files/istio-0.8.0/route-rule-all-v1.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-all-v1.yaml | istioctl delete -f - 
 
-istioctl create -f deployment_files/istio-0.8.0/route-rule-all-v1.yaml
-istioctl replace -f deployment_files/istio-0.8.0/route-rule-reviews-test-v2.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-all-v1.yaml | istioctl create -f - 
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-reviews-test-v2.yaml | istioctl replace -f - 
 ```
 
 ## Inject a route rule to create a fault using HTTP delay
@@ -25,12 +25,12 @@ To start, we will inject a 7s delay between the reviews v2 and ratings service f
 
 Istio 0.7.1:
 ```sh
-istioctl replace -f deployment_files/istio-0.7.1/route-rule-ratings-test-delay.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/route-rule-ratings-test-delay.yaml | istioctl replace -f - 
 ```
 
 Istio 0.8.0:
 ```sh
-istioctl replace -f deployment_files/istio-0.8.0/route-rule-ratings-test-delay.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-ratings-test-delay.yaml | istioctl replace -f - 
 ```
 
 
@@ -76,12 +76,12 @@ In this section, , we will introduce an HTTP abort to the ratings microservices 
 
 Istio 0.7.1:
 ```sh
-istioctl replace -f deployment_files/istio-0.7.1/route-rule-ratings-test-abort.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/route-rule-ratings-test-abort.yaml | istioctl replace -f - 
 ```
 
 Istio 0.8.0:
 ```sh
-istioctl replace -f deployment_files/istio-0.8.0/route-rule-ratings-test-abort.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-ratings-test-abort.yaml | istioctl replace -f - 
 ```
 
 To confirm the rule is in place:

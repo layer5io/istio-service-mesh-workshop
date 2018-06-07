@@ -10,12 +10,12 @@ Set the default version for all requests to v1 of all service using :
 
 Istio 0.7.1:
 ```sh
-istioctl create -f deployment_files/istio-0.7.1/route-rule-all-v1.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/route-rule-all-v1.yaml | istioctl create -f - 
 ```
 
 Istio 0.8.0:
 ```sh
-istioctl create -f deployment_files/istio-0.8.0/route-rule-all-v1.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-all-v1.yaml | istioctl create -f - 
 ```
 
 
@@ -55,12 +55,12 @@ Lets enable the ratings service for test user `jason` by routing productpage tra
 
 Istio 0.7.1:
 ```sh
-istioctl replace -f deployment_files/istio-0.8.0/route-rule-reviews-test-v2.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-reviews-test-v2.yaml | istioctl replace -f - 
 ```
 
 Istio 0.8.0:
 ```sh
-istioctl replace -f deployment_files/istio-0.8.0/route-rule-reviews-test-v2.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-reviews-test-v2.yaml | istioctl replace -f - 
 ```
 
 To view the applied rule:
@@ -105,14 +105,14 @@ Before we start the next exercise, lets first reset the routing rules created in
 
 Istio 0.7.1:
 ```sh
-istioctl delete -f deployment_files/istio-0.7.1/route-rule-all-v1.yaml
-istioctl create -f deployment_files/istio-0.7.1/route-rule-all-v1.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/route-rule-all-v1.yaml | istioctl delete -f - 
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/route-rule-all-v1.yaml | istioctl create -f - 
 ```
 
 Istio 0.8.0:
 ```sh
-istioctl delete -f deployment_files/istio-0.8.0/route-rule-all-v1.yaml
-istioctl create -f deployment_files/istio-0.8.0/route-rule-all-v1.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-all-v1.yaml | istioctl delete -f - 
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-all-v1.yaml | istioctl create -f - 
 ```
 
 Currently the routing rule only routes to `v1` of all the services. 
@@ -121,12 +121,12 @@ First, lets transfer 50% of the traffic from reviews:v1 to reviews:v3 with the f
 
 Istio 0.7.1:
 ```sh
-istioctl replace -f deployment_files/istio-0.7.1/route-rule-reviews-50-v3.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/route-rule-reviews-50-v3.yaml | istioctl replace -f - 
 ```
 
 Istio 0.8.0:
 ```sh
-istioctl replace -f deployment_files/istio-0.8.0/route-rule-reviews-50-v3.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-reviews-50-v3.yaml | istioctl replace -f - 
 ```
 
 To confirm the rule was applied:
@@ -163,12 +163,12 @@ When version v3 of the reviews microservice is considered stable, we can route 1
 
 Istio 0.7.1:
 ```sh
-istioctl replace -f deployment_files/istio-0.7.1/route-rule-reviews-v3.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/route-rule-reviews-v3.yaml | istioctl replace -f - 
 ```
 
 Istio 0.8.0:
 ```sh
-istioctl replace -f deployment_files/istio-0.8.0/route-rule-reviews-v3.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-reviews-v3.yaml | istioctl replace -f - 
 ```
 
 To confirm the rule was applied:

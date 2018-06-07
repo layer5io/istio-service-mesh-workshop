@@ -19,12 +19,12 @@ We have developed an Istio [Mixer Adapter](https://github.com/solarwinds/istio-a
 
 On Istio 0.7.1:
 ```sh
-kubectl apply -f deployment_files/istio-0.7.1/istio-0.7.1.yaml
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/istio-0.7.1.yaml
 ```
 
 On Istio 0.8.0:
 ```sh
-kubectl apply -f deployment_files/istio-0.8.0/istio-0.8.0.yaml
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/istio-0.8.0.yaml
 ```
 
 
@@ -32,12 +32,12 @@ kubectl apply -f deployment_files/istio-0.8.0/istio-0.8.0.yaml
 
 On Istio 0.7.1:
 ```sh
-kubectl apply -f deployment_files/istio-0.7.1/istio-solarwinds-0.7.1.yaml
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/istio-solarwinds-0.7.1.yaml
 ```
 
 On Istio 0.8.0:
 ```sh
-kubectl apply -f deployment_files/istio-0.8.0/istio-solarwinds-0.8.0.yaml
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/istio-solarwinds-0.8.0.yaml
 ```
 
 ## <a name="2"></a> 2 - Verify install
@@ -99,7 +99,7 @@ Service graph is another add-on which can be used to generate a graph of service
 On Istio 0.7.1, you can deploy prometheus by running the following command:
 
 ```sh
-kubectl apply -f deployment_files/istio-0.7.1/prometheus.yaml
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/prometheus.yaml
 ```
 
 On Istio 0.8.0, prometheus is deployed as part of `istio-0.8.0.yaml` or `istio-solarwinds-0.8.0.yaml`.
@@ -107,7 +107,7 @@ On Istio 0.8.0, prometheus is deployed as part of `istio-0.8.0.yaml` or `istio-s
 
 To deploy grafana:
 ```sh
-kubectl apply -f deployment_files/istio-0.7.1/grafana.yaml
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/grafana.yaml
 ```
 
 By default prometheus and grafana are deployed as ClusterIP type services. We can access the services outside by either changing the type to LoadBalancer or NodePort or by port forwarding or configure Istio Ingress. I will briefly show using NodePort and port forwarding here.
@@ -164,7 +164,7 @@ Port forward runs in the foreground. We have appeneded '&' to the end of the abo
 On Istio 0.7.1, we can deploy Zipkin by:
 
 ```sh
-kubectl apply -f deployment_files/istio-0.7.1/zipkin.yaml
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/zipkin.yaml
 ```
 
 You can follow similar steps as described above to expose this service as well.
@@ -200,7 +200,7 @@ kubectl port-forward -n istio-system $(kubectl get pod -n istio-system -l app=ja
 On Istio 0.7.1, we can deploy service graph by:
 
 ```sh
-kubectl apply -f deployment_files/istio-0.7.1/servicegraph.yaml
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/servicegraph.yaml
 ```
 
 You can follow similar steps as described above to expose this service as well.

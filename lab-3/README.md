@@ -140,12 +140,12 @@ Now that we have the sidecar injector with mutating webhook in place and the nam
 
 Istio 0.7.1:
 ```sh
-kubectl apply -f deployment_files/istio-0.7.1/bookinfo.yaml
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/bookinfo.yaml
 ```
 
 Istio 0.8.0:
 ```sh
-kubectl apply -f deployment_files/istio-0.8.0/bookinfo.yaml
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/bookinfo.yaml
 ```
 
 
@@ -155,12 +155,12 @@ To do a manual sidecar injection we will be using `istioctl` command:
 
 Istio 0.7.1:
 ```sh
-istioctl kube-inject -f deployment_files/istio-0.7.1/bookinfo.yaml > deployment_files/istio-0.7.1/newBookInfo.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/bookinfo.yaml | istioctl kube-inject -f - > newBookInfo.yaml
 ```
 
 Istio 0.8.0:
 ```sh
-istioctl kube-inject -f deployment_files/istio-0.8.0/bookinfo.yaml > deployment_files/istio-0.8.0/newBookInfo.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/bookinfo.yaml | istioctl kube-inject -f - > newBookInfo.yaml
 ```
 
 Observing the new yaml file reveals that additional container Istio Proxy has been added to the Pods with necessary configurations:
@@ -172,25 +172,20 @@ name: istio-proxy
 ```
 
 We need to now deploy the new yaml using `kubectl`
-Istio 0.7.1:
+Istio 0.7.1 & Istio 0.8.0:
 ```sh
-kubectl apply -f deployment_files/istio-0.7.1/newBookInfo.yaml
-```
-
-Istio 0.8.0:
-```sh
-kubectl apply -f deployment_files/istio-0.8.0/newBookInfo.yaml
+kubectl apply -f newBookInfo.yaml
 ```
 
 To do both in a single command:
 Istio 0.7.1:
 ```sh
-kubectl apply -f <(istioctl kube-inject -f deployment_files/istio-0.7.1/bookinfo.yaml)
+kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/bookinfo.yaml | istioctl kube-inject -f -)
 ```
 
 Istio 0.8.0:
 ```sh
-kubectl apply -f <(istioctl kube-inject -f deployment_files/istio-0.8.0/bookinfo.yaml)
+kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/bookinfo.yaml | istioctl kube-inject -f -)
 ```
 
 ### Verify Bookinfo deployment

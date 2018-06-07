@@ -9,23 +9,23 @@ Let us start by deploying a simpler application to test circuit breaking:
 With manual sidecar injection:
 Istio 0.7.1:
 ```sh
-kubectl apply -f <(istioctl kube-inject --debug -f deployment_files/istio-0.7.1/httpbin.yaml)
+kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/httpbin.yaml | istioctl kube-inject --debug -f -)
 ```
 
 Istio 0.8.0:
 ```sh
-kubectl apply -f <(istioctl kube-inject --debug -f deployment_files/istio-0.8.0/httpbin.yaml)
+kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/httpbin.yaml | istioctl kube-inject --debug -f -)
 ```
 
 With automatic sidecar injector:
 Istio 0.7.1:
 ```sh
-kubectl apply -f deployment_files/istio-0.7.1/httpbin.yaml
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/httpbin.yaml
 ```
 
 Istio 0.8.0:
 ```sh
-kubectl apply -f deployment_files/istio-0.8.0/httpbin.yaml
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/httpbin.yaml
 ```
 
 
@@ -33,34 +33,34 @@ Let us then deploy a client which is capable of talking to the httpbin service:
 With manual sidecar injection:
 Istio 0.7.1:
 ```sh
-kubectl apply -f <(istioctl kube-inject --debug -f deployment_files/istio-0.7.1/fortio-deploy.yaml)
+kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/fortio-deploy.yaml | istioctl kube-inject --debug -f -)
 ```
 
 Istio 0.8.0:
 ```sh
-kubectl apply -f <(istioctl kube-inject --debug -f deployment_files/istio-0.8.0/fortio-deploy.yaml)
+kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/fortio-deploy.yaml | istioctl kube-inject --debug -f -)
 ```
 
 With automatic sidecar injector:
 Istio 0.7.1:
 ```sh
-kubectl apply -f deployment_files/istio-0.7.1/fortio-deploy.yaml
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/fortio-deploy.yaml
 ```
 
 Istio 0.8.0:
 ```sh
-kubectl apply -f deployment_files/istio-0.8.0/fortio-deploy.yaml
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/fortio-deploy.yaml
 ```
 
 It is time to configure circuit breaking using a destination rule:
 Istio 0.7.1:
 ```sh
-istioctl create -f deployment_files/istio-0.7.1/circuit-breaking.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/circuit-breaking.yaml | istioctl create -f - 
 ```
 
 Istio 0.8.0:
 ```sh
-istioctl create -f deployment_files/istio-0.8.0/circuit-breaking.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/circuit-breaking.yaml | istioctl create -f - 
 ```
 
 To confirm the rule is in place:
