@@ -67,7 +67,14 @@ spec:
         subset: v1
 ```
 
-Now we login to `/productpage` as user `jason` and observe that the page loads but because of the induced delay between services the reviews section will show `Sorry, product reviews are currently unavailable for this book`.
+Now we login to `/productpage` as user `jason` and observe that the page loads but because of the induced delay between services the reviews section will show :
+
+<pre>
+        <b>Error fetching product reviews!</b>
+
+Sorry, product reviews are currently unavailable for this book.
+</pre>
+
 If you logout or login as a different user, the page should load normally without any errors.
 
 ## Inject a route rule to create a fault using HTTP abort
@@ -117,7 +124,10 @@ spec:
         subset: v1
 ```
 
-Now we login to `/productpage` as user `jason` and observe that the page loads without any new delays but because of the induced fault between services the reviews section will show `product ratings not available`.
+Now we login to `/productpage` as user `jason` and observe that the page loads without any new delays but because of the induced fault between services the reviews section will show:
+
+ `Ratings service is currently unavailable`.
+
 If you logout or login as a different user, the page should load normally without any errors.
 
 

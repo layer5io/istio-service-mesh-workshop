@@ -20,7 +20,7 @@ curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/ma
 
 
 
-This creates a bunch of `routerule` or `virtualservice` and `destinationrule` entries which route calls to v1 of the services.
+This creates a bunch of `virtualservice` and `destinationrule` entries which route calls to v1 of the services.
 
 To view the applied rule:
 ```sh
