@@ -31,9 +31,9 @@ In `PWK`, once you have exposed zipkin on a port by using any of the specified m
 ![](img/zipkin_2.png)
 
 ### Jaeger
-If you have deployed Istio 0.8.0 using `istio-0.8.0.yaml` or `istio-solarwinds-0.8.0.yaml`, jaeger service should already be exposed.
+If you have deployed Istio 0.8.0 using `istio-0.8.0.yaml` or `istio-solarwinds-0.8.0.yaml`, jaeger service should already be exposed on a port.
 
-On Istio 0.7.1, if you have not already deployed and exposed jaeger, please follow [lab-2](../lab-2/README.md). 
+On Istio 0.7.1, if you have not already deployed and exposed jaeger on a port, please follow [lab-2](../lab-2/README.md). 
 
 In `PWK`, once jaeger service is exposed on a port by using any of the specified methods, it will appear at the top of the page as a hyperlink. You can click on the link at the top of the page which maps to the right port and it will open Jaeger UI in a new tab. 
 

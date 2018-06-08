@@ -213,18 +213,9 @@ kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-servi
 
     Now let us pick a service, for instance productpage service, and view it's sidecar configuration:
     ```sh
+    kubectl get po
+
     kubectl describe pod productpage-v1-.....
-    ```
-
-    Let us get into the sidecar proxy and view its configuration:
-    ```sh
-    kubectl exec -it productpage-v1-..... -c istio-proxy bash
-    ```
-
-    Now that we are in the container, let us view the envoy configuration:
-    ```sh
-    more /etc/istio/proxy/envoy-rev0.json
-    exit
     ```
 
 #### [Continue to lab 4 - Expose Bookinfo site through Istio Ingress Controller/Gateway](../lab-4/README.md)

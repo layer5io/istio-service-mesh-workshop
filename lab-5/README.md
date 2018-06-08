@@ -21,6 +21,8 @@ kubectl -n istio-system exec -it istio-policy-... -c istio-proxy -- sh
 
 ```sh
 curl localhost:9093/metrics
+
+exit
 ```
 
 ## Generate Bookinfo Telemetry data
@@ -41,6 +43,8 @@ Once we have the port, we can append the IP of one of the nodes to get the host.
 ```sh
 export INGRESS_HOST="<IP>:$INGRESS_PORT"
 ```
+
+***Please note:*** If using Docker for Mac or Windows for Istio, INGRESS_HOST should be set to `localhost:80`
 
 Now, let us generate a small load on the sample app by using [fortio](https://github.com/istio/fortio) which is a load testing library created by the `Istio` team:
 

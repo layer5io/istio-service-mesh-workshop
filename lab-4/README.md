@@ -3,7 +3,7 @@
 The components deployed on the service mesh by default are not exposed outside the cluster. External access to individual services so far has been provided by creating an external load balancer on each service.
 
 In Istio-0.7.1, a Kubernetes Ingress rule can be created that routes external requests through the Istio Ingress Controller to the backing services.
-In Istio-0.8.0, things are a little different. An ingress gateway service is deployed as a LoadBalancer service. For making Bookinfo accessible from outside, we create an `Istio Gateway` for the service and also define a `Istio VirtualService` for Bookinfo with the routes we need.
+In Istio-0.8.0, things are a little different. An ingress gateway service is deployed as a LoadBalancer service. For making Bookinfo accessible from outside, we have to create an `Istio Gateway` for the service and also define an `Istio VirtualService` for Bookinfo with the routes we need.
 
 ## Inspecting the Istio Ingress controller/gateway
 
@@ -21,14 +21,14 @@ kubectl get svc istio-ingressgateway -n istio-system -o yaml
 
 Because the Istio Ingress Controller/Gateway is an Envoy Proxy you can inspect it using the admin routes.  First find the name of the istio ingress proxy:
 
-For Istio 0.7.1:
+On Istio 0.7.1:
 ```sh
 kubectl get pods -n istio-system
 kubectl -n istio-system exec -it istio-ingress-... bash
 ```
 
 
-For Istio 0.8.0:
+On Istio 0.8.0:
 ```sh
 kubectl get pods -n istio-system
 kubectl -n istio-system exec -it istio-ingressgateway-... bash
@@ -47,8 +47,15 @@ curl localhost:15000/server_info
 
 See the [admin docs](https://www.envoyproxy.io/docs/envoy/latest/operations/admin) for more details.
 
-Also it can be helpful to look at the log files of the Istio ingress controller to see what request is being routed.  First find the ingress pod and output the log files:
+Also it can be helpful to look at the log files of the Istio ingress controller to see what request is being routed. We should also be able to view the `curl` calls we just made from inside the ingressgateway. Let us first find the ingress pod and output the log files:
 
+
+On Istio 0.7.1:
+```sh
+kubectl logs istio-ingress-... -n istio-system
+```
+
+On Istio 0.8.0:
 ```sh
 kubectl logs istio-ingressgateway-... -n istio-system
 ```
@@ -150,6 +157,8 @@ curl localhost:15000/listeners
 curl localhost:15000/routes
 curl localhost:15000/clusters
 curl localhost:15000/server_info
+
+exit
 ```
 
 See the [admin docs](https://www.envoyproxy.io/docs/envoy/v1.5.0/operations/admin) for more details.

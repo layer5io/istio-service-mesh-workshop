@@ -15,12 +15,12 @@ curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/ma
 
 Istio 0.8.0:
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-all-v1.yaml | istioctl create -f - 
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-all-v1-mtls.yaml | istioctl create -f - 
 ```
 
 
 
-This creates a bunch of `virtualservice` entries which route calls to v1 of the services.
+This creates a bunch of `virtualservice` and `destinationrule` entries which route calls to v1 of the services.
 
 To view the applied rule:
 ```sh
