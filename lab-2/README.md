@@ -116,11 +116,6 @@ Istio 0.7.1:
 kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/grafana.yaml
 ```
 
-Istio 0.8.0:
-```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/grafana.yaml
-```
-
 By default prometheus and grafana are deployed as ClusterIP type services. We can access the services outside by either changing the type to LoadBalancer or NodePort or by port forwarding or configure Istio Ingress. I will briefly show using NodePort and port forwarding here.
 
 #### Exposing with NodePort

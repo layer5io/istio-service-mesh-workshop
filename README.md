@@ -17,11 +17,13 @@ Initially presented at [DockerCon 2018](https://dockercon18.smarteventscloud.com
 
 ## Traffic Control
 - [Lab 7 - Request Routing and Canary Testing](lab-7/README.md)
-- [Lab 8 - Circuit Breaking](lab-8/README.md)
-- [Lab 9 - Fault Injection](lab-9/README.md)
+- [Lab 8 - Fault Injection](lab-8/README.md)
 
 ## Security
-- [Lab 10 - Mutual TLS & Identity Verification](lab-10/README.md)
+- [Lab 9 - Mutual TLS & Identity Verification](lab-9/README.md)
+
+## Traffic Control (without mTLS)
+- [Lab 10 - Circuit Breaking](lab-10/README.md)
 
 ## Authors
 * [Lee Calcote](http://twitter.com/lcalcote)

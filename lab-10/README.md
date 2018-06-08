@@ -1,140 +1,178 @@
-# lab 10 - Mutual TLS
+# lab 9 - Circuit Breaking
 
-Istio provides transparent mutal TLS to services inside the service mesh where both the client and the server authenticate each others certificates as part of the TLS handshake.
+In this lab we will configure circuit breaking using Istio.
 
-As part of our deployment with `istio-0.7.1.yaml` or `istio-0.8.0.yaml` or 
-`istio-solarwinds-0.7.1.yaml` or `istio-solarwinds-0.8.0.yaml`, we have deployed Istio with mTLS.
+## Configure circuit breaking
+Based on our testing circuit breaking has issues with mTLS.
 
-## Verify mTLS
-To verify mTLS is enabled:
+Let us turn off mTLS. To turn off mTLS we will have to edit the configmap:
 ```sh
-kubectl get configmap istio -o yaml -n istio-system | grep authPolicy | head -1
+kubectl edit configmap -n istio-system istio
 ```
 
-If it is enabled you will see output similar to the below from above command:
+Please **comment** out 2 lines as below:
 ```sh
-    authPolicy: MUTUAL_TLS
+    # authPolicy: MUTUAL_TLS
+    ...
+    # controlPlaneAuthPolicy: MUTUAL_TLS
 ```
 
-To experiment with mTLS, let us get into the sidecar proxy of productpage page by running the command below:
+Now save the file and exit the editor.
+
+Then, lets kill istio-pilot pods allowing it to reload:
 ```sh
-kubectl exec -it $(kubectl get pod | grep productpage | awk '{ print $1 }') -c istio-proxy -- /bin/bash
+kubectl delete pods -n istio-system -l istio=pilot
 ```
 
-We are now in the sidecar of the productpage pod. Let us check all the ceritificates loaded in the sidecar:
+Please give it a few minutes to restart and get back to running state.
+
+
+
+Now, let us start by deploying a simpler application to test circuit breaking:
+
+
+***With manual sidecar injection:***
+
+Istio 0.7.1:
 ```sh
-ls /etc/certs/
+kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/httpbin.yaml | istioctl kube-inject --debug -f -)
 ```
 
-You should see 3 entries:
+Istio 0.8.0:
 ```sh
-cert-chain.pem  key.pem  root-cert.pem
+kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/httpbin.yaml | istioctl kube-inject --debug -f -)
 ```
 
-Let us try to make a curl call to the details service over HTTP
+***With automatic sidecar injector:***
+
+Istio 0.7.1:
 ```sh
-curl http://details:9080/details/0
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/httpbin.yaml
 ```
 
-Since, we have TLS between the sidecar's, an HTTP call will not work. You will see an error like the one below:
+Istio 0.8.0:
 ```sh
-curl: (56) Recv failure: Connection reset by peer
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/httpbin.yaml
 ```
 
-Let us try to make a curl call to the details service over HTTPS but **WITHOUT** certs:
+
+Let us then deploy a client which is capable of talking to the httpbin service:
+
+***With manual sidecar injection:***
+
+Istio 0.7.1:
 ```sh
-curl https://details:9080/details/0 -k
+kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/fortio-deploy.yaml | istioctl kube-inject --debug -f -)
 ```
 
-The request will be denied and you will see an error like the one below:
+Istio 0.8.0:
 ```sh
-curl: (35) gnutls_handshake() failed: Handshake failed
+kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/fortio-deploy.yaml | istioctl kube-inject --debug -f -)
 ```
 
-Now, let us use curl over HTTPS with certificates to the details service:
+***With automatic sidecar injector:***
+
+Istio 0.7.1:
 ```sh
-curl https://details:9080/details/0 -v --key /etc/certs/key.pem --cert /etc/certs/cert-chain.pem --cacert /etc/certs/root-cert.pem -k
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/fortio-deploy.yaml
 ```
 
-Output will be similar to this:
+Istio 0.8.0:
 ```sh
-*   Trying 10.107.35.26...
-* Connected to details (10.107.35.26) port 9080 (#0)
-* found 1 certificates in /etc/certs/root-cert.pem
-* found 0 certificates in /etc/ssl/certs
-* ALPN, offering http/1.1
-* SSL connection using TLS1.2 / ECDHE_RSA_AES_128_GCM_SHA256
-*        server certificate verification SKIPPED
-*        server certificate status verification SKIPPED
-* error fetching CN from cert:The requested data were not available.
-*        common name:  (does not match 'details')
-*        server certificate expiration date OK
-*        server certificate activation date OK
-*        certificate public key: RSA
-*        certificate version: #3
-*        subject: O=#1300
-*        start date: Thu, 07 Jun 2018 14:36:56 GMT
-*        expire date: Wed, 05 Sep 2018 14:36:56 GMT
-*        issuer: O=k8s.cluster.local
-*        compression: NULL
-* ALPN, server accepted to use http/1.1
-> GET /details/0 HTTP/1.1
-> Host: details:9080
-> User-Agent: curl/7.47.0
-> Accept: */*
->
-< HTTP/1.1 200 OK
-< content-type: application/json
-< server: envoy
-< date: Thu, 07 Jun 2018 15:19:46 GMT
-< content-length: 178
-< x-envoy-upstream-service-time: 1
-< x-envoy-decorator-operation: default-route
-<
-* Connection #0 to host details left intact
-{"id":0,"author":"William Shakespeare","year":1595,"type":"paperback","pages":200,"publisher":"PublisherA","language":"English","ISBN-10":"1234567890","ISBN-13":"123-1234567890"}
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/fortio-deploy.yaml
 ```
 
-This proves the existence of mTLS between the services on the Istio mesh.
-
-
-## SPIFFE
-
-Istio uses SPIFFE to assert the identify of workloads on the cluster. SPIFFE is a very simple standard. It consists of a notion of identity and a method of proving it. A SPIFFE identity consists of an authority part and a path. The meaning of the path in spiffe land is implementation defined. In k8s it takes the form `/ns/$namespace/sa/$service-account` with the expected meaning. A SPIFFE identify is embedded in a document. This document in principle can take many forms but currently the only defined format is x509. Let's see what an SPIFFE x509 looks like. Remember those certificates we stole earlier? Execute the below snippet either in the directory where you have the certificates locally, if you have `openssl` installed.
-
-
-Let us grab the certs from the productpage sidecar place it in `tmp` directory:
+To make testing easier, let us create an alias to execute `load` inside the httpbin client we created above:
 ```sh
-mkdir ~/tmp
-cd ~/tmp
-fs=(key.pem cert-chain.pem root-cert.pem)
-for f in ${fs[@]}; do kubectl exec -c istio-proxy $pp /bin/cat -- /etc/certs/$f >$f; done
+alias load="kubectl exec -it $(kubectl get pod | grep fortio | awk '{ print $1 }') -c fortio /usr/local/bin/fortio -- load"
 ```
 
-
-To investigate the ceritificate we need openssl. `PWK` hosts don't come installed with openssl. Let us proceed with installing it:
-```
-yum install -y openssl
-```
-
-Now that we have openssl installed and the certificate files in place, let us investigate the certificate:
-```
-openssl x509 -in cert-chain.pem -text | less
-```
-
-The important thing to notice is that the subject isn't what you'd normally expect. It has no meaning here. What is interesting is the URI SAN extension. Note the SPIFFE identify. 
-
+Let us make a call to the httpbin service from the client using the `alias` we just created:
 ```sh
-    X509v3 Subject Alternative Name:
-        URI:spiffe://cluster.local/ns/default/sa/default
+load -curl  http://httpbin:8000/get
+```
+
+You should see an output similar to this:
+```sh
+HTTP/1.1 200 OK
+server: envoy
+date: Tue, 16 Jan 2018 23:47:00 GMT
+content-type: application/json
+access-control-allow-origin: *
+access-control-allow-credentials: true
+content-length: 445
+x-envoy-upstream-service-time: 36
+
+{
+  "args": {},
+  "headers": {
+    "Content-Length": "0",
+    "Host": "httpbin:8000",
+    "User-Agent": "istio/fortio-0.6.2",
+    "X-B3-Sampled": "1",
+    "X-B3-Spanid": "824fbd828d809bf4",
+    "X-B3-Traceid": "824fbd828d809bf4",
+    "X-Ot-Span-Context": "824fbd828d809bf4;824fbd828d809bf4;0000000000000000",
+    "X-Request-Id": "1ad2de20-806e-9622-949a-bd1d9735a3f4"
+  },
+  "origin": "127.0.0.1",
+  "url": "http://httpbin:8000/get"
+}
+```
+
+Now that we have the needed service in place, it is time to configure circuit breaking using a destination rule:
+
+Istio 0.7.1:
+```sh
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/circuit-breaking.yaml | istioctl create -f - 
+```
+
+Istio 0.8.0:
+```sh
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/circuit-breaking.yaml | istioctl create -f - 
+```
+
+To confirm the rule is in place:
+```sh
+istioctl get destinationrule httpbin -o yaml
+```
+
+Output:
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: httpbin
+  ...
+spec:
+  host: httpbin
+  trafficPolicy:
+    connectionPool:
+      http:
+        http1MaxPendingRequests: 1
+        maxRequestsPerConnection: 1
+      tcp:
+        maxConnections: 100
+    outlierDetection:
+      http:
+        baseEjectionTime: 180.000s
+        consecutiveErrors: 1
+        interval: 1.000s
+        maxEjectionPercent: 100
 ```
 
 
+## Time to trip the circuit
+In the circuit-breaking settings, we specified maxRequestsPerConnection: 1 and http1MaxPendingRequests: 1. This should mean that if we exceed more than one request per connection and more than one pending request, we should see the istio-proxy sidecar open the circuit for further requests/connections. 
 
-There is one more part to SPIFFE identity, and that's a signing authority. This a CA certificate with a SPIFFE identify with _no_ path component.
-
+Let us make 50 calls using 4 concurrent connections:
+```sh
+load -c 4 -qps 0 -n 50 -loglevel Warning http://httpbin:8000/get
 ```
-openssl verify -CAfile root-cert.pem cert-chain.pem
+
+To view the results of the test we can talk to the istio-proxy sidecar for some stats:
+```sh
+kubectl exec -it $(kubectl get pod | grep fortio | awk '{ print $1 }')  -c istio-proxy  -- sh -c 'curl localhost:15000/stats' | grep httpbin | grep pending
 ```
 
 
