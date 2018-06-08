@@ -16,13 +16,12 @@ We have developed an Istio [Mixer Adapter](https://github.com/solarwinds/istio-a
 
 ### <a name="noaolg"></a>Installing istio **WITHOUT** Appoptics and Loggly Tokens
 
-
-On Istio 0.7.1:
+For Istio 0.7.1:
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/istio-0.7.1.yaml
 ```
 
-On Istio 0.8.0:
+For Istio 0.8.0:
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/istio-0.8.0.yaml
 ```
@@ -30,14 +29,20 @@ kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh
 
 ### <a name="aolg"></a>Installing istio with Appoptics and Loggy Tokens
 
-On Istio 0.7.1:
+We will proceed with deploying Istio under the presumption that you have obtained Appoptics and Loggly API tokens and have stored them as environment variables `AOTOKEN` and `LOGGLY_TOKEN` respectively. If you would like to use one and not the other, please set an empty value to the respective environemt variable.
+
+For Istio 0.7.1:
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/istio-solarwinds-0.7.1.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/istio-solarwinds-0.8.0.yaml | sed "s/<appoptics token>/$AOTOKEN/g" | sed "s/<loggly token>/$LOGGLY_TOKEN/g" > istio.yaml
+
+kubectl apply -f istio.yaml
 ```
 
-On Istio 0.8.0:
+For Istio 0.8.0:
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/istio-solarwinds-0.8.0.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/istio-solarwinds-0.8.0.yaml | sed "s/<appoptics token>/$AOTOKEN/g" | sed "s/<loggly token>/$LOGGLY_TOKEN/g" > istio.yaml
+
+kubectl apply -f istio.yaml
 ```
 
 ## <a name="2"></a> 2 - Verify install
