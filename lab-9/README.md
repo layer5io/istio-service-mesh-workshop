@@ -6,7 +6,8 @@ In this lab we will configure circuit breaking using Istio.
 Let us start by deploying a simpler application to test circuit breaking:
 
 
-With manual sidecar injection:
+***With manual sidecar injection:***
+
 Istio 0.7.1:
 ```sh
 kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/httpbin.yaml | istioctl kube-inject --debug -f -)
@@ -17,7 +18,8 @@ Istio 0.8.0:
 kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/httpbin.yaml | istioctl kube-inject --debug -f -)
 ```
 
-With automatic sidecar injector:
+***With automatic sidecar injector:***
+
 Istio 0.7.1:
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/httpbin.yaml
@@ -30,7 +32,9 @@ kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh
 
 
 Let us then deploy a client which is capable of talking to the httpbin service:
-With manual sidecar injection:
+
+***With manual sidecar injection:***
+
 Istio 0.7.1:
 ```sh
 kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/fortio-deploy.yaml | istioctl kube-inject --debug -f -)
@@ -41,7 +45,8 @@ Istio 0.8.0:
 kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/fortio-deploy.yaml | istioctl kube-inject --debug -f -)
 ```
 
-With automatic sidecar injector:
+***With automatic sidecar injector:***
+
 Istio 0.7.1:
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/fortio-deploy.yaml
@@ -50,46 +55,6 @@ kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh
 Istio 0.8.0:
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/fortio-deploy.yaml
-```
-
-It is time to configure circuit breaking using a destination rule:
-Istio 0.7.1:
-```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/circuit-breaking.yaml | istioctl create -f - 
-```
-
-Istio 0.8.0:
-```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/circuit-breaking.yaml | istioctl create -f - 
-```
-
-To confirm the rule is in place:
-```sh
-istioctl get destinationrule httpbin -o yaml
-```
-
-Output:
-```yaml
-apiVersion: networking.istio.io/v1alpha3
-kind: DestinationRule
-metadata:
-  name: httpbin
-  ...
-spec:
-  host: httpbin
-  trafficPolicy:
-    connectionPool:
-      http:
-        http1MaxPendingRequests: 1
-        maxRequestsPerConnection: 1
-      tcp:
-        maxConnections: 100
-    outlierDetection:
-      http:
-        baseEjectionTime: 180.000s
-        consecutiveErrors: 1
-        interval: 1.000s
-        maxEjectionPercent: 100
 ```
 
 To make testing easier, let us create an alias to execute `load` inside the httpbin client we created above:
@@ -130,6 +95,48 @@ x-envoy-upstream-service-time: 36
 }
 ```
 
+Now that we have the needed service in place, it is time to configure circuit breaking using a destination rule:
+
+Istio 0.7.1:
+```sh
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/circuit-breaking.yaml | istioctl create -f - 
+```
+
+Istio 0.8.0:
+```sh
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/circuit-breaking.yaml | istioctl create -f - 
+```
+
+To confirm the rule is in place:
+```sh
+istioctl get destinationrule httpbin -o yaml
+```
+
+Output:
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: httpbin
+  ...
+spec:
+  host: httpbin
+  trafficPolicy:
+    connectionPool:
+      http:
+        http1MaxPendingRequests: 1
+        maxRequestsPerConnection: 1
+      tcp:
+        maxConnections: 100
+    outlierDetection:
+      http:
+        baseEjectionTime: 180.000s
+        consecutiveErrors: 1
+        interval: 1.000s
+        maxEjectionPercent: 100
+```
+
+
 ## Time to trip the circuit
 In the circuit-breaking settings, we specified maxRequestsPerConnection: 1 and http1MaxPendingRequests: 1. This should mean that if we exceed more than one request per connection and more than one pending request, we should see the istio-proxy sidecar open the circuit for further requests/connections. 
 
@@ -142,7 +149,5 @@ To view the results of the test we can talk to the istio-proxy sidecar for some 
 ```sh
 kubectl exec -it $(kubectl get pod | grep fortio | awk '{ print $1 }')  -c istio-proxy  -- sh -c 'curl localhost:15000/stats' | grep httpbin | grep pending
 ```
-
-The stats will give you the exact number of requests which overflew.
 
 #### [Continue to lab 10 - Istio Mutual TLS](../lab-10/README.md)
