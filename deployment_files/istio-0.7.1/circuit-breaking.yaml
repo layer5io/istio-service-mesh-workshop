@@ -3,7 +3,7 @@ kind: DestinationRule
 metadata:
   name: httpbin
 spec:
-  host: httpbin
+  name: httpbin
   trafficPolicy:
     connectionPool:
       tcp:
