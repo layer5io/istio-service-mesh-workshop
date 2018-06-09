@@ -158,18 +158,26 @@ To do a manual sidecar injection we will be using `istioctl` command:
 
 Istio 0.7.1:
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/bookinfo.yaml | istioctl kube-inject -f - > newBookInfo.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/bookinfo.yaml | istioctl kube-inject --debug -f - > newBookInfo.yaml
 ```
 
 Istio 0.8.0:
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/bookinfo.yaml | istioctl kube-inject -f - > newBookInfo.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/bookinfo.yaml | istioctl kube-inject --debug -f - > newBookInfo.yaml
 ```
 
 Observing the new yaml file reveals that additional container Istio Proxy has been added to the Pods with necessary configurations:
 
 ```
 image: docker.io/istio/proxy:0.7.1
+imagePullPolicy: IfNotPresent
+name: istio-proxy
+```
+
+(OR)
+
+```
+image: docker.io/istio/proxy_debug:0.7.1
 imagePullPolicy: IfNotPresent
 name: istio-proxy
 ```
@@ -183,12 +191,12 @@ kubectl apply -f newBookInfo.yaml
 To do both in a single command:
 Istio 0.7.1:
 ```sh
-kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/bookinfo.yaml | istioctl kube-inject -f -)
+kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/bookinfo.yaml | istioctl kube-inject --debug -f -)
 ```
 
 Istio 0.8.0:
 ```sh
-kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/bookinfo.yaml | istioctl kube-inject -f -)
+kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/bookinfo.yaml | istioctl kube-inject --debug -f -)
 ```
 
 ### Verify Bookinfo deployment

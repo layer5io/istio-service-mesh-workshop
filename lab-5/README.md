@@ -12,6 +12,9 @@ kubectl get pods -n istio-system
 Istio 0.7.1:
 ```sh
 kubectl -n istio-system exec -it istio-mixer-... -c istio-proxy -- sh
+
+apt-get update
+apt-get install -y curl
 ```
 
 Istio 0.8.0:

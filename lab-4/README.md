@@ -25,6 +25,9 @@ On Istio 0.7.1:
 ```sh
 kubectl get pods -n istio-system
 kubectl -n istio-system exec -it istio-ingress-... bash
+
+apt-get update
+apt-get install -y curl
 ```
 
 

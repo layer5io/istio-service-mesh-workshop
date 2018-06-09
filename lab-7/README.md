@@ -55,7 +55,7 @@ Lets enable the ratings service for test user `jason` by routing productpage tra
 
 Istio 0.7.1:
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-reviews-test-v2.yaml | istioctl replace -f - 
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/route-rule-reviews-test-v2.yaml | istioctl replace -f - 
 ```
 
 Istio 0.8.0:
