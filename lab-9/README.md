@@ -1,4 +1,4 @@
-# lab 10 - Mutual TLS
+# lab 9 - Mutual TLS
 
 Istio provides transparent mutal TLS to services inside the service mesh where both the client and the server authenticate each others certificates as part of the TLS handshake.
 
@@ -108,7 +108,8 @@ Let us grab the certs from the productpage sidecar place it in `tmp` directory:
 mkdir ~/tmp
 cd ~/tmp
 fs=(key.pem cert-chain.pem root-cert.pem)
-for f in ${fs[@]}; do kubectl exec -c istio-proxy $pp /bin/cat -- /etc/certs/$f >$f; done
+productProxy=$(kubectl get pod | grep productpage | awk '{ print $1 }')
+for f in ${fs[@]}; do kubectl exec -c istio-proxy $productProxy /bin/cat -- /etc/certs/$f >$f; done
 ```
 
 
@@ -131,7 +132,7 @@ The important thing to notice is that the subject isn't what you'd normally expe
 
 
 
-There is one more part to SPIFFE identity, and that's a signing authority. This a CA certificate with a SPIFFE identify with _no_ path component.
+There is one more part to SPIFFE identity, and that's a signing authority. This a CA certificate with a SPIFFE identify with _no_ path component. We can use openssl to verify the certificate with the CA using the command below:
 
 ```
 openssl verify -CAfile root-cert.pem cert-chain.pem

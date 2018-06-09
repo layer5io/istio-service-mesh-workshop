@@ -1,4 +1,4 @@
-# lab 9 - Circuit Breaking
+# lab 10 - Circuit Breaking
 
 In this lab we will configure circuit breaking using Istio.
 
