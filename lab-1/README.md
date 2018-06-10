@@ -4,11 +4,11 @@ Throughout this workshop, we will use Play with Kubernetes (PWK) as our hosted l
 
 ## Setup Steps
 
-1. [Set up your PWK environment](#1)
+1. [et up your Kubernetes master node](#1)
 1. [Install overlay networking](#2)
 1. [Add more nodes to the cluster](#3)
 
-## <a name="1"></a> 1 - Set up your PWK environment
+## <a name="1"></a> 1 - Set up your Kubernetes master node
 <div align="center">
 Visit https://workshop.play-with-k8s.com.
 To start using PWK you will either need a GitHub id or Docker id. <br />
@@ -23,9 +23,7 @@ After successful login, with either Docker or GitHub credentials, you will be at
 Once you start the session, you will have your own lab environment.<br />
 <img src="img/pwk_main.png" width="450" />
 </div>
-Now add one instance by clicking the `ADD NEW INSTANCE` button on the left.
-
-When you create your first instance, it will have the name `node1`. Each instance has [Docker Community Edition (CE)] (https://www.docker.com/community-edition) and [kubeadm] (https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) preinstalled. 
+Now add one instance by clicking the `ADD NEW INSTANCE` button on the left. When you create your first instance, it will have the name `node1`. Each instance has [Docker Community Edition (CE)](https://www.docker.com/community-edition) and [kubeadm](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) preinstalled. 
 
 <img src="img/pwk_instance1.png" width="100%" />
 
