@@ -24,12 +24,12 @@ Once you start the session, you will have your own lab environment.<br />
 </div>
 Now add one instance by clicking the `ADD NEW INSTANCE` button on the left.
 
-When you created your first instance it will have the name `node1`. The instances come with [Docker] (https://www.docker.com/) and [kubeadm] (https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) preinstalled. 
+When you created your first instance, it will have the name `node1`. Each instance has [Docker Community Edition (CE)] (https://www.docker.com/community-edition) and [kubeadm] (https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) preinstalled. 
 
-Also, instructions for bootstrapping a kubernetes cluster with `kubeadm` will be presented. We will be following these instructions to setup the cluster next.
-![](img/pwk_instance1.png)
+Instructions for bootstrapping a Kubernetes cluster with `kubeadm` will be presented. We will be following these instructions to setup the cluster next.
+<img src="img/pwk_instance1.png" width="100%" />
 
-*Warning:* Please donot follow the instructions as it is. We will be following similar but slightly different instructions described below.
+<font color="red">*Warning:* Please donot follow the instructions as it is. We will be following similar but slightly different instructions described below.</font>
 
 Let us use `node1` as the master node for our cluster. Please note: setting up a multi-master cluster is out of the scope of this workshop, but we will be creating a multi-node cluster in this lab.
 
