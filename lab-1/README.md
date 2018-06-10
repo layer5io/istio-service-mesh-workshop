@@ -10,7 +10,7 @@ Throughout this workshop, we will use Play with Kubernetes (PWK) as our hosted l
 
 ## <a name="1"></a> 1 - Set up your PWK environment
 <div align="center">
-Visit [workshop.play-with-k8s.com](https://workshop.play-with-k8s.com).
+Visit https://workshop.play-with-k8s.com.
 To start using PWK you will either need a GitHub id or Docker id. <br />
 <img src="img/pwk_login.png" width="250" />
 
@@ -29,7 +29,7 @@ When you create your first instance, it will have the name `node1`. Each instanc
 
 <img src="img/pwk_instance1.png" width="100%" />
 
-  <img src="https://www.freeiconspng.com/uploads/warning-icon-24.png" width="32" align="left" />**Warning:** Please donot follow the instructions as it is. We will be following similar but slightly different instructions described below.
+<img src="img/warning.png" width="48" align="left" />**Warning:** Please donot follow the instructions as it is. We will be following similar but slightly different instructions described below.
 
 We will use `node1` as the master node for our cluster. While we will create a multi-__node__ cluster in this lab, creating a multi-__master__ cluster is out of the scope of this workshop.
 
@@ -74,13 +74,12 @@ No resources found
 #### What happened?
 As part of the initialization `kubeadm` has written config files needed, deployed Kubernetes control plane components (like `kube-apiserver`, `kube-dns`, `kube-proxy`, `etcd`, etc.) as `docker` containers, sets up necessary RBAC, and also, set up `kubectl` for the `root` user.
 
-Please make a note of (copy and save) the `kubeadm join` command from the previous output for later use. The command should look like the one below (do not use this example):
+<img src="img/warning.png" width="48" align="left" />Please copy and save the `kubeadm join` command from the previous output for later use. This command will be used to join other nodes to your cluster. The command should look like the one below (do not use this example output):
 ```sh
 kubeadm join --token 0c6e9e.607906dbdcacbf64 192.168.0.8:6443 --discovery-token-ca-cert-hash sha256:b8116ec1b224d82983b10353498d222f6f2e8fcbdf5d1075b4eece0f37df5896
 ```
-
-Let us first check the status of the nodes and then the pods.
-To check the status of the nodes:
+#### Check cluster status
+Check the status of the nodes and then the pods. To check the status of the nodes:
 ```sh
 kubectl get nodes
 ```
@@ -111,10 +110,9 @@ kube-system   kube-scheduler-node1            1/1       Running   0          1h
 
 We can see that the master node is `NotReady` state. We need to install a pod network add-on so that our pods can communicate with each other.
 
-Also, `kube-dns` will not start up before a network is installed. The general recommendation is to install Container Network Interface (CNI) based network. For this workshop we will go with [Weave Net](https://www.weave.works/oss/net/) from [WeaveWorks](https://www.weave.works/).
+Also, `kube-dns` will not start up before a network is installed. The general recommendation is to install a Container Network Interface (CNI)-based network driver. For this workshop, we will use [Weave Net](https://www.weave.works/oss/net/).
 
-
-## <a name="2"></a> 2 - Install CNI
+## <a name="2"></a> 2 - Install overlay networking
 
 To install weave net:
 ```sh
@@ -133,14 +131,14 @@ rolebinding "weave-net" created
 daemonset "weave-net" created
 ```
 
-If we re-check the status of the nodes, we will see it is now in `Ready` state.
+Re-check the status of the nodes, we will see it is now in `Ready` state.
 ```sh
 [node1 ~]$ kubectl get nodes
 NAME      STATUS    ROLES     AGE       VERSION
 node1     Ready     master    1h        v1.10.2
 ```
 
-Let us check the status of the pods next:
+Check the status of the pods next:
 ```sh
 [node1 ~]$ kubectl get pods --all-namespaces
 NAMESPACE     NAME                            READY     STATUS    RESTARTS   AGE
@@ -157,16 +155,16 @@ We can see all the pods are in `Running` state.
 
 ## <a name="3"></a> 3 - Adding more nodes to the cluster
 
-Now let us add more nodes to our cluster. You are free to add as many instances as you want by clicking the `ADD NEW INSTANCE` button on the left. For the purpose of this workshop let us add 2 more instances.
+We will build a 3-node cluster. Add two more instances by clicking the `ADD NEW INSTANCE` button on the left.
 
 ![](img/more_nodes.png)
 
-On each of the instances let us first update the DNS settings, as before:
+On each of the instances, first update the DNS settings, as before:
 ```sh
 echo "nameserver 8.8.8.8" >> /etc/resolv.conf
 ```
-
-Now we can make the new nodes join the kubernetes cluster by using `kubeadm join` we have made a note from earlier by running that command on each of the nodes:
+### Join new nodes to the cluster
+Now we can make the new nodes join the Kubernetes cluster by executing the `kubeadm join` you previously copied and saved. Run that command on each of the two new nodes:
 ```sh
 kubeadm join --token 0c6e9e.607906dbdcacbf64 192.168.0.8:6443 --discovery-token-ca-cert-hash sha256:b8116ec1b224d82983b10353498d222f6f2e8fcbdf5d1075b4eece0f37df5896
 ```
@@ -192,13 +190,13 @@ Node join complete:
 
 Run 'kubectl get nodes' on the master to see this machine join.
 ```
-
-We can go back to the master node `node1` terminal and check the status of the nodes:
+#### What happened?
+Go back to the master node `node1` terminal and check the status of the nodes:
 ```sh
 watch kubectl get nodes
 ```
 
-Initially the new nodes will be in `Not Ready` state and will eventually become `Ready`
+Initially, the new nodes will be in `Not Ready` state and will eventually become `Ready`
 
 Output from previous command:
 ```sh
@@ -210,10 +208,7 @@ node2     Ready     <none>    22m       v1.10.2
 node3     Ready     <none>    55s       v1.10.2
 ```
 
-We now have a 3 node kubernetes cluster setup and ready for us to deploy [Istio](http://istio.io/).
-
-
-
+We now have a 3-node Kubernetes cluster ready for an [Istio](http://istio.io/) deployment.
 
 
 #### [Continue to lab 2 - Deploy Istio](../lab-2/README.md)
