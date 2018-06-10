@@ -9,7 +9,7 @@ Throughout this workshop, we will use Play with Kubernetes (PWK) as our hosted l
 1. [Add more nodes to the cluster](#3)
 
 ## <a name="1"></a> 1 - Set up your Kubernetes master node
-<div align="center">
+
 <h3> 1.1 Visit https://workshop.play-with-k8s.com.</h2>
 To start using PWK you will either need a GitHub id or Docker id. <br />
 <img src="img/pwk_login.png" width="250" />
@@ -22,8 +22,9 @@ After successful login, with either Docker or GitHub credentials, you will be at
 
 Once you start the session, you will have your own lab environment.<br />
 <img src="img/pwk_main.png" width="550" />
-</div>
+
 <br />
+
 ### 1.1 Add first node
 Now add one instance by clicking the `ADD NEW INSTANCE` button on the left. When you create your first instance, it will have the name `node1`. Each instance has [Docker Community Edition (CE)](https://www.docker.com/community-edition) and [kubeadm](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) preinstalled. 
 <br />
@@ -74,7 +75,7 @@ No resources found
 ### 1.4 What happened?
 As part of the initialization `kubeadm` has written config files needed, deployed Kubernetes control plane components (like `kube-apiserver`, `kube-dns`, `kube-proxy`, `etcd`, etc.) as `docker` containers, sets up necessary RBAC, and also, set up `kubectl` for the `root` user.
 
-<img src="img/warning.png" width="48" align="left" />Please copy and save the `kubeadm join` command from the previous output for later use. This command will be used to join other nodes to your cluster. The command should look like the one below (do not use this example output):
+<img src="img/info.png" width="48" align="left" />Please copy and save the `kubeadm join` command from the previous output for later use. This command will be used to join other nodes to your cluster. The command should look like the one below (do not use this example output):
 ```sh
 kubeadm join --token 0c6e9e.607906dbdcacbf64 192.168.0.8:6443 --discovery-token-ca-cert-hash sha256:b8116ec1b224d82983b10353498d222f6f2e8fcbdf5d1075b4eece0f37df5896
 ```
