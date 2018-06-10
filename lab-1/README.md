@@ -10,6 +10,7 @@ Throughout this workshop, we will use Play with Kubernetes (PWK) as our hosted l
 
 ## <a name="1"></a> 1 - Set up your PWK environment
 <div align="center">
+Visit [workshop.play-with-k8s.com](https://workshop.play-with-k8s.com).
 To start using PWK you will either need a GitHub id or Docker id. <br />
 <img src="img/pwk_login.png" width="250" />
 
@@ -24,26 +25,27 @@ Once you start the session, you will have your own lab environment.<br />
 </div>
 Now add one instance by clicking the `ADD NEW INSTANCE` button on the left.
 
-When you created your first instance, it will have the name `node1`. Each instance has [Docker Community Edition (CE)] (https://www.docker.com/community-edition) and [kubeadm] (https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) preinstalled. 
+When you create your first instance, it will have the name `node1`. Each instance has [Docker Community Edition (CE)] (https://www.docker.com/community-edition) and [kubeadm] (https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) preinstalled. 
 
-Instructions for bootstrapping a Kubernetes cluster with `kubeadm` will be presented. We will be following these instructions to setup the cluster next.
 <img src="img/pwk_instance1.png" width="100%" />
 
-<font color="red">*Warning:* Please donot follow the instructions as it is. We will be following similar but slightly different instructions described below.</font>
+  <img src="https://www.freeiconspng.com/uploads/warning-icon-24.png" width="32" align="left" />**Warning:** Please donot follow the instructions as it is. We will be following similar but slightly different instructions described below.
 
-Let us use `node1` as the master node for our cluster. Please note: setting up a multi-master cluster is out of the scope of this workshop, but we will be creating a multi-node cluster in this lab.
+We will use `node1` as the master node for our cluster. While we will create a multi-__node__ cluster in this lab, creating a multi-__master__ cluster is out of the scope of this workshop.
 
-Before we start bootstrapping the cluster let us first update DNS settings on the node. This step is needed to get external network connectivity from within the kuberentes cluster we are about to setup. You are free to use any public DNS but for the purpose of this workshop we will use Google's public DNS.
+### Configure external name server (DNS)
+Before we start bootstrapping the cluster, first update DNS settings on the node. This step is needed to get external network connectivity from within the Kubernetes cluster we are about to setup. Let's use one of Google's public name servers:
 
 ```sh
 echo "nameserver 8.8.8.8" >> /etc/resolv.conf
 ```
+_(any public name servers will work)_ 
 
-Next, let us bootstrap the kubernetes cluster by initializing cluster master (`node1`) node:
+### Bootstrap cluster
+Next, bootstrap the Kubernetes cluster by initializing the master (`node1`) node:
 ```sh
 kubeadm init --apiserver-advertise-address $(hostname -i)
 ```
-
 
 Sample output from initialization:
 ```sh
@@ -69,7 +71,7 @@ Warning: kubectl apply should be used on resource created by either kubectl crea
 daemonset "kube-proxy" configured
 No resources found
 ```
-
+#### What happened?
 As part of the initialization `kubeadm` has written config files needed, deployed Kubernetes control plane components (like `kube-apiserver`, `kube-dns`, `kube-proxy`, `etcd`, etc.) as `docker` containers, sets up necessary RBAC, and also, set up `kubectl` for the `root` user.
 
 Please make a note of (copy and save) the `kubeadm join` command from the previous output for later use. The command should look like the one below (do not use this example):
