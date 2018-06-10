@@ -4,13 +4,13 @@ Throughout this workshop, we will use Play with Kubernetes (PWK) as our hosted l
 
 ## Setup Steps
 
-1. [et up your Kubernetes master node](#1)
+1. [Set up your Kubernetes master node](#1)
 1. [Install overlay networking](#2)
 1. [Add more nodes to the cluster](#3)
 
 ## <a name="1"></a> 1 - Set up your Kubernetes master node
 <div align="center">
-Visit https://workshop.play-with-k8s.com.
+<h3> 1.1 Visit https://workshop.play-with-k8s.com.</h2>
 To start using PWK you will either need a GitHub id or Docker id. <br />
 <img src="img/pwk_login.png" width="250" />
 
@@ -21,17 +21,19 @@ After successful login, with either Docker or GitHub credentials, you will be at
 <img src="img/pwk_start.png" width="250" />
 
 Once you start the session, you will have your own lab environment.<br />
-<img src="img/pwk_main.png" width="450" />
+<img src="img/pwk_main.png" width="550" />
 </div>
+<br />
+### 1.1 Add first node
 Now add one instance by clicking the `ADD NEW INSTANCE` button on the left. When you create your first instance, it will have the name `node1`. Each instance has [Docker Community Edition (CE)](https://www.docker.com/community-edition) and [kubeadm](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) preinstalled. 
-
-<img src="img/pwk_instance1.png" width="100%" />
+<br />
+<img src="img/pwk_instance1.png" width="85%" />
 
 <img src="img/warning.png" width="48" align="left" />**Warning:** Please donot follow the instructions as it is. We will be following similar but slightly different instructions described below.
 
 We will use `node1` as the master node for our cluster. While we will create a multi-__node__ cluster in this lab, creating a multi-__master__ cluster is out of the scope of this workshop.
 
-### Configure external name server (DNS)
+### 1.2 Configure external name server (DNS)
 Before we start bootstrapping the cluster, first update DNS settings on the node. This step is needed to get external network connectivity from within the Kubernetes cluster we are about to setup. Let's use one of Google's public name servers:
 
 ```sh
@@ -39,7 +41,7 @@ echo "nameserver 8.8.8.8" >> /etc/resolv.conf
 ```
 _(any public name servers will work)_ 
 
-### Bootstrap cluster
+### 1.3 Bootstrap cluster
 Next, bootstrap the Kubernetes cluster by initializing the master (`node1`) node:
 ```sh
 kubeadm init --apiserver-advertise-address $(hostname -i)
@@ -69,14 +71,14 @@ Warning: kubectl apply should be used on resource created by either kubectl crea
 daemonset "kube-proxy" configured
 No resources found
 ```
-#### What happened?
+### 1.4 What happened?
 As part of the initialization `kubeadm` has written config files needed, deployed Kubernetes control plane components (like `kube-apiserver`, `kube-dns`, `kube-proxy`, `etcd`, etc.) as `docker` containers, sets up necessary RBAC, and also, set up `kubectl` for the `root` user.
 
 <img src="img/warning.png" width="48" align="left" />Please copy and save the `kubeadm join` command from the previous output for later use. This command will be used to join other nodes to your cluster. The command should look like the one below (do not use this example output):
 ```sh
 kubeadm join --token 0c6e9e.607906dbdcacbf64 192.168.0.8:6443 --discovery-token-ca-cert-hash sha256:b8116ec1b224d82983b10353498d222f6f2e8fcbdf5d1075b4eece0f37df5896
 ```
-#### Check cluster status
+### 1.5 Check cluster status
 Check the status of the nodes and then the pods. To check the status of the nodes:
 ```sh
 kubectl get nodes
@@ -112,7 +114,7 @@ Also, `kube-dns` will not start up before a network is installed. The general re
 
 ## <a name="2"></a> 2 - Install overlay networking
 
-To install weave net:
+### 2.1 To install weave net, execute:
 ```sh
 kubectl apply -n kube-system -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 |tr -d '\n')"
 ```
@@ -153,15 +155,17 @@ We can see all the pods are in `Running` state.
 
 ## <a name="3"></a> 3 - Adding more nodes to the cluster
 
-We will build a 3-node cluster. Add two more instances by clicking the `ADD NEW INSTANCE` button on the left.
+We will build a 3-node cluster. 
 
-![](img/more_nodes.png)
+### 3.1 Add two more instances
+Click the `ADD NEW INSTANCE` button on the left.
+[](img/more_nodes.png)
 
 On each of the instances, first update the DNS settings, as before:
 ```sh
 echo "nameserver 8.8.8.8" >> /etc/resolv.conf
 ```
-### Join new nodes to the cluster
+### 3.2 Join new nodes to the cluster
 Now we can make the new nodes join the Kubernetes cluster by executing the `kubeadm join` you previously copied and saved. Run that command on each of the two new nodes:
 ```sh
 kubeadm join --token 0c6e9e.607906dbdcacbf64 192.168.0.8:6443 --discovery-token-ca-cert-hash sha256:b8116ec1b224d82983b10353498d222f6f2e8fcbdf5d1075b4eece0f37df5896
@@ -209,4 +213,4 @@ node3     Ready     <none>    55s       v1.10.2
 We now have a 3-node Kubernetes cluster ready for an [Istio](http://istio.io/) deployment.
 
 
-#### [Continue to lab 2 - Deploy Istio](../lab-2/README.md)
+# [Continue to lab 2 - Deploy Istio](../lab-2/README.md)
