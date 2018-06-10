@@ -1,29 +1,25 @@
-# lab 1 - Startup a Kubernetes Cluster
+# lab 1 - Create a Kubernetes Cluster
 
-In this lab we'll use a hosted lab environment called [Play with Kubernetes (PWK)](https://workshop.play-with-k8s.com/) which is version of their [labs.play-with-k8s.com](https://labs.play-with-k8s.com/). If you would like to use a different kubenetes cluster (like your lab cluster or your local Kubernetes on docker or minikube), you can skip this lab.
+Throughout this workshop, we will use Play with Kubernetes (PWK) as our hosted lab environment. For this DockerCon18 workshop only, a temporarily-provisioned space has been provided [workshop.play-with-k8s.com](https://workshop.play-with-k8s.com). If you would like to use a different Kubernetes cluster (like your lab cluster or Docker for Desktop or Minikube), you can skip lab-1 (this lab).
 
+## Setup Steps
 
-
-## Steps
-
-* [1. Set up your PWK environment](#1)
-* [2. Install CNI](#2)
-* [3. Adding more nodes to the cluster](#3)
+1. [Set up your PWK environment](#1)
+1. [Install overlay networking](#2)
+1. [Add more nodes to the cluster](#3)
 
 ## <a name="1"></a> 1 - Set up your PWK environment
+<div align="center">
+To start using PWK you will either need a github id or docker id. <img src="img/pwk_login.png" width="250" />
 
-
-To start using PWK you will either need a github id or docker id
-![](img/pwk_login.png)
-
-If you need a docker id, please visit [Docker Cloud](https://cloud.docker.com/) and proceed with the signup. ![](img/docker_signup.png)
+If you need a docker id, please visit [Docker Cloud](https://cloud.docker.com/) and proceed with the signup. <img src="img/docker_signup.png" width="250" />
 
 After successful login, with either docker or github credentials, you will be at the start screen.
-![](img/pwk_start.png)
+<img src="img/pwk_start.png" width="250" />
 
 Once you start the session, you will have your own lab environment.
-![](img/pwk_main.png)
-
+<img src="img/pwk_main.png" width="250" />
+</div>
 You can now start adding instances by using the `ADD NEW INSTANCE` button on the left.
 
 When you created your first instance it will have the name `node1`. The instances come with [Docker] (https://www.docker.com/) and [kubeadm] (https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) preinstalled. 
