@@ -10,17 +10,19 @@ Throughout this workshop, we will use Play with Kubernetes (PWK) as our hosted l
 
 ## <a name="1"></a> 1 - Set up your PWK environment
 <div align="center">
-To start using PWK you will either need a github id or docker id. <img src="img/pwk_login.png" width="250" />
+To start using PWK you will either need a GitHub id or Docker id. <br />
+<img src="img/pwk_login.png" width="250" />
 
-If you need a docker id, please visit [Docker Cloud](https://cloud.docker.com/) and proceed with the signup. <img src="img/docker_signup.png" width="250" />
+If you need a docker id, please visit [Docker Cloud](https://cloud.docker.com/) and proceed with the signup. <br />
+<img src="img/docker_signup.png" width="250" />
 
-After successful login, with either docker or github credentials, you will be at the start screen.
+After successful login, with either Docker or GitHub credentials, you will be at the start screen.<br />
 <img src="img/pwk_start.png" width="250" />
 
-Once you start the session, you will have your own lab environment.
-<img src="img/pwk_main.png" width="250" />
+Once you start the session, you will have your own lab environment.<br />
+<img src="img/pwk_main.png" width="450" />
 </div>
-You can now start adding instances by using the `ADD NEW INSTANCE` button on the left.
+Now add one instance by clicking the `ADD NEW INSTANCE` button on the left.
 
 When you created your first instance it will have the name `node1`. The instances come with [Docker] (https://www.docker.com/) and [kubeadm] (https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) preinstalled. 
 
