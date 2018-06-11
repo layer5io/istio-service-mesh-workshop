@@ -14,7 +14,7 @@ Throughout this workshop, we will use Play with Kubernetes (PWK) as our hosted l
 <img src="img/pwk_start.png" width="250" />
 
 Once you start the session, you will have your own lab environment.<br />
-<img src="img/more_nodes.png" width="550" />
+<img src="img/pwk_main.png" width="550" />
 
 <br />
 
@@ -104,7 +104,7 @@ kube-system   kube-scheduler-node1            1/1       Running   0          1h
 
 We can see that the master node is `NotReady` state. Next, we need to install a network plugin, so that our pods and nodes can communicate with each other.
 
-<img src="img/info.png" width="48" align="left" /> Also, `kube-dns` will not start up before a network is installed. The general recommendation is to install a Container Network Interface (CNI)-based network driver. For this workshop, we will use [Weave Net](https://www.weave.works/oss/net/).
+<img src="/img/info.png" width="48" align="left" /> Also, `kube-dns` will not start up before a network is installed. The general recommendation is to install a Container Network Interface (CNI)-based network driver. For this workshop, we will use [Weave Net](https://www.weave.works/oss/net/).
 
 ## <a name="2"></a> 2 - Install overlay networking
 
