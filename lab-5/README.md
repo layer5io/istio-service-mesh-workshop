@@ -9,15 +9,6 @@ Envoy proxies call Mixer to report statistics and check for route rules. We can 
 kubectl get pods -n istio-system
 ```
 
-Istio 0.7.1:
-```sh
-kubectl -n istio-system exec -it istio-mixer-... -c istio-proxy -- sh
-
-apt-get update
-apt-get install -y curl
-```
-
-Istio 0.8.0:
 ```sh
 kubectl -n istio-system exec -it istio-policy-... -c istio-proxy -- sh
 ```
@@ -32,12 +23,6 @@ exit
 
 Let us get the first accessible ingress port and store it in a variable:
 
-Istio 0.7.1:
-```sh
-export INGRESS_PORT=$(kubectl get service istio-ingress -n istio-system --template='{{(index .spec.ports 0).nodePort}}')
-```
-
-Istio 0.8.0:
 ```sh
 export INGRESS_PORT=$(kubectl get service istio-ingressgateway -n istio-system --template='{{(index .spec.ports 0).nodePort}}')
 ```
@@ -47,7 +32,7 @@ Once we have the port, we can append the IP of one of the nodes to get the host.
 export INGRESS_HOST="<IP>:$INGRESS_PORT"
 ```
 
-***Please note:*** If using Docker for Mac or Windows for Istio, INGRESS_HOST should be set to `localhost:80`
+***Please note:*** If using Docker for Mac or Windows, INGRESS_HOST should be set to `localhost`
 
 Now, let us generate a small load on the sample app by using [fortio](https://github.com/istio/fortio) which is a load testing library created by the `Istio` team:
 
