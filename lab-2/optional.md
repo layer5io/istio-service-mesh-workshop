@@ -1,4 +1,4 @@
-# lab 2 - Setting up API Tokens (optional)
+# Optional Lab 2 - Setting up API Tokens (optional)
 
 As part of this workshop we will be sending access logs from Istio to [Loggly](https://www.loggly.com/) and telemetry data to [Appoptics](https://www.appoptics.com/). In this lab we will take you through the steps needed to setup Loggly & Appoptics API tokens and configure Appoptics dashboard.
 

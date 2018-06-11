@@ -1,4 +1,4 @@
-# lab 1 - Create a Kubernetes Cluster
+# Lab 1 - Create a Kubernetes Cluster
 
 Throughout this workshop, we will use Play with Kubernetes (PWK) as our hosted lab environment. For this DockerCon18 workshop only, a temporarily-provisioned space has been provided [workshop.play-with-k8s.com](https://workshop.play-with-k8s.com). If you would like to use a different Kubernetes cluster (like your lab cluster or Docker for Desktop or Minikube), you can skip lab-1 (this lab).
 

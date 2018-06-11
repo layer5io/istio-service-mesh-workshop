@@ -15,27 +15,20 @@ To do this the application collects and propagates the following headers from th
 
 ## View Traces
 
-Now, let us generate a small load on the sample app by using [fortio](https://github.com/istio/fortio) (for more details on this, please refer back to [lab-5](../lab-5/README.md)):
+If you have not set `INGRESS_HOST` environment variable, please do so by following [Lab 5](../lab-5/README.md).
+
+Now, let us generate a small load on the sample app by using [fortio](https://github.com/istio/fortio):
 
 ```sh
 docker run istio/fortio load -t 5m -qps 5 http://$INGRESS_HOST/productpage
 ```
 
-### Zipkin
-If you have not already deployed and exposed zipkin, please follow [lab-2](../lab-2/README.md). 
-In `PWK`, once you have exposed zipkin on a port by using any of the specified methods, it will appear at the top of the page as a hyperlink. You can click on the link at the top of the page which maps to the right port and it will open zipkin web UI.
-![](img/zipkin_1.png)
+Let us find the port Jaeger is exposed on by running the following command:
+```sh
+kubectl -n istio-system get svc tracing
+```
 
-![](img/zipkin.png)
-
-![](img/zipkin_2.png)
-
-### Jaeger
-If you have deployed Istio 0.8.0 using `istio-0.8.0.yaml` or `istio-solarwinds-0.8.0.yaml`, jaeger service should already be exposed on a port.
-
-On Istio 0.7.1, if you have not already deployed and exposed jaeger on a port, please follow [lab-2](../lab-2/README.md). 
-
-In `PWK`, once jaeger service is exposed on a port by using any of the specified methods, it will appear at the top of the page as a hyperlink. You can click on the link at the top of the page which maps to the right port and it will open Jaeger UI in a new tab. 
+You can click on the link at the top of the page which maps to the right port and it will open Jaeger UI in a new tab. 
 
 ![](img/jaeger.png)
 

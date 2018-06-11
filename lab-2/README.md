@@ -1,4 +1,4 @@
-# lab 2 - Deploy Istio
+# Lab 2 - Deploy Istio
 
 Now that we have the kubernetes cluster, we are ready to deploy Istio.
 

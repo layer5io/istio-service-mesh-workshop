@@ -1,4 +1,4 @@
-# lab 4 - Expose Bookinfo site through Istio Ingress Gateway
+# Lab 4 - Expose Bookinfo site through Istio Ingress Gateway
 
 The components deployed on the service mesh by default are not exposed outside the cluster. External access to individual services so far has been provided by creating an external load balancer on each service.
 

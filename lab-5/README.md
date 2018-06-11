@@ -1,4 +1,4 @@
-# lab 5 - Telemetry
+# Lab 5 - Telemetry
 
 
 ## Inspecting Mixer

@@ -1,4 +1,4 @@
-# lab 3 - Deploy Sample Bookinfo app
+# Lab 3 - Deploy Sample Bookinfo app
 
 To play with Istio and demonstrate some of it's capabilities we will deploy the sample BookInfo application which comes as part of the Istio package.
 
