@@ -9,12 +9,12 @@ Initially presented at [DockerCon 2018](https://dockercon18.smarteventscloud.com
 
 ## Deploying an app onto the mesh
 
-- [lab 3 - Deploy Sample App - BookInfo](lab-3/README.md)
-- [lab 4 - Istio Ingress Controller/Gateway](lab-4/README.md)
+- [Lab 3 - Deploy Sample App - BookInfo](lab-3/README.md)
+- [Lab 4 - Istio Ingress Controller/Gateway](lab-4/README.md)
 
 ## Observability
-- [lab 5 - Telemetry](lab-5/README.md)
-- [lab 6 - Distributed Tracing](lab-4a/README.md)
+- [Lab 5 - Telemetry](lab-5/README.md)
+- [Lab 6 - Distributed Tracing](lab-4a/README.md)
 
 ## Traffic Control - I
 - [Lab 7 - Request Routing and Canary Testing](lab-7/README.md)

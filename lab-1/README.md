@@ -11,13 +11,6 @@ Throughout this workshop, we will use Play with Kubernetes (PWK) as our hosted l
 ## <a name="1"></a> 1 - Set up your Kubernetes master node
 
 <h3> 1.1 Visit https://workshop.play-with-k8s.com.</h2>
-To start using PWK you will either need a GitHub id or Docker id. <br />
-<img src="img/pwk_login.png" width="250" />
-
-If you need a docker id, please visit [Docker Cloud](https://cloud.docker.com/) and proceed with the signup. <br />
-<img src="img/docker_signup.png" width="250" />
-
-After successful login, with either Docker or GitHub credentials, you will be at the start screen.<br />
 <img src="img/pwk_start.png" width="250" />
 
 Once you start the session, you will have your own lab environment.<br />
@@ -73,9 +66,9 @@ daemonset "kube-proxy" configured
 No resources found
 ```
 ### 1.4 What happened?
-As part of the initialization `kubeadm` has written config files needed, deployed Kubernetes control plane components (like `kube-apiserver`, `kube-dns`, `kube-proxy`, `etcd`, etc.) as `docker` containers, sets up necessary RBAC, and also, set up `kubectl` for the `root` user.
+As part of the initialization `kubeadm` has written config files needed, setup RBAC and deployed Kubernetes control plane components (like `kube-apiserver`, `kube-dns`, `kube-proxy`, `etcd`, etc.). Control plane components are deployed as Docker containers. `kubectl` is also configured for the `root` user's account.
 
-<img src="img/info.png" width="48" align="left" />Please copy and save the `kubeadm join` command from the previous output for later use. This command will be used to join other nodes to your cluster. The command should look like the one below (do not use this example output):
+<img src="img/info.png" width="48" align="left" /> Please copy and save the `kubeadm join` command from the previous output for later use. This command will be used to join other nodes to your cluster. The command should look like the one below (do not use this example output):
 ```sh
 kubeadm join --token 0c6e9e.607906dbdcacbf64 192.168.0.8:6443 --discovery-token-ca-cert-hash sha256:b8116ec1b224d82983b10353498d222f6f2e8fcbdf5d1075b4eece0f37df5896
 ```
@@ -109,9 +102,9 @@ kube-system   kube-proxy-pxq27                1/1       Running   0          1h
 kube-system   kube-scheduler-node1            1/1       Running   0          1h
 ```
 
-We can see that the master node is `NotReady` state. We need to install a pod network add-on so that our pods can communicate with each other.
+We can see that the master node is `NotReady` state. Next, we need to install a network plugin, so that our pods and nodes can communicate with each other.
 
-Also, `kube-dns` will not start up before a network is installed. The general recommendation is to install a Container Network Interface (CNI)-based network driver. For this workshop, we will use [Weave Net](https://www.weave.works/oss/net/).
+<img src="img/info.png" width="48" align="left" /> Also, `kube-dns` will not start up before a network is installed. The general recommendation is to install a Container Network Interface (CNI)-based network driver. For this workshop, we will use [Weave Net](https://www.weave.works/oss/net/).
 
 ## <a name="2"></a> 2 - Install overlay networking
 
@@ -160,9 +153,8 @@ We will build a 3-node cluster.
 
 ### 3.1 Add two more instances
 Click the `ADD NEW INSTANCE` button on the left.
-[](img/more_nodes.png)
 
-On each of the instances, first update the DNS settings, as before:
+As before, on each of the instances, first update the DNS settings:
 ```sh
 echo "nameserver 8.8.8.8" >> /etc/resolv.conf
 ```
@@ -211,7 +203,7 @@ node2     Ready     <none>    22m       v1.10.2
 node3     Ready     <none>    55s       v1.10.2
 ```
 
-We now have a 3-node Kubernetes cluster ready for an [Istio](http://istio.io/) deployment.
+We now have a 3-node Kubernetes cluster ready for an Istio deployment.
 
 
 # [Continue to lab 2 - Deploy Istio](../lab-2/README.md)
