@@ -1,9 +1,6 @@
-# lab 9 - Mutual TLS
+# Lab 9 - Mutual TLS
 
-Istio provides transparent mutal TLS to services inside the service mesh where both the client and the server authenticate each others certificates as part of the TLS handshake.
-
-As part of our deployment with `istio-0.7.1.yaml` or `istio-0.8.0.yaml` or 
-`istio-solarwinds-0.7.1.yaml` or `istio-solarwinds-0.8.0.yaml`, we have deployed Istio with mTLS.
+Istio provides transparent mutal TLS to services inside the service mesh where both the client and the server authenticate each others certificates as part of the TLS handshake. As part of this workshop we have deployed Istio with mTLS.
 
 ## Verify mTLS
 To verify mTLS is enabled:
