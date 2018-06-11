@@ -14,7 +14,7 @@ Throughout this workshop, we will use Play with Kubernetes (PWK) as our hosted l
 <img src="img/pwk_start.png" width="250" />
 
 Once you start the session, you will have your own lab environment.<br />
-<img src="img/pwk_main.png" width="550" />
+<img src="img/more_nodes.png" width="550" />
 
 <br />
 
