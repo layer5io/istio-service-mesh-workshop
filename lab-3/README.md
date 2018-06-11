@@ -23,8 +23,8 @@ There are 3 versions of the reviews microservice:
 
 
 The end-to-end architecture of the application is shown below.
-<iframe src="http://calcotestudios.com/talks/slides-dockercon-18-using-istio.html#/4/1" />
-![](https://istio.io/docs/guides/img/bookinfo/noistio.svg)
+
+![](http://calcotestudios.com/talks/slides-dockercon-18-using-istio.html#/4/1)
 
 
 This application is polyglot, i.e., the microservices are written in different languages. It’s worth noting that these services have no dependencies on Istio, but make an interesting service mesh example, particularly because of the multitude of services, languages and versions for the reviews service.
