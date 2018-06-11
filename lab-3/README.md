@@ -49,7 +49,7 @@ If we get back any of the 2 apis then we can proceed with [automatic sidecar inj
 On Istio 0.8.0, automatic sidecar injector will be automatically deployed if installed using `istio-0.8.0.yaml` or `istio-solarwinds-0.8.0.yaml`. 
 If not, we can proceed with [manual injection](#manual).
 
-***Please note:*** Folks using `PWK` environment will **HAVE** to use [manual injection](#manual) irrespective of the version of Istio because `PWK` comes with Kubernetes version 1.8 which does not support `admissionregistration.k8s.io/v1beta1` or `admissionregistration.k8s.io/v1beta2` apis. 
+<img src="img/info.png" width="48" align="left" /> ***Please note:*** Folks using `PWK` environment will **HAVE** to use [manual injection](#manual) irrespective of the version of Istio because `PWK` comes with Kubernetes version 1.8 which does not support `admissionregistration.k8s.io/v1beta1` or `admissionregistration.k8s.io/v1beta2` apis. 
 
 
 
