@@ -12,24 +12,9 @@ Now that we have the kubernetes cluster, we are ready to deploy Istio.
 ## <a name="1"></a> 1 - Installing Istio
 At the time of writing, Istio 0.8.0 was just released. Istio 0.7.1 has been around for sometime now. You can pick one of these to install on your kubernetes cluster.
 
-We have developed an Istio [Mixer Adapter](https://github.com/solarwinds/istio-adapter) which can ship metrics to [Appoptics](https://www.appoptics.com/) and logs to [Loggly](https://www.loggly.com/) and [Papertrail](https://papertrailapp.com). If you would like to leverage this adapter, please proceed to [Optional Lab 2](optional.md) to set things up, get the API tokens and [Installing Istio](#aolg) (OR) please proceed to [Installing Istio](#noaolg).
+We have developed an Istio [Mixer Adapter](https://github.com/solarwinds/istio-adapter) which can ship metrics to [Appoptics](https://www.appoptics.com/) and logs to [Loggly](https://www.loggly.com/) and [Papertrail](https://papertrailapp.com). If you would like to leverage this adapter, please proceed to [Optional Lab 2](optional.md) to set things up, get the API tokens and then proceed to [Installing Istio](#noaolg).
 
-### <a name="noaolg"></a>Installing istio **WITHOUT** Appoptics and Loggly Tokens
-
-For Istio 0.7.1:
-```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/istio-0.7.1.yaml
-```
-
-For Istio 0.8.0:
-```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/istio-0.8.0.yaml
-```
-
-
-### <a name="aolg"></a>Installing istio with Appoptics and Loggy Tokens
-
-We will proceed with deploying Istio under the presumption that you have obtained Appoptics and Loggly API tokens and have stored them as environment variables `AOTOKEN` and `LOGGLY_TOKEN` respectively. If you would like to use one and not the other, please set an empty value to the respective environemt variable.
+### <a name="noaolg"></a>Installing istio
 
 For Istio 0.7.1:
 ```sh
