@@ -22,9 +22,8 @@ There are 3 versions of the reviews microservice:
 * Version v3 calls the ratings service, and displays each rating as 1 to 5 red stars.
 
 
-The end-to-end architecture of the application is shown below.
+The end-to-end architecture of the application is shown [here](http://calcotestudios.com/talks/slides-dockercon-18-using-istio.html#/4/1).
 
-<iframe width="854" height="480" src="http://calcotestudios.com/talks/slides-dockercon-18-using-istio.html#/4/1" frameborder="0" allowfullscreen></iframe>
 
 
 This application is polyglot, i.e., the microservices are written in different languages. It’s worth noting that these services have no dependencies on Istio, but make an interesting service mesh example, particularly because of the multitude of services, languages and versions for the reviews service.
