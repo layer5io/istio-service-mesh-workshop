@@ -12,9 +12,7 @@ Now that we have the kubernetes cluster, we are ready to deploy Istio.
 ## <a name="1"></a> 1 - Installing Istio
 At the time of writing, Istio 0.8.0 was just released. Istio 0.7.1 has been around for sometime now. You can pick one of these to install on your kubernetes cluster.
 
-We have developed an Istio [Mixer Adapter](https://github.com/solarwinds/istio-adapter) which can ship metrics to [Appoptics](https://www.appoptics.com/) and logs to [Loggly](https://www.loggly.com/) and [Papertrail](https://papertrailapp.com). If you would like to leverage this adapter, please proceed to [Optional Lab 2](optional.md) to set things up, get the API tokens and then proceed to [Installing Istio](#noaolg).
-
-### <a name="noaolg"></a>Installing istio
+We have developed an Istio [Mixer Adapter](https://github.com/solarwinds/istio-adapter) which can ship metrics to [Appoptics](https://www.appoptics.com/) and logs to [Loggly](https://www.loggly.com/) and [Papertrail](https://papertrailapp.com). If you would like to leverage this adapter, please proceed to [Optional Lab 2](optional.md) to set things up, get the API tokens and then continue this lab.
 
 For Istio 0.7.1:
 ```sh
