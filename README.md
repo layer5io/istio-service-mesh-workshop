@@ -7,7 +7,7 @@ Initially presented at [DockerCon 2018](https://dockercon18.smarteventscloud.com
   - [Configure Adapter Set (1)](lab-2/README.md)
   - [Configure Adapter Set (2)](lab-2/Optional.md)
 
-## Deploying an app Istio
+## Deploying an app onto the mesh
 
 - [lab 3 - Deploy Sample App - BookInfo](lab-3/README.md)
 - [lab 4 - Istio Ingress Controller/Gateway](lab-4/README.md)
