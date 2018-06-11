@@ -4,7 +4,7 @@ To play with Istio and demonstrate some of it's capabilities we will deploy the 
 
 
 
-## <a name="injector"></a> Bookinfo application
+### <a name="injector"></a> What is the BookInfo Application?
 
 The sample bookinfo application displays information about a book, similar to a single catalog entry of an online book store. Displayed on the page is a description of the book, book details (ISBN, number of pages, and so on), and a few book reviews.
 
