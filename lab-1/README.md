@@ -23,7 +23,7 @@ Now add one instance by clicking the `ADD NEW INSTANCE` button on the left. When
 <br />
 <img src="img/pwk_instance1.png" width="85%" />
 
-<img src="img/warning.png" width="48" align="left" />**Warning:** Please donot follow the instructions as it is. We will be following similar but slightly different instructions described below.
+<img src="/img/warning.png" width="48" align="left" />**Warning:** Please donot follow the instructions as it is. We will be following similar but slightly different instructions described below.
 
 We will use `node1` as the master node for our cluster. While we will create a multi-__node__ cluster in this lab, creating a multi-__master__ cluster is out of the scope of this workshop.
 
@@ -68,7 +68,7 @@ No resources found
 ### 1.4 What happened?
 As part of the initialization `kubeadm` has written config files needed, setup RBAC and deployed Kubernetes control plane components (like `kube-apiserver`, `kube-dns`, `kube-proxy`, `etcd`, etc.). Control plane components are deployed as Docker containers. `kubectl` is also configured for the `root` user's account.
 
-<img src="img/info.png" width="48" align="left" /> Please copy and save the `kubeadm join` command from the previous output for later use. This command will be used to join other nodes to your cluster. The command should look like the one below (do not use this example output):
+<img src="/img/info.png" width="48" align="left" /> Please copy and save the `kubeadm join` command from the previous output for later use. This command will be used to join other nodes to your cluster. The command should look like the one below (do not use this example output):
 ```sh
 kubeadm join --token 0c6e9e.607906dbdcacbf64 192.168.0.8:6443 --discovery-token-ca-cert-hash sha256:b8116ec1b224d82983b10353498d222f6f2e8fcbdf5d1075b4eece0f37df5896
 ```
