@@ -72,5 +72,9 @@ In `PWK`, once you have exposed servicegraph on a port by using any of the speci
 Update the URI to `/dotviz` and you will see the generated service graph.
 ![](img/servicegraph.png)
 
+For a more interactive graph, navigate to `force/forcegraph.html`.
+
+![](https://istio.io/docs/tasks/telemetry/img/servicegraph-example.png)
+
 
 #### [Continue to lab 6 - Distributed Tracing](../lab-6/README.md)
