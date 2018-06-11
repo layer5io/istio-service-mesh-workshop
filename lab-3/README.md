@@ -4,7 +4,7 @@ To play with Istio and demonstrate some of it's capabilities we will deploy the 
 
 
 
-### <a name="injector"></a> What is the BookInfo Application?
+## What is the BookInfo Application?
 
 The sample bookinfo application displays information about a book, similar to a single catalog entry of an online book store. Displayed on the page is a description of the book, book details (ISBN, number of pages, and so on), and a few book reviews.
 
@@ -24,7 +24,7 @@ There are 3 versions of the reviews microservice:
 
 The end-to-end architecture of the application is shown below.
 
-![](http://calcotestudios.com/talks/slides-dockercon-18-using-istio.html#/4/1)
+<iframe src="http://calcotestudios.com/talks/slides-dockercon-18-using-istio.html#/4/1" frameborder="0"></iframe>
 
 
 This application is polyglot, i.e., the microservices are written in different languages. It’s worth noting that these services have no dependencies on Istio, but make an interesting service mesh example, particularly because of the multitude of services, languages and versions for the reviews service.
@@ -46,67 +46,20 @@ kubectl api-versions | grep admissionregistration
 ```
 
 If we get back any of the 2 apis then we can proceed with [automatic sidecar injection](#injector). 
-On Istio 0.8.0, automatic sidecar injector will be automatically deployed if installed using `istio-0.8.0.yaml` or `istio-solarwinds-0.8.0.yaml`. 
+
+As part of Istio deployment in [Lab 2](../lab-2/README.md), we have deployed the sidecar injector.
 If not, we can proceed with [manual injection](#manual).
 
-<img src="img/info.png" width="48" align="left" /> ***Please note:*** Folks using `PWK` environment will **HAVE** to use [manual injection](#manual) irrespective of the version of Istio because `PWK` comes with Kubernetes version 1.8 which does not support `admissionregistration.k8s.io/v1beta1` or `admissionregistration.k8s.io/v1beta2` apis. 
+<img src="../img/info.png" width="48" align="left" /> ***Please note:*** Folks using `PWK` environment will **HAVE** to use [manual injection](#manual) irrespective of the version of Istio because `PWK` comes with Kubernetes version 1.8 which does not support `admissionregistration.k8s.io/v1beta1` or `admissionregistration.k8s.io/v1beta2` apis. 
 
 
 
-### <a name="auto"></a> With Automatic sidecar injection
+## <a name="auto"></a> Deploying Sample App with Automatic sidecar injection
 
-For deploying Istio with automatic sidecar injection we need to first deploy the sidecar injector with mutating webhook.
+Istio, deployed as part of this workshop, will also deploy the sidecar injector. If you are using `PWK`, please proceed to [Deploying Sample App with manual sidecar injection](#manual)
 
-#### <a name="injector"></a> Deploying sidecar injector with mutating webhook
+Let us now verify sidecar injector deployment & label namespace for automatic sidecar injection.
 
-Istio sidecars can also be automatically injected into a pod at creation time using a feature in Kubernetes called a mutating webhook admission controller.   Note that unlike manual injection, automatic injection occurs at the pod-level. You won't see any change to the deployment itself. Instead you'll want to check individual pods (via kubectl describe) to see the injected proxy.
-
-An admission controller is a piece of code that intercepts requests to the Kubernetes API server prior to persistence of the object, but after the request is authenticated and authorized. Admission controllers may be “validating”, “mutating”, or both. Mutating controllers may modify the objects they admit; validating controllers may not.
-
-The admission control process proceeds in two phases. In the first phase, mutating admission controllers are run. In the second phase, validating admission controllers are run.
-
-MutatingWebhookConfiguration describes the configuration of and admission webhook that accept or reject and may change the object.  
-
-For Istio the webhook is the sidecar injector webhook deployment called "istio-sidecar-injector".  It will modify a pod before it is started to inject an istio init container and istio proxy container.
-
-Istio 0.8.0, if deployed using `istio-0.8.0.yaml` or `istio-solarwinds-0.8.0.yaml` will also deploy the sidecar injector. You can skip to [verifying and labelling namespace for sidecar injection](#verify)
-
-#### Installing the Webhook (Istio 0.7.1)
-
-Webhooks requires a signed cert/key pair. Use install/kubernetes/webhook-create-signed-cert.sh to generate a cert/key pair signed by the Kubernetes’ CA. The resulting cert/key file is stored as a Kubernetes secret for the sidecar injector webhook to consume.
-
-```sh
-cd istio-0.7.1/install/kubernetes
-
-./webhook-create-signed-cert.sh \
-    --service istio-sidecar-injector \
-    --namespace istio-system \
-    --secret sidecar-injector-certs
-```
-
-Install the sidecar injection configmap:
-
-```sh
-kubectl apply -f istio-sidecar-injector-configmap-release.yaml
-```
-
-Set the caBundle in the webhook install YAML that the Kubernetes api-server uses to invoke the webhook.
-
-```sh
-cat istio-sidecar-injector.yaml | \
-     ./webhook-patch-ca-bundle.sh > \
-     istio-sidecar-injector-with-ca-bundle.yaml
-```     
-
-Install the sidecar injector webhook.
-
-```sh
-kubectl apply -f istio-sidecar-injector-with-ca-bundle.yaml
-```
-
-#### <a name="#verify"></a> Verify sidecar injector & Label namespace for automatic sidecar injection (for both Istio 0.7.1 and Istio 0.8.0)
-
-The sidecar injector webhook should now be running.
 
 ```sh
 kubectl -n istio-system get deployment -listio=sidecar-injector
@@ -138,30 +91,17 @@ kube-public    Active    1h
 kube-system    Active    1h
 ```
 
-#### Deploy sample app
 Now that we have the sidecar injector with mutating webhook in place and the namespace labelled for automatic sidecar injection, we can proceed to deploy the sample app:
 
-Istio 0.7.1:
-```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/bookinfo.yaml
-```
-
-Istio 0.8.0:
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/bookinfo.yaml
 ```
 
 
-### <a name="manual"></a> With manual sidecar injection
+## <a name="manual"></a> Deploying Sample App with manual sidecar injection
 
 To do a manual sidecar injection we will be using `istioctl` command:
 
-Istio 0.7.1:
-```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/bookinfo.yaml | istioctl kube-inject --debug -f - > newBookInfo.yaml
-```
-
-Istio 0.8.0:
 ```sh
 curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/bookinfo.yaml | istioctl kube-inject --debug -f - > newBookInfo.yaml
 ```
@@ -169,37 +109,22 @@ curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/ma
 Observing the new yaml file reveals that additional container Istio Proxy has been added to the Pods with necessary configurations:
 
 ```
-image: docker.io/istio/proxy:0.7.1
-imagePullPolicy: IfNotPresent
-name: istio-proxy
-```
-
-(OR)
-
-```
-image: docker.io/istio/proxy_debug:0.7.1
-imagePullPolicy: IfNotPresent
-name: istio-proxy
+        image: docker.io/istio/proxyv2:0.8.0
+        imagePullPolicy: IfNotPresent
+        name: istio-proxy
 ```
 
 We need to now deploy the new yaml using `kubectl`
-Istio 0.7.1 & Istio 0.8.0:
 ```sh
 kubectl apply -f newBookInfo.yaml
 ```
 
 To do both in a single command:
-Istio 0.7.1:
-```sh
-kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/bookinfo.yaml | istioctl kube-inject --debug -f -)
-```
-
-Istio 0.8.0:
 ```sh
 kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/bookinfo.yaml | istioctl kube-inject --debug -f -)
 ```
 
-### Verify Bookinfo deployment
+## Verify Bookinfo deployment
 
 1. Verify that previous deployments are all in a state of AVAILABLE before continuing. **Do not procede until they are up and running.**
 
