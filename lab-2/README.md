@@ -10,18 +10,10 @@ Now that we have the kubernetes cluster, we are ready to deploy Istio.
 * [4. Installing Add-ons](#4)
 
 ## <a name="1"></a> 1 - Installing Istio
-At the time of writing, Istio 0.8.0 was just released. Istio 0.7.1 has been around for sometime now. You can pick one of these to install on your kubernetes cluster.
+As part of this lab we will install Istio 0.8.0 on your kubernetes cluster.
 
 We have developed an Istio [Mixer Adapter](https://github.com/solarwinds/istio-adapter) which can ship metrics to [Appoptics](https://www.appoptics.com/) and logs to [Loggly](https://www.loggly.com/) and [Papertrail](https://papertrailapp.com). If you would like to leverage this adapter, please proceed to [Optional Lab 2](optional.md) to set things up, get the API tokens and then continue this lab.
 
-For Istio 0.7.1:
-```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/istio-solarwinds-0.7.1.yaml | sed "s/<appoptics token>/$AOTOKEN/g" | sed "s/<loggly token>/$LOGGLY_TOKEN/g" > istio.yaml
-
-kubectl apply -f istio.yaml
-```
-
-For Istio 0.8.0:
 ```sh
 curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/istio-solarwinds-0.8.0.yaml | sed "s/<appoptics token>/$AOTOKEN/g" | sed "s/<loggly token>/$LOGGLY_TOKEN/g" > istio.yaml
 
@@ -45,61 +37,37 @@ curl -L https://git.io/getLatestIstio | sh -
 ```
 The above command will get the latest Istio package, which at the time of this writing is 0.8.0.
 
-To get Istio 0.7.1 package, please follow these instructions:
-
-```sh
-yum install -y wget
-wget https://github.com/istio/istio/releases/download/0.7.1/istio-0.7.1-linux.tar.gz
-tar -xzvf istio-0.7.1-linux.tar.gz
-```
-
-Assuming you are in the `/root` directory, adding istio executables to the PATH can be done by doing the following:
-
-For Istio 0.7.1:
-```sh
-export PATH="$PATH:/root/istio-0.7.1/bin"
-```
-
-For Istio 0.8.0:
 ```sh
 export PATH="$PATH:/root/istio-0.8.0/bin"
 ```
 
 To verify `istioctl` is setup lets try to print out the command help
 ```sh
-istioctl -h
+istioctl version
 ```
-
-
-
 
 
 ## Install Add-ons
-For the folks who did NOT want to use Appoptics, you can deploy prometheus and grafana for viewing the metrics from `Istio`.
+
+`Istio` comes with several addons like:
+  1. [Prometheus](https://prometheus.io/)
+  2. [Grafana](https://grafana.com/)
+  3. [Zipkin](https://zipkin.io/)
+  4. [Jaeger](https://www.jaegertracing.io/)
+  5. [Service Graph](https://istio.io/docs/tasks/telemetry/servicegraph/)
+
+
+For the folks who did NOT want to use Appoptics, you choose to use prometheus and grafana for viewing the metrics from `Istio`. 
 
 For distributed tracing, you can choose between [Zipkin](https://zipkin.io/) or [Jaeger](https://www.jaegertracing.io/).
 
-On Istio 0.8.0, Jaeger is deployed as part of `istio-0.8.0.yaml` or `istio-solarwinds-0.8.0.yaml`.
+Service graph is another add-on which can be used to generate a graph of services within an Istio mesh. Service graph too is deployed as part of Istio in this lab.
 
-Service graph is another add-on which can be used to generate a graph of services within an Istio mesh. On Istio 0.8.0, service graph is deployed as part of `istio-0.8.0.yaml` or `istio-solarwinds-0.8.0.yaml`.
+Istio, deployed as part of this workshop, comes deployed with Prometheus, Grafana, Jaeger and Service Graph.
 
-### Grafana, Prometheus
-On Istio 0.7.1, you can deploy prometheus by running the following command:
+### Exposing services
 
-```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/prometheus.yaml
-```
-
-On Istio 0.8.0, prometheus is deployed as part of `istio-0.8.0.yaml` or `istio-solarwinds-0.8.0.yaml`.
-
-
-To deploy grafana:
-Istio 0.7.1:
-```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/grafana.yaml
-```
-
-By default prometheus and grafana are deployed as ClusterIP type services. We can access the services outside by either changing the type to NodePort or LoadBalancer (if you have a loadbalancer setup) or by port forwarding. I will briefly show using NodePort and port forwarding here.
+By default addon services are deployed as ClusterIP type services, except Jaeger. We can access the services outside by either changing the type to NodePort or LoadBalancer (if you have a loadbalancer setup) or by port forwarding. I will briefly show using NodePort and port forwarding here.
 
 #### Exposing with NodePort
 To expose them using NodePort service type, we can edit the services and change the service type from `ClusterIP` to `NodePort`
@@ -110,6 +78,10 @@ kubectl -n istio-system edit svc prometheus
 
 ```sh
 kubectl -n istio-system edit svc grafana
+```
+
+```sh
+kubectl -n istio-system edit svc servicegraph
 ```
 
 Once this is done the services will be assigned dedicated ports on the hosts. 
@@ -124,13 +96,15 @@ To find the assigned ports for prometheus:
 kubectl -n istio-system get svc prometheus
 ```
 
-In `PWK`, once a port is exposed it will appear on top of the page as shown below as clickable hyperlinks:
+To find the assigned ports for servicegraph:
+```sh
+kubectl -n istio-system get svc servicegraph
+```
 
-![](img/exposed_ports.png)
-
-We can click on the new relevant links now and navigate to prometheus dashboard and grafana dashboards. In grafana there is a dedicated dashboard created for Istio called `Istio Dashboard`.
-
-![](img/Grafana_-_Istio_Dashboard.png)
+To find the assigned ports for jaeger, which was already exposed as a LoadBalancer service:
+```sh
+kubectl -n istio-system get svc tracing
+```
 
 
 #### Exposing with port-forward
@@ -147,59 +121,29 @@ kubectl -n istio-system port-forward \
   9090:9090 &
 ```
 
-Port forward runs in the foreground. We have appeneded '&' to the end of the above 2 commands to run them in the background. If you donot want this behavior, please remove the '&'.
-
-### <a name="zipkin"></a>Zipkin
-On Istio 0.7.1, we can deploy Zipkin by:
-
-```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/zipkin.yaml
-```
-
-You can follow similar steps as described above to expose this service as well.
-
-Command to port-forward:
-```sh
-kubectl port-forward -n istio-system \
-  $(kubectl get pod -n istio-system -l app=zipkin -o jsonpath='{.items[0].metadata.name}') \
-  9411:9411 &
-```
-
-### <a name="jaeger"></a> Jaeger
-On Istio 0.7.1, we can deploy Jaeger by:
-
-```sh
-kubectl apply -n istio-system -f https://raw.githubusercontent.com/jaegertracing/jaeger-kubernetes/master/all-in-one/jaeger-all-in-one-template.yml
-```
-
-You can follow similar steps as described above to expose this service as well.
-
-One Istio 0.8.0, Jaeger port is already exposed for you as part of `istio-0.8.0.yaml` or `istio-solarwinds-0.8.0.yaml`.
-
-
-![](img/Jaeger_UI.png)
-
-Command to port-forward:
-```sh
-kubectl port-forward -n istio-system $(kubectl get pod -n istio-system -l app=jaeger -o jsonpath='{.items[0].metadata.name}') 16686:16686 &
-```
-
-
-### Service Graph
-On Istio 0.7.1, we can deploy service graph by:
-
-```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.7.1/servicegraph.yaml
-```
-
-You can follow similar steps as described above to expose this service as well.
-
-Command to port-forward:
+To port-forward service graph:
 ```sh
 kubectl -n istio-system port-forward \
   $(kubectl -n istio-system get pod -l app=servicegraph -o jsonpath='{.items[0].metadata.name}') \
   8088:8088 &
 ```
+
+### Accessing exposed services
+
+In `PWK`, once a port is exposed it will appear on top of the page as shown below as clickable hyperlinks:
+
+![](img/exposed_ports.png)
+
+We can click on the new relevant links now and navigate to the addons web UI, if available. 
+
+
+If, for some reason, the links for the ports **DONOT** show up, you can grab the URL as shown in the image below, append the port and access the service.
+
+![](img/expose_url.png)
+
+
+Port forward runs in the foreground. We have appeneded '&' to the end of the above 2 commands to run them in the background. If you donot want this behavior, please remove the '&'.
+
 
 
 
