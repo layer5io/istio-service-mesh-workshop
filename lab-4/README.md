@@ -1,37 +1,18 @@
-# lab 4 - Expose Bookinfo site through Istio Ingress Controller/Gateway
+# lab 4 - Expose Bookinfo site through Istio Ingress Gateway
 
 The components deployed on the service mesh by default are not exposed outside the cluster. External access to individual services so far has been provided by creating an external load balancer on each service.
 
-In Istio-0.7.1, a Kubernetes Ingress rule can be created that routes external requests through the Istio Ingress Controller to the backing services.
-In Istio-0.8.0, things are a little different. An ingress gateway service is deployed as a LoadBalancer service. For making Bookinfo accessible from outside, we have to create an `Istio Gateway` for the service and also define an `Istio VirtualService` for Bookinfo with the routes we need.
+An ingress gateway service is deployed as a LoadBalancer service. For making Bookinfo accessible from outside, we have to create an `Istio Gateway` for the service and also define an `Istio VirtualService` for Bookinfo with the routes we need.
 
-## Inspecting the Istio Ingress controller/gateway
+## Inspecting the Istio Ingress gateway
 
-The ingress controller/gateway gets expossed as a normal kubernetes service load balancer:
-
-Istio-0.7.1
-```sh
-kubectl get svc istio-ingress -n istio-system -o yaml
-```
-
-Istio-0.8.0
+The ingress gateway gets expossed as a normal kubernetes service load balancer:
 ```sh
 kubectl get svc istio-ingressgateway -n istio-system -o yaml
 ```
 
-Because the Istio Ingress Controller/Gateway is an Envoy Proxy you can inspect it using the admin routes.  First find the name of the istio ingress proxy:
+Because the Istio Ingress Gateway is an Envoy Proxy you can inspect it using the admin routes.  First find the name of the istio ingress proxy:
 
-On Istio 0.7.1:
-```sh
-kubectl get pods -n istio-system
-kubectl -n istio-system exec -it istio-ingress-... bash
-
-apt-get update
-apt-get install -y curl
-```
-
-
-On Istio 0.8.0:
 ```sh
 kubectl get pods -n istio-system
 kubectl -n istio-system exec -it istio-ingressgateway-... bash
@@ -53,47 +34,11 @@ See the [admin docs](https://www.envoyproxy.io/docs/envoy/latest/operations/admi
 Also it can be helpful to look at the log files of the Istio ingress controller to see what request is being routed. We should also be able to view the `curl` calls we just made from inside the ingressgateway. Let us first find the ingress pod and output the log files:
 
 
-On Istio 0.7.1:
-```sh
-kubectl logs istio-ingress-... -n istio-system
-```
-
-On Istio 0.8.0:
 ```sh
 kubectl logs istio-ingressgateway-... -n istio-system
 ```
 
-## View Bookinfo Ingress Routes (Istio 0.7.1)
-
-1 - Routes for Bookinfo app have already been deployed as part of the Bookinfo deployment.
-
-In the bookinfo ingress file notice that the ingress class is specified as   `kubernetes.io/ingress.class: istio` which routes the request to Istio.
-
-```sh
-kubectl describe ingress
-```
-
-2 - Find the external port of the Istio Ingress controller by running:
-
-```sh
-kubectl get service istio-ingress -n istio-system -o wide
-```
-
-To just get the first port of istio-ingress service, we can run this:
-```sh
-kubectl get service istio-ingress -n istio-system --template='{{(index .spec.ports 0).nodePort}}'
-```
-
-3 - Browse to the website of the Bookinfo: On `PWK` the exposed ingress ports are available as hyperlinks at the top of the page. Clicking on a valid ingress port will open a page.
-
-To view the product page, you will have to append
-`/productpage` to the url.
-
-
-4 - Now, reload the page multiple times and notice how it round robins between v1, v2 and v3 of the reviews service:
-
-
-## Configure Bookinfo Ingress Routes with the Istio Ingress Controller (Istio 0.8.0)
+## Configure Bookinfo Ingress Routes with the Istio Ingress Gateway
 
 
 1 - Configure the Bookinfo route with the Istio Ingress gateway:
