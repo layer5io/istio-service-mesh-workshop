@@ -53,7 +53,7 @@ curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/ma
 
 ### 4.2.2 - View the Gateway and VirtualServices
 
-Check the created gateway and virtualservice:
+Check the created `Istio Gateway` and `Istio VirtualService` to see the changes deployed:
 ```sh
 istioctl get gateway
 istioctl get gateway -o yaml
@@ -81,19 +81,19 @@ To view the product page, you will have to append
 
 
 ### 4.2.5 - Reload Page
-Now, reload the page multiple times and notice how it round robins between v1, v2 and v3 of the reviews service:
+Now, reload the page multiple times and notice how it round robins between v1, v2 and v3 of the reviews service.
 
 
 ## 4.3 Inspect the Istio proxy of the productpage pod
 
-To better understand the istio proxy, let's inspect the details.  exec into the productpage pod to find the proxy details.  First find the full pod name and then exec into the istio-proxy container:
+To better understand the istio proxy, let's inspect the details.  Let us `exec` into the productpage pod to find the proxy details.  To do so we need to first find the full pod name and then `exec` into the istio-proxy container:
 
 ```sh
 kubectl get pods
 kubectl exec -it productpage-v1-... -c istio-proxy  sh
 ```
 
-Once in the container look at some of the envoy proxy details:
+Once in the container look at some of the envoy proxy details by inspecting it's config file:
 
 ```sh
 ps aux
@@ -101,6 +101,7 @@ ls -l /etc/istio/proxy
 cat /etc/istio/proxy/envoy-rev0.json
 ```
 
-See the [admin docs](https://www.envoyproxy.io/docs/envoy/v1.5.0/operations/admin) for more details.
+
+For more details on envoy proxy please check out their [admin docs](https://www.envoyproxy.io/docs/envoy/v1.5.0/operations/admin) for more details.
 
 ## [Continue to lab 5 - Telemetry](../lab-5/README.md)
