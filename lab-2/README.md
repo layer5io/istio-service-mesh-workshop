@@ -7,7 +7,7 @@ Now that we have the Kubernetes cluster, we are ready to deploy Istio.
 * [1. Installing Istio](#1)
 * [2. Seting up istioctl](#2)
 * [3. Verify install](#3)
-* [4. Installing Add-ons](#4)
+* [4. Configuring Add-ons](#4)
 
 ## <a name="1"></a> 1 - Installing Istio
 As part of this lab we will install Istio 0.8.0 on your kubernetes cluster.
@@ -19,6 +19,14 @@ curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/ma
 
 kubectl apply -f istio.yaml
 ```
+
+On `PWK` you will see an error message like this one:
+```sh
+  error: unable to recognize "istio.yaml": no matches for admissionregistration.k8s.io/, Kind=MutatingWebhookConfiguration
+```
+
+<img src="../img/info.png" width="48" align="left" /> We have Kubernetes version 1.8 on `PWK` which does have support for mutating webhooks which is the reason for the error. You can continue with the lab without any issues.
+
 
 ## <a name="2"></a> 2 - Verify install
 
@@ -47,7 +55,7 @@ istioctl version
 ```
 
 
-## Install Add-ons
+## Configuring Add-ons
 
 `Istio` comes with several addons like:
   1. [Prometheus](https://prometheus.io/)
@@ -67,7 +75,7 @@ Istio, deployed as part of this workshop, comes deployed with Prometheus, Grafan
 
 ### Exposing services
 
-By default addon services are deployed as ClusterIP type services, except Jaeger. We can access the services outside by either changing the type to NodePort or LoadBalancer (if you have a loadbalancer setup) or by port forwarding. I will briefly show using NodePort and port forwarding here.
+By default, Istio addon services are deployed as `ClusterIP` type services, except Jaeger. We can expose the services outside the cluster by either changing the Kubernetes service type to NodePort or LoadBalancer (if you have a loadbalancer setup) or by port-forwarding or by configuring Kubernetes Ingress. In this lab, we will briefly demonstrate the NodePort and port-forwarding way of exposing services.
 
 #### Exposing with NodePort
 To expose them using NodePort service type, we can edit the services and change the service type from `ClusterIP` to `NodePort`
@@ -142,7 +150,7 @@ If, for some reason, the links for the ports **DONOT** show up, you can grab the
 ![](img/expose_url.png)
 
 
-Port forward runs in the foreground. We have appeneded '&' to the end of the above 2 commands to run them in the background. If you donot want this behavior, please remove the '&'.
+Port-forwarding runs in the foreground. We have appeneded '&' to the end of the above 2 commands to run them in the background. If you donot want this behavior, please remove the '&'.
 
 
 
