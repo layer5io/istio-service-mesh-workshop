@@ -13,7 +13,7 @@ To do this the application collects and propagates the following headers from th
 - `x-ot-span-context`
 
 
-## View Traces
+## 6.1 View Traces
 
 If you have not set `INGRESS_HOST` environment variable, please do so by following [Lab 5](../lab-5/README.md).
 
@@ -38,4 +38,4 @@ You can click on the link at the top of the page which maps to the right port an
 
 
 
-#### [Continue to lab 7 - Request Routing and Canary Testing](../lab-7/README.md)
+## [Continue to Lab 7 - Request Routing and Canary Testing](../lab-7/README.md)
