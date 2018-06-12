@@ -2,11 +2,11 @@
 
 In this lab we will configure circuit breaking using Istio. Circuit breaking allows developers to write applications that limit the impact of failures, latency spikes, and other undesirable effects of network peculiarities. This task will show how to configure circuit breaking for connections, requests, and outlier detection.
 
-## Preping for circuit breaking
+## Preparing for circuit breaking
 
 Based on our testing circuit breaker configuration in Istio 0.8.0 has issues with mTLS turned on.
 
-### Turn off mTLS
+### 8.1 Turn off mTLS
 Based on our testing circuit breaker configuration in Istio has issues with mTLS turned on.
 
 Let us turn off mTLS now. To turn off mTLS we will have to edit the configmap:
@@ -31,7 +31,7 @@ kubectl delete pods -n istio-system -l istio=pilot
 Please give it a few minutes to restart and get back to running state.
 
 
-### <a name="#deploy"></a> Deploy a simple application
+### 8.2 <a name="#deploy"></a> Deploy a simple application
 Now, let us start by deploying a simpler application to test circuit breaking:
 
 
@@ -48,7 +48,7 @@ kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh
 ```
 
 
-### Deploy a client for the app
+### 8.3 Deploy a client for the app
 Let us then deploy a client which is capable of talking to the httpbin service:
 
 ***With manual sidecar injection:***
@@ -64,7 +64,7 @@ kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh
 ```
 
 
-### Initial test calls from client to server
+### 8.4 Initial test calls from client to server
 To make testing easier, let us create an alias to execute `load` inside the httpbin client we created above:
 ```sh
 alias load="kubectl exec -it $(kubectl get pod | grep fortio | awk '{ print $1 }') -c fortio /usr/local/bin/fortio -- load"
@@ -103,7 +103,7 @@ x-envoy-upstream-service-time: 36
 }
 ```
 
-### Configure Circuit Breaking
+### 8.5 Configure Circuit Breaking
 Now that we have the needed service in place, it is time to configure circuit breaking using a destination rule:
 
 ```sh
@@ -140,7 +140,7 @@ spec:
 ```
 
 
-## Time to trip the circuit
+## 8.6 Time to trip the circuit
 In the circuit-breaking settings, we specified maxRequestsPerConnection: 1 and http1MaxPendingRequests: 1. This should mean that if we exceed more than one request per connection and more than one pending request, we should see the istio-proxy sidecar open the circuit for further requests/connections. 
 
 Let us make 50 calls using 4 concurrent connections:
@@ -154,8 +154,6 @@ kubectl exec -it $(kubectl get pod | grep fortio | awk '{ print $1 }')  -c istio
 ```
 
 
-This wraps up this lab and the workshop.
-
-Thanks a lot for trying out our workshop.
+This wraps up this lab and the workshop. Thank you for joining our workshop!
 
 For more details, please checkout [layer5.io](http://layer5.io).
