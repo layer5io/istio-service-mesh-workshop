@@ -155,4 +155,4 @@ Port-forwarding runs in the foreground. We have appeneded '&' to the end of the 
 
 
 
-#### [Continue to lab 3 - Deploy Sample Bookinfo app](../lab-3/README.md)
+## [Continue to lab 3 - Deploy Sample Bookinfo app](../lab-3/README.md)

@@ -4,21 +4,24 @@ The components deployed on the service mesh by default are not exposed outside t
 
 An ingress gateway service is deployed as a LoadBalancer service. For making Bookinfo accessible from outside, we have to create an `Istio Gateway` for the service and also define an `Istio VirtualService` for Bookinfo with the routes we need.
 
-## Inspecting the Istio Ingress gateway
+## 4.1 Inspecting the Istio Ingress gateway
 
 The ingress gateway gets expossed as a normal kubernetes service load balancer:
 ```sh
 kubectl get svc istio-ingressgateway -n istio-system -o yaml
 ```
 
-Because the Istio Ingress Gateway is an Envoy Proxy you can inspect it using the admin routes.  First find the name of the istio ingress proxy:
+Because the Istio Ingress Gateway is an Envoy Proxy you can inspect it using the admin routes.  First find the name of the istio-ingressgateway:
 
 ```sh
 kubectl get pods -n istio-system
-kubectl -n istio-system exec -it istio-ingressgateway-... bash
+```
+Copy and paste your ingress gateway's pod name. Execute:
+```sh
+kubectl -n istio-system exec -it <istio-ingressgateway-...> bash
 ```
 
-You can view the statistics, listeners, routes, clusters and server info for the envoy proxy by forwarding the local port:
+You can view the statistics, listeners, routes, clusters and server info for the Envoy proxy by forwarding the local port:
 
 ```sh
 curl localhost:15000/help
@@ -38,10 +41,9 @@ Also it can be helpful to look at the log files of the Istio ingress controller 
 kubectl logs istio-ingressgateway-... -n istio-system
 ```
 
-## Configure Bookinfo Ingress Routes with the Istio Ingress Gateway
+## 4.2 Configure Istio Ingress Gateway for Bookinfo
 
-
-1 - Configure the Bookinfo route with the Istio Ingress gateway:
+### 4.2.1 - Configure the Bookinfo route with the Istio Ingress gateway:
 
 We can create a virtualservice & gateway for bookinfo app in the ingress gateway by running the following:
 
@@ -49,7 +51,7 @@ We can create a virtualservice & gateway for bookinfo app in the ingress gateway
 curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/bookinfo-gateway.yaml | istioctl create -f - 
 ```
 
-2 - Viewing the gateway and virtualservices
+### 4.2.2 - View the Gateway and VirtualServices
 
 Check the created gateway and virtualservice:
 ```sh
@@ -60,7 +62,7 @@ istioctl get virtualservices
 istioctl get virtualservices -o yaml
 ```
 
-3 - Find the external port of the Istio Ingress controller by running:
+### 4.2.3 - Find the external port of the Istio Ingress Gateway by running:
 
 ```sh
 kubectl get service istio-ingressgateway -n istio-system -o wide
@@ -71,16 +73,18 @@ To just get the first port of istio-ingressgateway service, we can run this:
 kubectl get service istio-ingressgateway -n istio-system --template='{{(index .spec.ports 0).nodePort}}'
 ```
 
-3 - Browse to the website of the Bookinfo: On `PWK` the exposed ingress ports are available as hyperlinks at the top of the page. Clicking on a valid ingress port will open a page.
+### 4.2.4 - Browse to Bookinfo
+Browse to the website of the Bookinfo: On `PWK` the exposed ingress ports are available as hyperlinks at the top of the page. Clicking on a valid ingress port will open a page.
 
 To view the product page, you will have to append
 `/productpage` to the url.
 
 
-4 - Now, reload the page multiple times and notice how it round robins between v1, v2 and v3 of the reviews service:
+### 4.2.5 - Reload Page
+Now, reload the page multiple times and notice how it round robins between v1, v2 and v3 of the reviews service:
 
 
-## Inspecting the Istio proxy of the productpage pod
+## 4.3 Inspect the Istio proxy of the productpage pod
 
 To better understand the istio proxy, let's inspect the details.  exec into the productpage pod to find the proxy details.  First find the full pod name and then exec into the istio-proxy container:
 
@@ -97,18 +101,6 @@ ls -l /etc/istio/proxy
 cat /etc/istio/proxy/envoy-rev0.json
 ```
 
-You can also view the statistics, listeners, routes, clusters and server info for the envoy proxy by forwarding the local port:
-
-```sh
-curl localhost:15000/stats
-curl localhost:15000/listeners
-curl localhost:15000/routes
-curl localhost:15000/clusters
-curl localhost:15000/server_info
-
-exit
-```
-
 See the [admin docs](https://www.envoyproxy.io/docs/envoy/v1.5.0/operations/admin) for more details.
 
-#### [Continue to lab 5 - Telemetry](../lab-5/README.md)
+## [Continue to lab 5 - Telemetry](../lab-5/README.md)

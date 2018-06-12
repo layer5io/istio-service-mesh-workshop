@@ -1,53 +1,22 @@
 # Lab 3 - Deploy Sample Bookinfo app
-
-To play with Istio and demonstrate some of it's capabilities we will deploy the sample BookInfo application which comes as part of the Istio package.
-
-
+To play with Istio and demonstrate some of it's capabilities we will deploy the sample BookInfo application, which is included the Istio package.
 
 ## What is the BookInfo Application?
 
-The sample bookinfo application displays information about a book, similar to a single catalog entry of an online book store. Displayed on the page is a description of the book, book details (ISBN, number of pages, and so on), and a few book reviews.
-
-The Bookinfo application is broken into four separate microservices:
-
-1. productpage. The productpage microservice calls the details and reviews microservices to populate the page.
-2. details. The details microservice contains book information.
-3. reviews. The reviews microservice contains book reviews. It also calls the ratings microservice.
-4. ratings. The ratings microservice contains book ranking information that accompanies a book review.
-
-There are 3 versions of the reviews microservice:
-
-* Version v1 doesn’t call the ratings service.
-* Version v2 calls the ratings service, and displays each rating as 1 to 5 black stars.
-* Version v3 calls the ratings service, and displays each rating as 1 to 5 red stars.
-
+This application is polyglot, i.e., the microservices are written in different languages and sample bookinfo application displays information about a book, similar to a single catalog entry of an online book store. Displayed on the page is a description of the book, book details (ISBN, number of pages, and so on), and a few book reviews.
 
 The end-to-end architecture of the application is shown [here](http://calcotestudios.com/talks/slides-dockercon-18-using-istio.html#/4/1).
 
+ It’s worth noting that these services have no dependencies on Istio, but make an interesting service mesh example, particularly because of the multitude of services, languages and versions for the reviews service.
 
+Sidecars proxy can either manually or automatically injected into your pods.
 
-This application is polyglot, i.e., the microservices are written in different languages. It’s worth noting that these services have no dependencies on Istio, but make an interesting service mesh example, particularly because of the multitude of services, languages and versions for the reviews service.
-
-
-To run the sample with Istio requires no changes to the application itself. Instead, we simply need to configure and run the services in an Istio-enabled environment, with Envoy sidecars injected along side each service. The needed commands and configuration vary depending on the runtime environment although in all cases the resulting deployment will look like this:
-
-![](https://istio.io/docs/guides/img/bookinfo/withistio.svg)
-
-All of the microservices will be packaged with an Envoy sidecar that intercepts incoming and outgoing calls for the services, providing the hooks needed to externally control, via the Istio control plane, routing, telemetry collection, and policy enforcement for the application as a whole.
-
-
-We can inject the proxy sidecars either manually or automatically. 
-
-For automatic sidecar injection kubernetes we need api server to support `admissionregistration.k8s.io/v1beta1` or `admissionregistration.k8s.io/v1beta2` apis. To verify that run:
+Automatic sidecar injection requires that your Kubernetes api-server supports `admissionregistration.k8s.io/v1beta1` or `admissionregistration.k8s.io/v1beta2` APIs. Verify whether your Kubernetes deployment supports these APIs by executing:
 
 ```sh
 kubectl api-versions | grep admissionregistration
 ```
-
-If we get back any of the 2 apis then we can proceed with [automatic sidecar injection](#injector). 
-
-As part of Istio deployment in [Lab 2](../lab-2/README.md), we have deployed the sidecar injector.
-If not, we can proceed with [manual injection](#manual).
+If your environment supports these two APIs, then you may use [automatic sidecar injection](#injector). As part of Istio deployment in [Lab 2](../lab-2/README.md), we have deployed the sidecar injector, however, we will not use the automatic sidecar injector in this workshop.
 
 <img src="../img/info.png" width="48" align="left" /> ***Please note:*** Our `PWK` environment will **HAVE** to use [manual injection](#manual) irrespective of the version of Istio because `PWK` comes with Kubernetes version 1.8 which does not support `admissionregistration.k8s.io/v1beta1` or `admissionregistration.k8s.io/v1beta2` APIs. See <a href="auto">Appendix 3.A</a> for instructions on automatic sidecar injection.
 
@@ -103,8 +72,10 @@ kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-servi
 
     kubectl describe pod productpage-v1-.....
     ```
-    
- ## <a name="auto"></a> Appendix 3.A: Deploying Sample App with Automatic sidecar injection
+## [Continue to Lab 4 - Expose BookInfo via Istio Ingress Gateway](../lab-4/README.md)
+ 
+ 
+### <a name="auto"></a> Appendix 3.A: Deploying Sample App with Automatic sidecar injection
 
 Istio, deployed as part of this workshop, will also deploy the sidecar injector. If you are using `PWK`, please proceed to [Deploying Sample App with manual sidecar injection](#manual)
 
@@ -146,5 +117,4 @@ Now that we have the sidecar injector with mutating webhook in place and the nam
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/bookinfo.yaml
 ```
-
-#### [Continue to lab 4 - Expose Bookinfo site through Istio Ingress Controller/Gateway](../lab-4/README.md)
+## [Continue to Lab 4 - Expose BookInfo via Istio Ingress Gateway](../lab-4/README.md)
