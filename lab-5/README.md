@@ -57,7 +57,7 @@ For a more interactive graph, navigate to `force/forcegraph.html`.
 ![](https://istio.io/docs/tasks/telemetry/img/servicegraph-example.png)
 
 
-## [Continue to lab 6 - Distributed Tracing](../lab-6/README.md)
+## [Continue to Lab 6 - Distributed Tracing](../lab-6/README.md)
 
 
 #### Appendix 5.A Docker for Desktop
