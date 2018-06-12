@@ -72,7 +72,7 @@ kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-servi
 
     kubectl describe pod productpage-v1-.....
     ```
-## [Continue to lab 4 - Expose Bookinfo site through Istio Ingress Controller/Gateway](../lab-4/README.md)
+## [Continue to Lab 4 - Expose BookInfo via Istio Ingress Gateway](../lab-4/README.md)
  
  
 ### <a name="auto"></a> Appendix 3.A: Deploying Sample App with Automatic sidecar injection
@@ -117,3 +117,4 @@ Now that we have the sidecar injector with mutating webhook in place and the nam
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/bookinfo.yaml
 ```
+## [Continue to Lab 4 - Expose BookInfo via Istio Ingress Gateway](../lab-4/README.md)
