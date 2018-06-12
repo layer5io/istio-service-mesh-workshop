@@ -11,14 +11,16 @@ The ingress gateway gets expossed as a normal kubernetes service load balancer:
 kubectl get svc istio-ingressgateway -n istio-system -o yaml
 ```
 
-Because the Istio Ingress Gateway is an Envoy Proxy you can inspect it using the admin routes.  First find the name of the istio ingress proxy:
+Because the Istio Ingress Gateway is an Envoy Proxy you can inspect it using the admin routes.  First find the name of the istio-ingressgateway:
 
 ```sh
 kubectl get pods -n istio-system
-kubectl -n istio-system exec -it istio-ingressgateway-... bash
+```
+Copy and paste your ingress gateway's pod name. Execute:
+kubectl -n istio-system exec -it <istio-ingressgateway-...> bash
 ```
 
-You can view the statistics, listeners, routes, clusters and server info for the envoy proxy by forwarding the local port:
+You can view the statistics, listeners, routes, clusters and server info for the Envoy proxy by forwarding the local port:
 
 ```sh
 curl localhost:15000/help
