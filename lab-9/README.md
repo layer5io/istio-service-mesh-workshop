@@ -2,7 +2,7 @@
 
 Istio provides transparent mutal TLS to services inside the service mesh where both the client and the server authenticate each others certificates as part of the TLS handshake. As part of this workshop we have deployed Istio with mTLS.
 
-## Verify mTLS
+## 9.1 Verify mTLS
 To verify mTLS is enabled:
 ```sh
 kubectl get configmap istio -o yaml -n istio-system | grep authPolicy | head -1
@@ -95,9 +95,9 @@ Output will be similar to this:
 This proves the existence of mTLS between the services on the Istio mesh.
 
 
-## SPIFFE
+## 9.2 [Secure Production Identity Framework for Everyone (SPIFFE)](https://spiffe.io/)
 
-Istio uses SPIFFE to assert the identify of workloads on the cluster. SPIFFE is a very simple standard. It consists of a notion of identity and a method of proving it. A SPIFFE identity consists of an authority part and a path. The meaning of the path in spiffe land is implementation defined. In k8s it takes the form `/ns/$namespace/sa/$service-account` with the expected meaning. A SPIFFE identify is embedded in a document. This document in principle can take many forms but currently the only defined format is x509. Let's see what an SPIFFE x509 looks like. Remember those certificates we stole earlier? Execute the below snippet either in the directory where you have the certificates locally, if you have `openssl` installed.
+Istio uses [SPIFFE](https://spiffe.io/) to assert the identify of workloads on the cluster. SPIFFE is a very simple standard. It consists of a notion of identity and a method of proving it. A SPIFFE identity consists of an authority part and a path. The meaning of the path in spiffe land is implementation defined. In k8s it takes the form `/ns/$namespace/sa/$service-account` with the expected meaning. A SPIFFE identify is embedded in a document. This document in principle can take many forms but currently the only defined format is x509. Let's see what an SPIFFE x509 looks like. Remember those certificates we stole earlier? Execute the below snippet either in the directory where you have the certificates locally, if you have `openssl` installed.
 
 
 Let us grab the certs from the productpage sidecar place it in `tmp` directory:
@@ -137,4 +137,4 @@ openssl verify -CAfile root-cert.pem cert-chain.pem
 
 
 
-#### [Continue to lab 10 - Istio Mutual TLS](../lab-10/README.md)
+## [Continue to Lab 10 - Circuit Breaking](../lab-10/README.md)
