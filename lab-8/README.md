@@ -107,7 +107,8 @@ Now we login to `/productpage` as user `jason` and observe that the page loads w
 
  `Ratings service is currently unavailable`.
 
-If you logout or login as a different user, the page should load normally without any errors.
+### 8.3 Verify fault injection
+Verify the fault injection rule by logging out (or logging in as a different user), the page should load normally without any errors.
 
 
 ## [Continue to lab 9 - Circuit Breaking](../lab-9/README.md)
