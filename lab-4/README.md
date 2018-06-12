@@ -17,6 +17,7 @@ Because the Istio Ingress Gateway is an Envoy Proxy you can inspect it using the
 kubectl get pods -n istio-system
 ```
 Copy and paste your ingress gateway's pod name. Execute:
+```sh
 kubectl -n istio-system exec -it <istio-ingressgateway-...> bash
 ```
 
