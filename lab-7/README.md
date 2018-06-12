@@ -92,8 +92,7 @@ Now if we login as user `jason` you will be able to see data from reviews v2. Wh
 Before we start the next exercise, lets first reset the routing rules created in the previous section:
 
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-all-v1.yaml | istioctl delete -f - 
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-all-v1.yaml | istioctl create -f - 
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-all-v1.yaml | istioctl replace -f - 
 ```
 
 Currently the routing rule only routes to `v1` of all the services. 
