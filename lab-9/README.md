@@ -97,10 +97,10 @@ This proves the existence of mTLS between the services on the Istio mesh.
 
 ## 9.2 [Secure Production Identity Framework for Everyone (SPIFFE)](https://spiffe.io/)
 
-Istio uses [SPIFFE](https://spiffe.io/) to assert the identify of workloads on the cluster. SPIFFE is a very simple standard. It consists of a notion of identity and a method of proving it. A SPIFFE identity consists of an authority part and a path. The meaning of the path in spiffe land is implementation defined. In k8s it takes the form `/ns/$namespace/sa/$service-account` with the expected meaning. A SPIFFE identify is embedded in a document. This document in principle can take many forms but currently the only defined format is x509. Let's see what an SPIFFE x509 looks like. Remember those certificates we stole earlier? Execute the below snippet either in the directory where you have the certificates locally, if you have `openssl` installed.
+Istio uses [SPIFFE](https://spiffe.io/) to assert the identify of workloads on the cluster. SPIFFE consists of a notion of identity and a method of proving it. A SPIFFE identity consists of an authority part and a path. The meaning of the path in spiffe land is implementation defined. In k8s it takes the form `/ns/$namespace/sa/$service-account` with the expected meaning. A SPIFFE identify is embedded in a document. This document in principle can take many forms but currently the only defined format is x509. Let's see what a SPIFFE x509 looks like.
 
 
-Let us grab the certs from the productpage sidecar place it in `tmp` directory:
+To start our investigation, let us create a local `tmp` directory, grab the certs from the productpage sidecar & place it in `tmp`:
 ```sh
 mkdir ~/tmp
 cd ~/tmp
@@ -109,18 +109,17 @@ productProxy=$(kubectl get pod | grep productpage | awk '{ print $1 }')
 for f in ${fs[@]}; do kubectl exec -c istio-proxy $productProxy /bin/cat -- /etc/certs/$f >$f; done
 ```
 
-
-To investigate the ceritificate we need openssl. `PWK` hosts don't come installed with openssl. Let us proceed with installing it:
+Let us now investigate the ceritificate using openssl. `PWK` hosts don't come installed with openssl. Let us first install it:
 ```
 yum install -y openssl
 ```
 
-Now that we have openssl installed and the certificate files in place, let us investigate the certificate:
+Now that we have openssl installed and the certificate files in place, let us view the certificate:
 ```
-openssl x509 -in cert-chain.pem -text | less
+openssl x509 -in cert-chain.pem -text
 ```
 
-The important thing to notice is that the subject isn't what you'd normally expect. It has no meaning here. What is interesting is the URI SAN extension. Note the SPIFFE identify. 
+There are a few things which are interesting. To name a few, the subject isn't what you'd normally expect, URI SAN extension has a `spiffe` URI.
 
 ```sh
     X509v3 Subject Alternative Name:
@@ -134,6 +133,8 @@ There is one more part to SPIFFE identity, and that's a signing authority. This 
 ```
 openssl verify -CAfile root-cert.pem cert-chain.pem
 ```
+
+The verification should succeed.
 
 
 
