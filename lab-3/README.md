@@ -49,53 +49,7 @@ If we get back any of the 2 apis then we can proceed with [automatic sidecar inj
 As part of Istio deployment in [Lab 2](../lab-2/README.md), we have deployed the sidecar injector.
 If not, we can proceed with [manual injection](#manual).
 
-<img src="../img/info.png" width="48" align="left" /> ***Please note:*** Folks using `PWK` environment will **HAVE** to use [manual injection](#manual) irrespective of the version of Istio because `PWK` comes with Kubernetes version 1.8 which does not support `admissionregistration.k8s.io/v1beta1` or `admissionregistration.k8s.io/v1beta2` apis. 
-
-
-
-## <a name="auto"></a> Deploying Sample App with Automatic sidecar injection
-
-Istio, deployed as part of this workshop, will also deploy the sidecar injector. If you are using `PWK`, please proceed to [Deploying Sample App with manual sidecar injection](#manual)
-
-Let us now verify sidecar injector deployment & label namespace for automatic sidecar injection.
-
-
-```sh
-kubectl -n istio-system get deployment -listio=sidecar-injector
-```
-Output:
-```sh
-NAME                     DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-istio-sidecar-injector   1         1         1            1           1d
-```
-
-NamespaceSelector decides whether to run the webhook on an object based on whether the namespace for that object matches the [selector](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors).
-
-Label the default namespace with istio-injection=enabled
-
-```sh
-kubectl label namespace default istio-injection=enabled
-```
-
-```sh
-kubectl get namespace -L istio-injection
-```
-
-Output:
-```sh
-NAME           STATUS    AGE       ISTIO-INJECTION
-default        Active    1h        enabled
-istio-system   Active    1h        
-kube-public    Active    1h        
-kube-system    Active    1h
-```
-
-Now that we have the sidecar injector with mutating webhook in place and the namespace labelled for automatic sidecar injection, we can proceed to deploy the sample app:
-
-```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/bookinfo.yaml
-```
-
+<img src="../img/info.png" width="48" align="left" /> ***Please note:*** Our `PWK` environment will **HAVE** to use [manual injection](#manual) irrespective of the version of Istio because `PWK` comes with Kubernetes version 1.8 which does not support `admissionregistration.k8s.io/v1beta1` or `admissionregistration.k8s.io/v1beta2` APIs. See <a href="auto">Appendix 3.A</a> for instructions on automatic sidecar injection.
 
 ## <a name="manual"></a> Deploying Sample App with manual sidecar injection
 
@@ -149,5 +103,48 @@ kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-servi
 
     kubectl describe pod productpage-v1-.....
     ```
+    
+ ## <a name="auto"></a> Appendix 3.A: Deploying Sample App with Automatic sidecar injection
+
+Istio, deployed as part of this workshop, will also deploy the sidecar injector. If you are using `PWK`, please proceed to [Deploying Sample App with manual sidecar injection](#manual)
+
+Let us now verify sidecar injector deployment & label namespace for automatic sidecar injection.
+
+
+```sh
+kubectl -n istio-system get deployment -listio=sidecar-injector
+```
+Output:
+```sh
+NAME                     DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+istio-sidecar-injector   1         1         1            1           1d
+```
+
+NamespaceSelector decides whether to run the webhook on an object based on whether the namespace for that object matches the [selector](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors).
+
+Label the default namespace with istio-injection=enabled
+
+```sh
+kubectl label namespace default istio-injection=enabled
+```
+
+```sh
+kubectl get namespace -L istio-injection
+```
+
+Output:
+```sh
+NAME           STATUS    AGE       ISTIO-INJECTION
+default        Active    1h        enabled
+istio-system   Active    1h        
+kube-public    Active    1h        
+kube-system    Active    1h
+```
+
+Now that we have the sidecar injector with mutating webhook in place and the namespace labelled for automatic sidecar injection, we can proceed to deploy the sample app:
+
+```sh
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/bookinfo.yaml
+```
 
 #### [Continue to lab 4 - Expose Bookinfo site through Istio Ingress Controller/Gateway](../lab-4/README.md)
