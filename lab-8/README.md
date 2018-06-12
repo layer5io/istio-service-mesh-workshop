@@ -4,9 +4,8 @@ In this lab we will learn how to test the resiliency of an application by inject
 
 Before we start let us reset the route rules:
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-all-v1.yaml | istioctl delete -f - 
-
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-all-v1.yaml | istioctl create -f - 
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-all-v1.yaml | istioctl replace -f - 
+ 
 curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-reviews-test-v2.yaml | istioctl replace -f - 
 ```
 
