@@ -75,7 +75,7 @@ Istio, deployed as part of this workshop, comes deployed with Prometheus, Grafan
 
 ### Exposing services
 
-By default, Istio addon services are deployed as `ClusterIP` type services, except Jaeger. We can expose the services outside the cluster by either changing the Kubernetes service type to NodePort or LoadBalancer (if you have a loadbalancer setup) or by port-forwarding or by configuring Kubernetes Ingress. In this lab, we will briefly demonstrate the NodePort and port-forwarding way of exposing services.
+By default, Istio addon services are deployed as `ClusterIP` type services, except Jaeger. We can expose the services outside the cluster by either changing the Kubernetes service type to NodePort or LoadBalancer or by port-forwarding or by configuring Kubernetes Ingress. In this lab, we will briefly demonstrate the NodePort and port-forwarding way of exposing services.
 
 #### Exposing with NodePort
 To expose them using NodePort service type, we can edit the services and change the service type from `ClusterIP` to `NodePort`
