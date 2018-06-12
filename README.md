@@ -5,7 +5,7 @@ Initially presented at [DockerCon 2018](https://dockercon18.smarteventscloud.com
 - [Setup Kubernetes](lab-1/README.md)
 - [Setup Istio](lab-2/README.md)
   - [Configure Adapter Set (1)](lab-2/README.md)
-  - [Configure Adapter Set (2)](lab-2/Optional.md)
+  - [Configure Adapter Set (2)](lab-2/optional.md)
 
 ## Deploying an app onto the mesh
 
