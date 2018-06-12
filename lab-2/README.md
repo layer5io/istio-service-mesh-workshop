@@ -1,6 +1,6 @@
 # Lab 2 - Deploy Istio
 
-Now that we have the kubernetes cluster, we are ready to deploy Istio.
+Now that we have the Kubernetes cluster, we are ready to deploy Istio.
 
 ## Steps
 
