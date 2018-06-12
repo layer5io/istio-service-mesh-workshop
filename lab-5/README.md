@@ -55,8 +55,8 @@ For a more interactive graph, navigate to `force/forcegraph.html`.
 ![](https://istio.io/docs/tasks/telemetry/img/servicegraph-example.png)
 
 
-#### [Continue to lab 6 - Distributed Tracing](../lab-6/README.md)
+## [Continue to lab 6 - Distributed Tracing](../lab-6/README.md)
 
 
-## Appendix 5.A Docker for Desktop
+#### Appendix 5.A Docker for Desktop
 ***Please note:*** In step 5.1, if you are using Docker for Mac or Windows, INGRESS_HOST should be set to `localhost`.
