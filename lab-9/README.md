@@ -1,4 +1,4 @@
-# Lab 9 - Mutual TLS
+# Lab 9 - Mutual TLS & Identity Verification
 
 Istio provides transparent mutal TLS to services inside the service mesh where both the client and the server authenticate each others certificates as part of the TLS handshake. As part of this workshop we have deployed Istio with mTLS.
 
