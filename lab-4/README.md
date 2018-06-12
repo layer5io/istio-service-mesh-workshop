@@ -41,8 +41,7 @@ Also it can be helpful to look at the log files of the Istio ingress controller 
 kubectl logs istio-ingressgateway-... -n istio-system
 ```
 
-## Configure Bookinfo Ingress Routes with the Istio Ingress Gateway
-
+## Configure Istio Ingress Gateway for Bookinfo
 
 1 - Configure the Bookinfo route with the Istio Ingress gateway:
 
