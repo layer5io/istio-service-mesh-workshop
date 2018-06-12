@@ -10,7 +10,7 @@ curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/ma
 curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-reviews-test-v2.yaml | istioctl replace -f - 
 ```
 
-## Inject a route rule to create a fault using HTTP delay
+## 8.1 Inject a route rule to create a fault using HTTP delay
 
 To start, we will inject a 7s delay between the reviews v2 and ratings service for user `jason`. reviews v2 service has a 10s hard-coded connection timeout for its calls to the ratings service.
 
@@ -62,7 +62,7 @@ Sorry, product reviews are currently unavailable for this book.
 
 If you logout or login as a different user, the page should load normally without any errors.
 
-## Inject a route rule to create a fault using HTTP abort
+## 8.2 Inject a route rule to create a fault using HTTP abort
 
 In this section, , we will introduce an HTTP abort to the ratings microservices for the user `jason`.
 
@@ -110,4 +110,4 @@ Now we login to `/productpage` as user `jason` and observe that the page loads w
 If you logout or login as a different user, the page should load normally without any errors.
 
 
-#### [Continue to lab 9 - Circuit Breaking](../lab-9/README.md)
+## [Continue to lab 9 - Circuit Breaking](../lab-9/README.md)
