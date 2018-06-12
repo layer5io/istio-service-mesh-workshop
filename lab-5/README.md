@@ -1,38 +1,16 @@
 # Lab 5 - Telemetry
 
-
-## Inspecting Mixer
-
-Envoy proxies call Mixer to report statistics and check for route rules. We can get an idea on what it is collecting:
-
-```sh
-kubectl get pods -n istio-system
-```
-
-```sh
-kubectl -n istio-system exec -it istio-policy-... -c istio-proxy -- sh
-```
-
-```sh
-curl localhost:9093/metrics
-
-exit
-```
-
-## Generate Bookinfo Telemetry data
-
-Let us get the first accessible ingress port and store it in a variable:
+## 5.1 Generate Load on Bookinfo
+Let's generate HTTP traffic against the BookInfo application, so we can see interesting telemetry. Grab the ingress gateway port number and store it in a variable:
 
 ```sh
 export INGRESS_PORT=$(kubectl get service istio-ingressgateway -n istio-system --template='{{(index .spec.ports 0).nodePort}}')
 ```
 
-Once we have the port, we can append the IP of one of the nodes to get the host. in `PWK` we can get the ip from the host list on the left.
+Once we have the port, we can append the IP of one of the nodes to get the host. in `PWK` we can get the IP from the host list on the left.
 ```sh
 export INGRESS_HOST="<IP>:$INGRESS_PORT"
 ```
-
-***Please note:*** If using Docker for Mac or Windows, INGRESS_HOST should be set to `localhost`
 
 Now, let us generate a small load on the sample app by using [fortio](https://github.com/istio/fortio) which is a load testing library created by the `Istio` team:
 
@@ -78,3 +56,7 @@ For a more interactive graph, navigate to `force/forcegraph.html`.
 
 
 #### [Continue to lab 6 - Distributed Tracing](../lab-6/README.md)
+
+
+## Appendix 5.A Docker for Desktop
+***Please note:*** In step 5.1, if you are using Docker for Mac or Windows, INGRESS_HOST should be set to `localhost`.
