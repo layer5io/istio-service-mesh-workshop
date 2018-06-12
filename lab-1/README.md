@@ -209,18 +209,9 @@ We now have a 3-node Kubernetes cluster ready for an Istio deployment.
 ## Cheatsheet
 To sum up or catch up ;)
 
-DNS update:
 ```sh
 echo "nameserver 8.8.8.8" >> /etc/resolv.conf
-```
-
-Kubernetes init:
-```sh
 kubeadm init --apiserver-advertise-address $(hostname -i)
-```
-
-Deploy Overlay Networking:
-```sh
 kubectl apply -n kube-system -f \
     "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 |tr -d '\n')"
 ```
@@ -230,7 +221,7 @@ Add slave nodes (please use the join commands output by `kubeadm init`):
 kubeadm join --token 0c6e9e.607906dbdcacbf64 192.168.0.8:6443 --discovery-token-ca-cert-hash sha256:b8116ec1b224d82983b10353498d222f6f2e8fcbdf5d1075b4eece0f37df5896
 ```
 
-Check node status
+Check node status:
 ```sh
 watch kubectl get nodes
 ```
