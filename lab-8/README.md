@@ -111,4 +111,4 @@ Now we login to `/productpage` as user `jason` and observe that the page loads w
 Verify the fault injection rule by logging out (or logging in as a different user), the page should load normally without any errors.
 
 
-## [Continue to lab 9 - Circuit Breaking](../lab-9/README.md)
+## [Continue to Lab 9 - Mutual TLS & Identity Verification](../lab-9/README.md)
