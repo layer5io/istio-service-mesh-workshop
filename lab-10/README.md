@@ -156,4 +156,7 @@ kubectl exec -it $(kubectl get pod | grep fortio | awk '{ print $1 }')  -c istio
 
 This wraps up this lab and the workshop. Thank you for attending our workshop!
 
-For more details, please checkout [layer5.io](http://layer5.io).
+---
+
+# Layer5.io
+For future updates and additional resources, see [layer5.io](http://layer5.io).
