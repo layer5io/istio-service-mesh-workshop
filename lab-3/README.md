@@ -1,8 +1,5 @@
 # Lab 3 - Deploy Sample Bookinfo app
-
-To play with Istio and demonstrate some of it's capabilities we will deploy the sample BookInfo application which comes as part of the Istio package.
-
-
+To play with Istio and demonstrate some of it's capabilities we will deploy the sample BookInfo application, which is included the Istio package.
 
 ## What is the BookInfo Application?
 
@@ -24,8 +21,6 @@ There are 3 versions of the reviews microservice:
 
 The end-to-end architecture of the application is shown [here](http://calcotestudios.com/talks/slides-dockercon-18-using-istio.html#/4/1).
 
-
-
 This application is polyglot, i.e., the microservices are written in different languages. It’s worth noting that these services have no dependencies on Istio, but make an interesting service mesh example, particularly because of the multitude of services, languages and versions for the reviews service.
 
 
@@ -36,7 +31,7 @@ To run the sample with Istio requires no changes to the application itself. Inst
 All of the microservices will be packaged with an Envoy sidecar that intercepts incoming and outgoing calls for the services, providing the hooks needed to externally control, via the Istio control plane, routing, telemetry collection, and policy enforcement for the application as a whole.
 
 
-We can inject the proxy sidecars either manually or automatically. 
+We can inject the proxy sidecars either manually or automatically.
 
 For automatic sidecar injection kubernetes we need api server to support `admissionregistration.k8s.io/v1beta1` or `admissionregistration.k8s.io/v1beta2` apis. To verify that run:
 
@@ -103,8 +98,10 @@ kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-servi
 
     kubectl describe pod productpage-v1-.....
     ```
-    
- ## <a name="auto"></a> Appendix 3.A: Deploying Sample App with Automatic sidecar injection
+## [Continue to lab 4 - Expose Bookinfo site through Istio Ingress Controller/Gateway](../lab-4/README.md)
+ 
+ 
+### <a name="auto"></a> Appendix 3.A: Deploying Sample App with Automatic sidecar injection
 
 Istio, deployed as part of this workshop, will also deploy the sidecar injector. If you are using `PWK`, please proceed to [Deploying Sample App with manual sidecar injection](#manual)
 
@@ -146,5 +143,3 @@ Now that we have the sidecar injector with mutating webhook in place and the nam
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/bookinfo.yaml
 ```
-
-#### [Continue to lab 4 - Expose Bookinfo site through Istio Ingress Controller/Gateway](../lab-4/README.md)
