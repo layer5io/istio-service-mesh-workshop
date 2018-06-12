@@ -12,7 +12,11 @@ Now that we have the Kubernetes cluster, we are ready to deploy Istio.
 ## <a name="1"></a> 1 - Installing Istio
 As part of this lab we will install Istio 0.8.0 on your kubernetes cluster.
 
-We have developed an Istio [Mixer Adapter](https://github.com/solarwinds/istio-adapter) which can ship metrics to [Appoptics](https://www.appoptics.com/) and logs to [Loggly](https://www.loggly.com/) and [Papertrail](https://papertrailapp.com). If you would like to leverage this adapter, please proceed to [Optional Lab 2](optional.md) to set things up, get the API tokens and then continue this lab.
+### Choose your own Adventure
+Or your own **Adapters**...
+A variety of Istio adapters and add-ons are available to enable out of the box. In this workshop, we will enable the Prometheus, ServiceGraph, Jaeger, Granfana and [SolarWinds](https://github.com/solarwinds/istio-adapter) adapters and add-ons. 
+
+Configuration of the SolarWinds adapter is included as an optional lab, which enables shipping of metrics to [Appoptics](https://www.appoptics.com/), and/or logs to [Loggly](https://www.loggly.com/) and/or logs to [Papertrail](https://papertrailapp.com). To use the SolarWinds adapter, you may reserve your temporary, free account [here](https://docs.google.com/spreadsheets/d/1Rnqje4oQEQeaQRG24ApgdIzn8A2Pa3j5kzbm13_bJLA/edit). Proceed to [Optional Lab 2](optional.md) for configuration instructions.
 
 ```sh
 curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/istio-solarwinds-0.8.0.yaml | sed "s/<appoptics token>/$AOTOKEN/g" | sed "s/<loggly token>/$LOGGLY_TOKEN/g" > istio.yaml
