@@ -14,7 +14,7 @@ As part of this lab we will install Istio 0.8.0 on your kubernetes cluster.
 
 ### Choose your own Adventure
 Or your own **Adapters**...
-A variety of Istio adapters and add-ons are available to enable out of the box. In this workshop, we will enable the Prometheus, ServiceGraph, Jaeger, Granfana and [SolarWinds](https://github.com/solarwinds/istio-adapter) adapters and add-ons. 
+A variety of Istio adapters and add-ons are available to enable out of the box. In this workshop, we will enable the Prometheus, ServiceGraph, Jaeger, Grafana and [SolarWinds](https://github.com/solarwinds/istio-adapter) adapters and add-ons. 
 
 Configuration of the SolarWinds adapter is included as an optional lab, which enables shipping of metrics to [Appoptics](https://www.appoptics.com/), and/or logs to [Loggly](https://www.loggly.com/) and/or logs to [Papertrail](https://papertrailapp.com). To use the SolarWinds adapter, you may reserve your temporary, free account [here](https://docs.google.com/spreadsheets/d/1Rnqje4oQEQeaQRG24ApgdIzn8A2Pa3j5kzbm13_bJLA/edit). Proceed to [Optional Lab 2](optional.md) for configuration instructions.
 
