@@ -31,4 +31,4 @@ Initially presented at [DockerCon 2018](https://dockercon18.smarteventscloud.com
 * [Girish Ranganathan](https://twitter.com/ingenious_G)
 
 # Resources
-* [Slides](http://calcotestudios.com/talks/slides-dockercon-18-using-istio.html)
+* [Slides](http://calcotestudios.com/talks/decks/slides-dockercon-18-using-istio.html)
