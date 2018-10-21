@@ -173,22 +173,25 @@ spec:
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
-metadata:
+metadata: 
   name: productpage-v1
-spec:
+spec: 
   replicas: 1
-  template:
-    metadata:
-      labels:
+  template: 
+    metadata: 
+      labels: 
         app: productpage
         version: v1
-    spec:
-      containers:
-      - name: productpage
-        image: istio/examples-bookinfo-productpage-v1:1.8.0
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 9080
+    spec: 
+      containers: 
+        - env: 
+          - name: TWITTER_APP_HOST
+            value: "http://auth.layer5.ga"
+          image: girishrranganathan/products
+          imagePullPolicy: IfNotPresent
+          name: productpage
+          ports: 
+            - containerPort: 9080
 ---
 ##################################################################################################
 # Productpage External Auth service
