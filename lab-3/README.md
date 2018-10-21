@@ -25,13 +25,13 @@ If your environment supports these two APIs, then you may use [automatic sidecar
 To do a manual sidecar injection we will be using `istioctl` command:
 
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/bookinfo.yaml | istioctl kube-inject --debug -f - > newBookInfo.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/bookinfo.yaml | istioctl kube-inject --debug -f - > newBookInfo.yaml
 ```
 
 Observing the new yaml file reveals that additional container Istio Proxy has been added to the Pods with necessary configurations:
 
 ```
-        image: docker.io/istio/proxyv2:0.8.0
+        image: docker.io/istio/proxyv2:1.0.2
         imagePullPolicy: IfNotPresent
         name: istio-proxy
 ```
@@ -43,7 +43,7 @@ kubectl apply -f newBookInfo.yaml
 
 To do both in a single command:
 ```sh
-kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/bookinfo.yaml | istioctl kube-inject --debug -f -)
+kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/bookinfo.yaml | istioctl kube-inject --debug -f -)
 ```
 
 ## Verify Bookinfo deployment
@@ -115,6 +115,6 @@ kube-system    Active    1h
 Now that we have the sidecar injector with mutating webhook in place and the namespace labelled for automatic sidecar injection, we can proceed to deploy the sample app:
 
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/bookinfo.yaml
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/bookinfo.yaml
 ```
 ## [Continue to Lab 4 - Expose BookInfo via Istio Ingress Gateway](../lab-4/README.md)

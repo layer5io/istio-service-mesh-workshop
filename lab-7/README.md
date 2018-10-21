@@ -9,7 +9,7 @@ As part of the bookinfo sample app, there are multiple versions of reviews servi
 Set the default version for all requests to v1 of all service using :
 
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-all-v1.yaml | istioctl create -f - 
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/route-rule-all-v1.yaml | istioctl create -f - 
 ```
 
 This creates a bunch of `virtualservice` and `destinationrule` entries which route calls to v1 of the services.
@@ -46,7 +46,7 @@ Now when we reload the `/productpage` several times, we will ONLY be viewing the
 Let's replace our first rules with a new set. Enable the `ratings` service for test user `jason` by routing `productpage` traffic to `reviews` v2.
 
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-reviews-test-v2.yaml | istioctl replace -f - 
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/route-rule-reviews-test-v2.yaml | istioctl replace -f - 
 ```
 
 To view the applied rule:
@@ -90,7 +90,7 @@ Now if we login as user `jason` you will be able to see data from reviews v2. Wh
 Before we start the next exercise, lets first reset the routing rules back to our 7.1 rules:
 
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-all-v1.yaml | istioctl replace -f - 
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/route-rule-all-v1.yaml | istioctl replace -f - 
 ```
 Once again, all traffic will be routed to `v1` of all the services. 
 
@@ -98,7 +98,7 @@ Once again, all traffic will be routed to `v1` of all the services.
 To start canary testing, let's begin by transferring 50% of the traffic from reviews:v1 to reviews:v3 with the following command:
 
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-reviews-50-v3.yaml | istioctl replace -f - 
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/route-rule-reviews-50-v3.yaml | istioctl replace -f - 
 ```
 
 To confirm the rule was applied:
@@ -135,7 +135,7 @@ Now, if we reload the `/productpage` in your browser several times, you should n
 When version v3 of the reviews microservice is considered stable, we can route 100% of the traffic to reviews:v3:
 
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/route-rule-reviews-v3.yaml | istioctl replace -f - 
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/route-rule-reviews-v3.yaml | istioctl replace -f - 
 ```
 
 To confirm the rule was applied:

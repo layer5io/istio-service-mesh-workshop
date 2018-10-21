@@ -120,7 +120,7 @@ spec:
         - destination_service_name
         - destination_service_namespace
         - connection_security_policy
-
+---
 apiVersion: "config.istio.io/v1alpha2"
 kind: rule
 metadata:
