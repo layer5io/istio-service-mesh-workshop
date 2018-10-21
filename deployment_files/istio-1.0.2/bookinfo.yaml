@@ -190,3 +190,19 @@ spec:
         ports:
         - containerPort: 9080
 ---
+##################################################################################################
+# Productpage External Auth service
+##################################################################################################
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: productpage-auth
+spec:
+  hosts:
+  - auth.layer5.ga
+  ports:
+  - number: 80
+    name: http
+    protocol: HTTP
+  resolution: DNS
+  location: MESH_EXTERNAL

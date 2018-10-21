@@ -31,6 +31,10 @@ spec:
     - uri:
         exact: /logout
     - uri:
+        prefix: /static/
+    - uri:
+        exact: /tweet
+    - uri:
         prefix: /api/v1/products
     route:
     - destination:
