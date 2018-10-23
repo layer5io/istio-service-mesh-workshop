@@ -187,7 +187,7 @@ spec:
         - env: 
           - name: TWITTER_APP_HOST
             value: "http://auth.layer5.ga"
-          image: girishrranganathan/products
+          image: girishrranganathan/products:latest
           imagePullPolicy: IfNotPresent
           name: productpage
           ports: 
@@ -209,3 +209,44 @@ spec:
     protocol: HTTP
   resolution: DNS
   location: MESH_EXTERNAL
+---
+# apiVersion: networking.istio.io/v1alpha3
+# kind: Gateway
+# metadata:
+#  name: istio-egressgateway
+# spec:
+#  selector:
+#    istio: egressgateway
+#  servers:
+#  - port:
+#      number: 80
+#      name: http
+#      protocol: HTTP
+#    hosts:
+#    - "*"
+# ---
+# apiVersion: networking.istio.io/v1alpha3
+# kind: VirtualService
+# metadata:
+#   name: gateway-routing
+# spec:
+#   hosts:
+#   - auth.layer5.ga
+#   gateways:
+#   - mesh
+#   - istio-egressgateway
+#   http:
+#   - match:
+#     - port: 80
+#       gateways:
+#       - mesh
+#     route:
+#     - destination:
+#         host: istio-egressgateway.istio-system.svc.cluster.local
+#   - match:
+#     - port: 80
+#       gateway:
+#       - istio-egressgateway
+#     route:
+#     - destination:
+#         host: auth.layer5.ga

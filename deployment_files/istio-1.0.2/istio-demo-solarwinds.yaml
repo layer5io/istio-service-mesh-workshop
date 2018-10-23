@@ -2812,7 +2812,7 @@ spec:
       serviceAccountName: istio-galley-service-account
       containers:
         - name: validator
-          image: "gcr.io/istio-release/galley:1.0.2"
+          image: solarwinds/istio-galley:1.0.2 # "gcr.io/istio-release/galley:1.0.2"
           imagePullPolicy: IfNotPresent
           ports:
           - containerPort: 443
@@ -2820,14 +2820,14 @@ spec:
           command:
           - /usr/local/bin/galley
           - validator
-          - --deployment-namespace=istio-system
+          # - --deployment-namespace=istio-system
           - --caCertFile=/etc/istio/certs/root-cert.pem
           - --tlsCertFile=/etc/istio/certs/cert-chain.pem
           - --tlsKeyFile=/etc/istio/certs/key.pem
           - --healthCheckInterval=1s
           - --healthCheckFile=/health
-          - --webhook-config-file
-          - /etc/istio/config/validatingwebhookconfiguration.yaml
+          # - --webhook-config-file
+          # - /etc/istio/config/validatingwebhookconfiguration.yaml
           volumeMounts:
           - name: certs
             mountPath: /etc/istio/certs
@@ -3334,7 +3334,7 @@ spec:
                 - s390x
       containers:
       - name: mixer
-        image: "gcr.io/istio-release/mixer:1.0.2"
+        image: solarwinds/istio-adapter:1.0.2 # "gcr.io/istio-release/mixer:1.0.2"
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9093
@@ -3431,7 +3431,7 @@ spec:
         emptyDir: {}
       containers:
       - name: mixer
-        image: "gcr.io/istio-release/mixer:1.0.2"
+        image: solarwinds/istio-adapter:1.0.2 # "gcr.io/istio-release/mixer:1.0.2"
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9093
