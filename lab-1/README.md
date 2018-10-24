@@ -1,6 +1,6 @@
 # Lab 1 - Create a Kubernetes Cluster
 
-Throughout this workshop, we will use Play with Kubernetes (PWK) as our hosted lab environment. For this DockerCon18 workshop only, a temporarily-provisioned space has been provided [workshop.play-with-k8s.com](https://workshop.play-with-k8s.com). If you would like to use a different Kubernetes cluster (like your lab cluster or Docker for Desktop or Minikube), you can skip lab-1 (this lab).
+Throughout this workshop, we will use Play with Kubernetes (PWK) as our hosted lab environment. For this workshop only, a temporarily-provisioned space has been provided [pwk.layer5.io](https://pwk.layer5.io). If you would like to use a different Kubernetes cluster (like your lab cluster or Docker for Desktop or Minikube), you can skip lab-1 (this lab).
 
 ## Setup Steps
 
@@ -10,32 +10,23 @@ Throughout this workshop, we will use Play with Kubernetes (PWK) as our hosted l
 
 ## <a name="1"></a> 1 - Set up your Kubernetes master node
 
-<h3> 1.1 Visit https://workshop.play-with-k8s.com.</h2>
+<h3> 1.1 Visit [https://pwk.layer5.io](https://pwk.layer5.io).</h2>
 <img src="img/pwk_start.png" width="250" />
 
 Once you start the session, you will have your own lab environment.<br />
 <img src="img/pwk_main.png" width="550" />
 
 <br />
+Credentials are username: `student` and password: `velocity2018`.
 
 ### 1.1 Add first node
 Now add one instance by clicking the `ADD NEW INSTANCE` button on the left. When you create your first instance, it will have the name `node1`. Each instance has [Docker Community Edition (CE)](https://www.docker.com/community-edition) and [kubeadm](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) preinstalled. <br />
 <br />
 <img src="img/pwk_instance1.png" width="85%" />
 
-<img src="/img/warning.png" width="48" align="left" />**Warning:** Please donot follow the instructions as it is. We will be following similar but slightly different instructions described below.
+We will use `node1` as the master node for our cluster. While we will create a _multi-node_ cluster in this lab, creating a _multi-master_ cluster is out of the scope of this workshop.
 
-We will use `node1` as the master node for our cluster. While we will create a multi-__node__ cluster in this lab, creating a multi-__master__ cluster is out of the scope of this workshop.
-
-### 1.2 Configure external name server (DNS)
-Before we start bootstrapping the cluster, first update DNS settings on the node. This step is needed to get external network connectivity from within the Kubernetes cluster we are about to setup. Let's use one of Google's public name servers:
-
-```sh
-echo "nameserver 8.8.8.8" >> /etc/resolv.conf
-```
-_(any public name servers will work)_ 
-
-### 1.3 Bootstrap cluster
+### 1.2 Bootstrap cluster
 Next, bootstrap the Kubernetes cluster by initializing the master (`node1`) node:
 ```sh
 kubeadm init --apiserver-advertise-address $(hostname -i)
@@ -65,14 +56,15 @@ Warning: kubectl apply should be used on resource created by either kubectl crea
 daemonset "kube-proxy" configured
 No resources found
 ```
-### 1.4 What happened?
+### 1.3 What happened?
 As part of the initialization `kubeadm` has written config files needed, setup RBAC and deployed Kubernetes control plane components (like `kube-apiserver`, `kube-dns`, `kube-proxy`, `etcd`, etc.). Control plane components are deployed as Docker containers. `kubectl` is also configured for the `root` user's account.
 
 <img src="/img/info.png" width="48" align="left" /> Please copy and save the `kubeadm join` command from the previous output for later use. This command will be used to join other nodes to your cluster. The command should look like the one below (do not use this example output):
+
 ```sh
 kubeadm join --token 0c6e9e.607906dbdcacbf64 192.168.0.8:6443 --discovery-token-ca-cert-hash sha256:b8116ec1b224d82983b10353498d222f6f2e8fcbdf5d1075b4eece0f37df5896
 ```
-### 1.5 Check cluster status
+### 1.4 Check cluster status
 Check the status of the nodes and then the pods. To check the status of the nodes:
 ```sh
 kubectl get nodes
@@ -152,16 +144,13 @@ We can see all the pods are in `Running` state.
 We will build a 3-node cluster. 
 
 ### 3.1 Add two more instances
-Click the `ADD NEW INSTANCE` button on the left.
+Click the `ADD NEW INSTANCE` button on the left twice.
 
-As before, on each of the instances, first update the DNS settings:
-```sh
-echo "nameserver 8.8.8.8" >> /etc/resolv.conf
-```
 ### 3.2 Join new nodes to the cluster
-Now we can make the new nodes join the Kubernetes cluster by executing the `kubeadm join` you previously copied and saved. Run that command on each of the two new nodes:
+Now, we can make the new nodes join the Kubernetes cluster by executing the `kubeadm join` **you previously copied and saved**. Run that command on each of the two new nodes:
+<img src="/img/warning.png" width="48" align="left" />**Warning:** use your token, not the one below.
 ```sh
-kubeadm join --token 0c6e9e.607906dbdcacbf64 192.168.0.8:6443 --discovery-token-ca-cert-hash sha256:b8116ec1b224d82983b10353498d222f6f2e8fcbdf5d1075b4eece0f37df5896
+kubeadm join --token <your-token-here> 192.168.0.8:6443 --discovery-token-ca-cert-hash <your-hash-here>
 ```
 
 Output from previous command:
@@ -209,14 +198,14 @@ We now have a 3-node Kubernetes cluster ready for an Istio deployment.
 ## Cheatsheet
 To sum up or catch up ;)
 
+Run this on master node:
 ```sh
-echo "nameserver 8.8.8.8" >> /etc/resolv.conf
 kubeadm init --apiserver-advertise-address $(hostname -i)
 kubectl apply -n kube-system -f \
     "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 |tr -d '\n')"
 ```
 
-Add slave nodes (please use the join commands output by `kubeadm init`):
+Add slave nodes (please use the join commands output by `kubeadm init` on master node):
 ```
 kubeadm join --token 0c6e9e.607906dbdcacbf64 192.168.0.8:6443 --discovery-token-ca-cert-hash sha256:b8116ec1b224d82983b10353498d222f6f2e8fcbdf5d1075b4eece0f37df5896
 ```
@@ -225,6 +214,5 @@ Check node status:
 ```sh
 watch kubectl get nodes
 ```
-
 
 # [Continue to lab 2 - Deploy Istio](../lab-2/README.md)
