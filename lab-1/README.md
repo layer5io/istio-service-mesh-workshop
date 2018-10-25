@@ -194,7 +194,7 @@ node3     Ready     <none>    55s       v1.10.2
 
 We now have a 3-node Kubernetes cluster ready for an Istio deployment.
 
-### 3.2 Taint master
+### 3.3 Taint master
 To better utilize the resources, let us taint the master nodes to be able to provision pods there as well.
 
 ```sh
