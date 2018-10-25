@@ -59,9 +59,10 @@ watch kubectl get all -n istio-system
 On a *nix system, you can setup istioctl by doing the following: 
 
 ```sh
-curl -L https://git.io/getLatestIstio | sh -
+curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.0.2 sh -
 ```
-The above command will get the latest Istio package, which at the time of this writing is 1.0.2.
+The above command will get the Istio 1.0.2 package and untar it in the same folder.
+In the `PWK` environment you are most probably working as user `root` and now have the `istio-1.0.2` folder under `/root`. With this pressumption, run the following command to set the `PATH` appropriately.
 
 ```sh
 export PATH="$PATH:/root/istio-1.0.2/bin"
