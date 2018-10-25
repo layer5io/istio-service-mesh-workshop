@@ -3,11 +3,11 @@ To play with Istio and demonstrate some of it's capabilities we will deploy the 
 
 ## What is the BookInfo Application?
 
-This application is polyglot, i.e., the microservices are written in different languages and sample bookinfo application displays information about a book, similar to a single catalog entry of an online book store. Displayed on the page is a description of the book, book details (ISBN, number of pages, and so on), and a few book reviews.
+This application is a polyglot composition of microservices are written in different languages and sample BookInfo application displays information about a book, similar to a single catalog entry of an online book store. Displayed on the page is a description of the book, book details (ISBN, number of pages, and so on), and a few book reviews.
 
-The end-to-end architecture of the application is shown [here](http://calcotestudios.com/talks/slides-dockercon-18-using-istio.html#/4/1).
+The end-to-end architecture of the application is shown [here](https://calcotestudios.com/talks/slides-velocity-london-2018-using-istio.html#/4/1).
 
- It’s worth noting that these services have no dependencies on Istio, but make an interesting service mesh example, particularly because of the multitude of services, languages and versions for the reviews service.
+It’s worth noting that these services have no dependencies on Istio, but make an interesting service mesh example, particularly because of the multitude of services, languages and versions for the reviews service.
 
 Sidecars proxy can either manually or automatically injected into your pods.
 
