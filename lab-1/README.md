@@ -10,7 +10,7 @@ Throughout this workshop, we will use Play with Kubernetes (PWK) as our hosted l
 
 ## <a name="1"></a> 1 - Set up your Kubernetes master node
 
-<h3> 1.1 Visit <a href="http://pwk.layer5.io">pwk.layer5.io</a>.</h2>
+<h3> 1.1 Visit <a href="http://pwk.layer5.io" target="_blank">pwk.layer5.io</a>.</h2>
 <img src="img/pwk_start.png" width="250" />
 
 Once you start the session, you will have your own lab environment.<br />
