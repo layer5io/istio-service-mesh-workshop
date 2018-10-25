@@ -31,6 +31,13 @@ If you will see an error message like this one:
 
 You are likely running Kubernetes version 1.10 or earlier, which does NOT have support for mutating webhooks and is the reason for the error. You can continue with the lab without any issues.
 
+
+If you have not followed the [Optional Lab 2](optional.md), please run the 2 commands below to set the AppOptics token and the Loggly token as environment variables for this session.
+```
+export AOTOKEN="PLEASE PASTE YOUR APPOPTICS TOKEN HERE"
+export LOGGLY_TOKEN="PLEASE PASTE YOUR LOGGLY TOKEN HERE"
+```
+
 Now let us configure the istio-policy and istio-telemetry to enable the use of solarwinds mixer adapter by running the following command:
 
 ```
