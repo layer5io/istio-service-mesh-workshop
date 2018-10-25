@@ -187,7 +187,7 @@ spec:
         - env: 
           - name: TWITTER_APP_HOST
             value: "http://auth.layer5.io"
-          image: girishrranganathan/products:v2
+          image: layer5/istio-bookinfo-productpage:v1
           imagePullPolicy: IfNotPresent
           name: productpage
           ports: 
