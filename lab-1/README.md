@@ -1,6 +1,6 @@
 # Lab 1 - Create a Kubernetes Cluster
 
-Throughout this workshop, we will use Play with Kubernetes (PWK) as our hosted lab environment. For this workshop only, a temporarily-provisioned space has been provided [pwk.layer5.io](https://pwk.layer5.io). If you would like to use a different Kubernetes cluster (like your lab cluster or Docker for Desktop or Minikube), you can skip lab-1 (this lab).
+Throughout this workshop, we will use Play with Kubernetes (PWK) as our hosted lab environment. For this workshop only, a temporarily-provisioned space has been provided [pwk.layer5.io](http://pwk.layer5.io). If you would like to use a different Kubernetes cluster (like your lab cluster or Docker for Desktop or Minikube), you can skip lab-1 (this lab).
 
 ## Setup Steps
 
@@ -10,7 +10,7 @@ Throughout this workshop, we will use Play with Kubernetes (PWK) as our hosted l
 
 ## <a name="1"></a> 1 - Set up your Kubernetes master node
 
-<h3> 1.1 Visit <a href="http://pwk.layer5.io" target="_blank">pwk.layer5.io</a>.</h2>
+<h3> 1.1 Visit <a href="http://pwk.layer5.io" target="_new_">pwk.layer5.io</a>.</h2>
 <img src="img/pwk_start.png" width="250" />
 
 Once you start the session, you will have your own lab environment.<br />
@@ -59,7 +59,7 @@ No resources found
 ### 1.3 What happened?
 As part of the initialization `kubeadm` has written config files needed, setup RBAC and deployed Kubernetes control plane components (like `kube-apiserver`, `kube-dns`, `kube-proxy`, `etcd`, etc.). Control plane components are deployed as Docker containers. `kubectl` is also configured for the `root` user's account.
 
-<img src="/img/info.png" width="48" align="left" /> Please copy and save the `kubeadm join` command from the previous output for later use. This command will be used to join other nodes to your cluster. The command should look like the one below (do not use this example output):
+<img src="/img/info.png" width="48" align="left" /> Please copy and save the `kubeadm join` command from the previous output for later use. This command will be used to join other nodes to your cluster. The command should look like the one below (**please do not use this example output**):
 
 ```sh
 kubeadm join --token 0c6e9e.607906dbdcacbf64 192.168.0.8:6443 --discovery-token-ca-cert-hash sha256:b8116ec1b224d82983b10353498d222f6f2e8fcbdf5d1075b4eece0f37df5896
@@ -194,6 +194,12 @@ node3     Ready     <none>    55s       v1.10.2
 
 We now have a 3-node Kubernetes cluster ready for an Istio deployment.
 
+### 3.2 Taint master
+To better utilize the resources, let us taint the master nodes to be able to provision pods there as well.
+
+```sh
+kubectl taint nodes --all node-role.kubernetes.io/master-
+```
 
 ## Cheatsheet
 To sum up or catch up ;)
@@ -201,13 +207,21 @@ To sum up or catch up ;)
 Run this on master node:
 ```sh
 kubeadm init --apiserver-advertise-address $(hostname -i)
+```
+Deploy network:
+```sh
 kubectl apply -n kube-system -f \
     "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 |tr -d '\n')"
 ```
 
-Add slave nodes (please use the join commands output by `kubeadm init` on master node):
+Add slave nodes (please use your own join command output by `kubeadm init` on your master node):
 ```
 kubeadm join --token 0c6e9e.607906dbdcacbf64 192.168.0.8:6443 --discovery-token-ca-cert-hash sha256:b8116ec1b224d82983b10353498d222f6f2e8fcbdf5d1075b4eece0f37df5896
+```
+
+Taint master:
+```
+kubectl taint nodes --all node-role.kubernetes.io/master-
 ```
 
 Check node status:
