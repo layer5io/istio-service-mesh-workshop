@@ -173,20 +173,80 @@ spec:
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
-metadata:
+metadata: 
   name: productpage-v1
-spec:
+spec: 
   replicas: 1
-  template:
-    metadata:
-      labels:
+  template: 
+    metadata: 
+      labels: 
         app: productpage
         version: v1
-    spec:
-      containers:
-      - name: productpage
-        image: istio/examples-bookinfo-productpage-v1:1.8.0
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 9080
+    spec: 
+      containers: 
+        - env: 
+          - name: TWITTER_APP_HOST
+            value: "http://auth.layer5.io"
+          image: girishrranganathan/products:v2
+          imagePullPolicy: IfNotPresent
+          name: productpage
+          ports: 
+            - containerPort: 9080
 ---
+##################################################################################################
+# Productpage External Auth service
+##################################################################################################
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: productpage-auth
+spec:
+  hosts:
+  - auth.layer5.ga
+  ports:
+  - number: 80
+    name: http
+    protocol: HTTP
+  resolution: DNS
+  location: MESH_EXTERNAL
+---
+# apiVersion: networking.istio.io/v1alpha3
+# kind: Gateway
+# metadata:
+#  name: istio-egressgateway
+# spec:
+#  selector:
+#    istio: egressgateway
+#  servers:
+#  - port:
+#      number: 80
+#      name: http
+#      protocol: HTTP
+#    hosts:
+#    - "*"
+# ---
+# apiVersion: networking.istio.io/v1alpha3
+# kind: VirtualService
+# metadata:
+#   name: gateway-routing
+# spec:
+#   hosts:
+#   - auth.layer5.ga
+#   gateways:
+#   - mesh
+#   - istio-egressgateway
+#   http:
+#   - match:
+#     - port: 80
+#       gateways:
+#       - mesh
+#     route:
+#     - destination:
+#         host: istio-egressgateway.istio-system.svc.cluster.local
+#   - match:
+#     - port: 80
+#       gateway:
+#       - istio-egressgateway
+#     route:
+#     - destination:
+#         host: auth.layer5.ga

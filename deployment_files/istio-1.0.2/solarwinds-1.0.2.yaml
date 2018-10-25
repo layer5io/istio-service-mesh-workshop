@@ -4,8 +4,8 @@ metadata:
   name: handler
   namespace: istio-system
 spec: 
-  appoptics_access_token: 8418dc659a7f92f4bbacfa802d5cfc8ba3b3a13c12bafc801793e5023d031c08
-  loggly_token: ca9cc750-464d-423b-939e-bd527ee0ed36
+  appoptics_access_token: <appoptics token>
+  loggly_token: <loggly token>
   logs: 
     solarwindslogentry.logentry.istio-system: 
       payloadTemplate: "{{or (.originIp) \"-\"}} - {{or (.sourceUser) \"-\"}} [{{or (.timestamp.Format \"2006-01-02T15:04:05Z07:00\") \"-\"}}] \"{{or (.method) \"-\"}} {{or (.url) \"-\"}} {{or (.protocol) \"-\"}}\" {{or (.responseCode) \"-\"}} {{or (.responseSize) \"-\"}}"
@@ -171,6 +171,4 @@ spec:
         requestSize: request.size | 0
         latency: response.duration | "0ms"
     monitoredResourceType: '"ao"'
-        # monitoredResourceDimensions:
-        #   project_id: '"<your project ID>"'
 ---
