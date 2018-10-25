@@ -83,13 +83,13 @@ istioctl version
   4. [Jaeger](https://www.jaegertracing.io/)
   5. [Service Graph](https://istio.io/docs/tasks/telemetry/servicegraph/)
 
-For students who did NOT want to use Appoptics, you will use Prometheus and Grafana for collecting and viewing metrics, while for viewing distributed traces, you can choose between [Zipkin](https://zipkin.io/) or [Jaeger](https://www.jaegertracing.io/).
+For students who did NOT want to use Appoptics, you will use Prometheus and Grafana for collecting and viewing metrics, while for viewing distributed traces, you can choose between [Zipkin](https://zipkin.io/) or [Jaeger](https://www.jaegertracing.io/). In this workshop we will go with Jaeger.
 
 Service graph is another add-on which can be used to generate a graph of services within an Istio mesh and is deployed as part of Istio in this lab.
 
 ### Exposing services
 
-Except for Jaeger, Istio add-on services are deployed by default as `ClusterIP` type services. We can expose the services outside the cluster by either changing the Kubernetes service type to `NodePort` or `LoadBalancer` or by port-forwarding or by configuring Kubernetes Ingress. In this lab, we will briefly demonstrate the `NodePort` and port-forwarding ways of exposing services.
+Istio add-on services are deployed by default as `ClusterIP` type services. We can expose the services outside the cluster by either changing the Kubernetes service type to `NodePort` or `LoadBalancer` or by port-forwarding or by configuring Kubernetes Ingress. In this lab, we will briefly demonstrate the `NodePort` and port-forwarding ways of exposing services.
 
 #### Option 1: Expose services with NodePort
 To expose them using NodePort service type, we can edit the services and change the service type from `ClusterIP` to `NodePort`
@@ -105,6 +105,12 @@ kubectl -n istio-system edit svc grafana
 ```sh
 kubectl -n istio-system edit svc servicegraph
 ```
+
+For Jaeger, either of `tracing` or `jaeger-query` can be exposed.
+```sh
+kubectl -n istio-system edit svc tracing
+```
+
 
 Once this is done the services will be assigned dedicated ports on the hosts. 
 
@@ -123,7 +129,6 @@ To find the assigned ports for Servicegraph:
 kubectl -n istio-system get svc servicegraph
 ```
 
-To find the assigned ports for Jaeger, which was already exposed as a LoadBalancer service:
 ```sh
 kubectl -n istio-system get svc tracing
 ```
@@ -147,6 +152,13 @@ To port-forward Service Graph:
 kubectl -n istio-system port-forward \
   $(kubectl -n istio-system get pod -l app=servicegraph -o jsonpath='{.items[0].metadata.name}') \
   8088:8088 &
+```
+
+To port-forward Jaeger:
+```sh
+kubectl -n istio-system port-forward \
+  $(kubectl -n istio-system get pod -l app=jaeger -o jsonpath='{.items[0].metadata.name}') \
+  16686:16686 &
 ```
 
 ### Accessing Exposed Services
