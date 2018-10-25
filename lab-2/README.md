@@ -34,7 +34,7 @@ You are likely running Kubernetes version 1.10 or earlier, which does NOT have s
 Now let us configure the istio-policy and istio-telemetry to enable the use of solarwinds mixer adapter by running the following command:
 
 ```
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/solarwinds-1.0.2.yaml > solarwinds.yaml | sed "s/<appoptics token>/$AOTOKEN/g" | sed "s/<loggly token>/$LOGGLY_TOKEN/g"
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/solarwinds-1.0.2.yaml | sed "s/<appoptics token>/$AOTOKEN/g" | sed "s/<loggly token>/$LOGGLY_TOKEN/g" > solarwinds.yaml 
 
 kubectl apply -f solarwinds.yaml
 ```
