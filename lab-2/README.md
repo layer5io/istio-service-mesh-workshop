@@ -161,6 +161,10 @@ kubectl -n istio-system port-forward \
   16686:16686 &
 ```
 
+
+Port-forwarding runs in the foreground. We have appeneded `&` to the end of the above 2 commands to run them in the background. If you donot want this behavior, please remove the `&` from the end.
+
+
 ### Accessing Exposed Services
 
 In `PWK`, once a port is exposed it will appear on top of the page as shown below as clickable hyperlinks:
@@ -168,13 +172,6 @@ In `PWK`, once a port is exposed it will appear on top of the page as shown belo
 ![](img/exposed_ports.png)
 
 Click each new links now and navigate to the respective add-ons web UI, if available. 
-
-
-If, for some reason, the links for the ports **DO NOT** show up, you can grab the URL as shown in the image below, append the port and access the service.
-
-![](img/expose_url.png)
-
-Port-forwarding runs in the foreground. We have appeneded `&` to the end of the above 2 commands to run them in the background. If you donot want this behavior, please remove the `&`.
 
 
 ## [Continue to Lab 3 - Deploy Sample Bookinfo app](../lab-3/README.md)
