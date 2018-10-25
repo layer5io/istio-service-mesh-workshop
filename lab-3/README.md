@@ -9,21 +9,34 @@ The end-to-end architecture of the application is shown [here](https://calcotest
 
 It’s worth noting that these services have no dependencies on Istio, but make an interesting service mesh example, particularly because of the multitude of services, languages and versions for the reviews service.
 
-Sidecars proxy can either manually or automatically injected into your pods.
+Sidecars proxy can be either manually or automatically injected into your pods.
 
 Automatic sidecar injection requires that your Kubernetes api-server supports `admissionregistration.k8s.io/v1beta1` or `admissionregistration.k8s.io/v1beta2` APIs. Verify whether your Kubernetes deployment supports these APIs by executing:
 
 ```sh
 kubectl api-versions | grep admissionregistration
 ```
-If your environment supports these two APIs, then you may use [automatic sidecar injection](#injector). As part of Istio deployment in [Lab 2](../lab-2/README.md), we have deployed the sidecar injector, however, we will not use the automatic sidecar injector in this workshop.
+If your environment supports either of these two APIs, then you may use [automatic sidecar injection](#injector). As part of Istio deployment in [Lab 2](../lab-2/README.md), we have deployed the sidecar injector.
 
-<img src="../img/info.png" width="48" align="left" /> ***Please note:*** Our `PWK` environment will **HAVE** to use [manual injection](#manual) irrespective of the version of Istio because `PWK` comes with Kubernetes version 1.8 which does not support `admissionregistration.k8s.io/v1beta1` or `admissionregistration.k8s.io/v1beta2` APIs. See <a href="auto">Appendix 3.A</a> for instructions on automatic sidecar injection.
+We have a custom version of Bookinfo sample app which uses `Twitter` for authentication and posts a friendly message 
+```
+I am really enjoying the @layer5io "Using Istio" workshop at #VelocityLondon2018 at 31 Oct 2018 2:00:00 pm !!
+```
+
+on your behalf. We have named the file appropriately with a suffix of `-twitter-auth.yaml`. If you are comfortable using `Twitter` auth please use the appropriate version. 
+
+Others, please use the file without the suffix.
 
 ## <a name="manual"></a> Deploying Sample App with manual sidecar injection
 
 To do a manual sidecar injection we will be using `istioctl` command:
 
+With twitter auth:
+```sh
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/bookinfo-twitter-auth.yaml | istioctl kube-inject --debug -f - > newBookInfo.yaml
+```
+
+Without twitter auth:
 ```sh
 curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/bookinfo.yaml | istioctl kube-inject --debug -f - > newBookInfo.yaml
 ```
@@ -42,6 +55,13 @@ kubectl apply -f newBookInfo.yaml
 ```
 
 To do both in a single command:
+
+With twitter auth:
+```sh
+kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/bookinfo-twitter-auth.yaml | istioctl kube-inject --debug -f -)
+```
+
+Without twitter auth:
 ```sh
 kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/bookinfo.yaml | istioctl kube-inject --debug -f -)
 ```
@@ -114,6 +134,12 @@ kube-system    Active    1h
 
 Now that we have the sidecar injector with mutating webhook in place and the namespace labelled for automatic sidecar injection, we can proceed to deploy the sample app:
 
+With twitter auth:
+```sh
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/bookinfo-twitter-auth.yaml
+```
+
+Without twitter auth:
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/bookinfo.yaml
 ```
