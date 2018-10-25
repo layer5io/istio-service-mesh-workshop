@@ -1,5 +1,7 @@
 # Using [Istio](http://istio.io/) 
-Initially presented at [DockerCon 2018](https://dockercon18.smarteventscloud.com/connect/sessionDetail.ww?SESSION_ID=187485). For additional resources, see [layer5.io](http://layer5.io).
+Presented at [DockerCon 2018](https://dockercon18.smarteventscloud.com/connect/sessionDetail.ww?SESSION_ID=187485) and [Velocity London 2018](https://conferences.oreilly.com/velocity/vl-eu/public/schedule/detail/70506)
+
+For additional resources, see [layer5.io](http://layer5.io).
 
 ## Workshop Setup - Kubernetes & Istio
 - [Setup Kubernetes](lab-1/README.md)

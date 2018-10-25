@@ -4,7 +4,7 @@ In this lab we will configure circuit breaking using Istio. Circuit breaking all
 
 ## 10.1 Preparing for circuit breaking
 
-Based on our testing circuit breaker configuration in Istio 0.8.0 has issues with mTLS turned on.
+Based on our testing circuit breaker configuration in Istio 1.0.2 has issues with mTLS turned on.
 
 ### 10.1.1 Turn off mTLS
 Based on our testing circuit breaker configuration in Istio has issues with mTLS turned on.
@@ -38,13 +38,13 @@ Now, let us start by deploying a simpler application to test circuit breaking:
 ***With manual sidecar injection:***
 
 ```sh
-kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/httpbin.yaml | istioctl kube-inject --debug -f -)
+kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/httpbin.yaml | istioctl kube-inject --debug -f -)
 ```
 
 ***With automatic sidecar injector:***
 
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/httpbin.yaml
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/httpbin.yaml
 ```
 
 
@@ -54,13 +54,13 @@ Let us then deploy a client which is capable of talking to the httpbin service:
 ***With manual sidecar injection:***
 
 ```sh
-kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/fortio-deploy.yaml | istioctl kube-inject --debug -f -)
+kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/fortio-deploy.yaml | istioctl kube-inject --debug -f -)
 ```
 
 ***With automatic sidecar injector:***
 
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/fortio-deploy.yaml
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/fortio-deploy.yaml
 ```
 
 
@@ -107,7 +107,7 @@ x-envoy-upstream-service-time: 36
 Now that we have the needed service in place, it is time to configure circuit breaking using a destination rule:
 
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-0.8.0/circuit-breaking.yaml | istioctl create -f - 
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/circuit-breaking.yaml | istioctl create -f - 
 ```
 
 To confirm the rule is in place:
