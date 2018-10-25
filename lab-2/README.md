@@ -19,7 +19,7 @@ A variety of Istio adapters and add-ons are available to enable out of the box. 
 Configuration of the SolarWinds adapter is included as an optional lab, which enables shipping of metrics to [Appoptics](https://www.appoptics.com/), and/or logs to [Loggly](https://www.loggly.com/) and/or logs to [Papertrail](https://papertrailapp.com). To use the SolarWinds adapter, you may reserve your temporary, free account [here](https://docs.google.com/spreadsheets/d/1Rnqje4oQEQeaQRG24ApgdIzn8A2Pa3j5kzbm13_bJLA/edit). Proceed to [Optional Lab 2](optional.md) for configuration instructions.
 
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/istio-solarwinds-1.0.2.yaml | sed "s/<appoptics token>/$AOTOKEN/g" | sed "s/<loggly token>/$LOGGLY_TOKEN/g" > istio.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/istio-solarwinds-1.0.2.yaml > istio.yaml
 
 kubectl apply -f istio.yaml
 ```
@@ -29,7 +29,15 @@ If you will see an error message like this one:
   error: unable to recognize "istio.yaml": no matches for admissionregistration.k8s.io/, Kind=MutatingWebhookConfiguration
 ```
 
-You are likely running Kubernetes version 1.10 or earlier, which does have support for mutating webhooks and is the reason for the error. You can continue with the lab without any issues.
+You are likely running Kubernetes version 1.10 or earlier, which does NOT have support for mutating webhooks and is the reason for the error. You can continue with the lab without any issues.
+
+Now let us configure the istio-policy and istio-telemetry to enable the use of solarwinds mixer adapter by running the following command:
+
+```
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/solarwinds-1.0.2.yaml > solarwinds.yaml | sed "s/<appoptics token>/$AOTOKEN/g" | sed "s/<loggly token>/$LOGGLY_TOKEN/g"
+
+kubectl apply -f solarwinds.yaml
+```
 
 
 ## <a name="2"></a> 2 - Verify install
