@@ -112,4 +112,20 @@ cat /etc/istio/proxy/envoy-rev0.json
 
 For more details on envoy proxy please check out their [admin docs](https://www.envoyproxy.io/docs/envoy/v1.5.0/operations/admin) for more details.
 
+## 4.4 Apply default destination rules
+
+Before we start using playing with Istio's traffic management capabilities we need to define the available versions of the deployed services. They are called subsets, in destination rules.
+
+Run the following command to create default destination rules for the Bookinfo services:
+```sh
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/destination-rule-all-mtls.yaml
+```
+
+In a few seconds we should be able to verify the destination rules created by using the command below:
+
+```sh
+kubectl get destinationrules -o yaml
+```
+
+
 ## [Continue to lab 5 - Telemetry](../lab-5/README.md)

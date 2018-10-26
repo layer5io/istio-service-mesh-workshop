@@ -16,7 +16,9 @@ Automatic sidecar injection requires that your Kubernetes api-server supports `a
 ```sh
 kubectl api-versions | grep admissionregistration
 ```
-If your environment supports either of these two APIs, then you may use [automatic sidecar injection](#injector). As part of Istio deployment in [Lab 2](../lab-2/README.md), we have deployed the sidecar injector.
+If your environment **does NOT** supports either of these two APIs, then you may use [manual sidecar injection](#manual) to deploy the sample app. 
+
+As part of Istio deployment in [Lab 2](../lab-2/README.md), we have deployed the sidecar injector.
 
 We have a custom version of Bookinfo sample app which uses `Twitter` for authentication and posts a friendly message 
 ```
@@ -27,79 +29,10 @@ on your behalf. We have named the file appropriately with a suffix of `-twitter-
 
 Others, please use the file without the suffix.
 
-## <a name="manual"></a> Deploying Sample App with manual sidecar injection
 
-To do a manual sidecar injection we will be using `istioctl` command:
+### <a name="auto"></a> Deploying Sample App with Automatic sidecar injection
 
-With twitter auth:
-```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/bookinfo-twitter-auth.yaml | istioctl kube-inject --debug -f - > newBookInfo.yaml
-```
-
-Without twitter auth:
-```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/bookinfo.yaml | istioctl kube-inject --debug -f - > newBookInfo.yaml
-```
-
-Observing the new yaml file reveals that additional container Istio Proxy has been added to the Pods with necessary configurations:
-
-```
-        image: docker.io/istio/proxyv2:1.0.2
-        imagePullPolicy: IfNotPresent
-        name: istio-proxy
-```
-
-We need to now deploy the new yaml using `kubectl`
-```sh
-kubectl apply -f newBookInfo.yaml
-```
-
-To do both in a single command:
-
-With twitter auth:
-```sh
-kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/bookinfo-twitter-auth.yaml | istioctl kube-inject --debug -f -)
-```
-
-Without twitter auth:
-```sh
-kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/bookinfo.yaml | istioctl kube-inject --debug -f -)
-```
-
-## Verify Bookinfo deployment
-
-1. Verify that previous deployments are all in a state of AVAILABLE before continuing. **Do not procede until they are up and running.**
-
-    ```sh
-    watch kubectl get deployment
-    ```
-
-2. Inspect the details of the pods
-
-    Let us look at the details of the pods:
-    ```sh
-    watch kubectl get po
-    ```
-
-    Let us look at the details of the services:
-    ```sh
-    watch kubectl get svc
-    ```
-
-    Now let us pick a service, for instance productpage service, and view it's sidecar configuration:
-    ```sh
-    kubectl get po
-
-    kubectl describe pod productpage-v1-.....
-    ```
-## [Continue to Lab 4 - Expose BookInfo via Istio Ingress Gateway](../lab-4/README.md)
- 
- 
-### <a name="auto"></a> Appendix 3.A: Deploying Sample App with Automatic sidecar injection
-
-Istio, deployed as part of this workshop, will also deploy the sidecar injector. If you are using `PWK`, please proceed to [Deploying Sample App with manual sidecar injection](#manual)
-
-Let us now verify sidecar injector deployment & label namespace for automatic sidecar injection.
+Istio, deployed as part of this workshop, will also deploy the sidecar injector. Let us now verify sidecar injector deployment & label namespace for automatic sidecar injection.
 
 
 ```sh
@@ -143,4 +76,74 @@ Without twitter auth:
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/bookinfo.yaml
 ```
+
+### <a name="#verify"></a> Verify Bookinfo deployment
+
+1. Verify that previous deployments are all in a state of AVAILABLE before continuing. **Do not procede until they are up and running.**
+
+    ```sh
+    watch kubectl get deployment
+    ```
+
+2. Inspect the details of the pods
+
+    Let us look at the details of the pods:
+    ```sh
+    watch kubectl get po
+    ```
+
+    Let us look at the details of the services:
+    ```sh
+    watch kubectl get svc
+    ```
+
+    Now let us pick a service, for instance productpage service, and view it's sidecar configuration:
+    ```sh
+    kubectl get po
+
+    kubectl describe pod productpage-v1-.....
+    ```
+
+
 ## [Continue to Lab 4 - Expose BookInfo via Istio Ingress Gateway](../lab-4/README.md)
+
+### <a name="manual"></a> Appendix 3.A: Deploying Sample App with manual sidecar injection
+
+To do a manual sidecar injection we will be using `istioctl` command:
+
+With twitter auth:
+```sh
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/bookinfo-twitter-auth.yaml | istioctl kube-inject --debug -f - > newBookInfo.yaml
+```
+
+Without twitter auth:
+```sh
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/bookinfo.yaml | istioctl kube-inject --debug -f - > newBookInfo.yaml
+```
+
+Observing the new yaml file reveals that additional container Istio Proxy has been added to the Pods with necessary configurations:
+
+```
+        image: docker.io/istio/proxyv2:1.0.2
+        imagePullPolicy: IfNotPresent
+        name: istio-proxy
+```
+
+We need to now deploy the new yaml using `kubectl`
+```sh
+kubectl apply -f newBookInfo.yaml
+```
+
+To do both in a single command:
+
+With twitter auth:
+```sh
+kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/bookinfo-twitter-auth.yaml | istioctl kube-inject --debug -f -)
+```
+
+Without twitter auth:
+```sh
+kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/bookinfo.yaml | istioctl kube-inject --debug -f -)
+```
+
+Now continue to [verify sample app deployment](#verify).
