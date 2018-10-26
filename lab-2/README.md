@@ -129,6 +129,7 @@ To find the assigned ports for Servicegraph:
 kubectl -n istio-system get svc servicegraph
 ```
 
+To find the assigned ports for Jaeger:
 ```sh
 kubectl -n istio-system get svc tracing
 ```
