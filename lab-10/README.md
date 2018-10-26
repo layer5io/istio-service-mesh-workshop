@@ -4,34 +4,8 @@ In this lab we will configure circuit breaking using Istio. Circuit breaking all
 
 ## 10.1 Preparing for circuit breaking
 
-Based on our testing circuit breaker configuration in Istio 1.0.2 has issues with mTLS turned on.
 
-### 10.1.1 Turn off mTLS
-Based on our testing circuit breaker configuration in Istio has issues with mTLS turned on.
-
-Let us turn off mTLS now. To turn off mTLS we will have to edit the configmap:
-```sh
-kubectl edit configmap -n istio-system istio
-```
-
-Please **comment** out 2 lines as below:
-```sh
-    # authPolicy: MUTUAL_TLS
-    ...
-    # controlPlaneAuthPolicy: MUTUAL_TLS
-```
-
-Now save the file and exit the editor.
-
-Then, lets kill istio-pilot pods allowing it to reload:
-```sh
-kubectl delete pods -n istio-system -l istio=pilot
-```
-
-Please give it a few minutes to restart and get back to running state.
-
-
-### 10.1.2 <a name="#deploy"></a> Deploy a simple application
+### 10.1.1 <a name="#deploy"></a> Deploy a simple application
 Now, let us start by deploying a simpler application to test circuit breaking:
 
 
@@ -48,7 +22,7 @@ kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh
 ```
 
 
-### 10.1.3 Deploy a client for the app
+### 10.1.2 Deploy a client for the app
 Let us then deploy a client which is capable of talking to the httpbin service:
 
 ***With manual sidecar injection:***
@@ -64,7 +38,7 @@ kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh
 ```
 
 
-### 10.1.4 Initial test calls from client to server
+### 10.1.3 Initial test calls from client to server
 To make testing easier, let us create an alias to execute `load` inside the httpbin client we created above:
 ```sh
 alias load="kubectl exec -it $(kubectl get pod | grep fortio | awk '{ print $1 }') -c fortio /usr/local/bin/fortio -- load"
@@ -103,25 +77,33 @@ x-envoy-upstream-service-time: 36
 }
 ```
 
-### 10.1.5 Configure Circuit Breaking
+### 10.1.4 Configure Circuit Breaking
 Now that we have the needed service in place, it is time to configure circuit breaking using a destination rule:
 
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/circuit-breaking.yaml | istioctl create -f - 
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/circuit-breaking.yaml
 ```
 
 To confirm the rule is in place:
 ```sh
-istioctl get destinationrule httpbin -o yaml
+kubectl get destinationrule httpbin -o yaml
 ```
 
-Output:
+Output will be similar to:
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"networking.istio.io/v1alpha3","kind":"DestinationRule","metadata":{"annotations":{},"name":"httpbin","namespace":"default"},"spec":{"host":"httpbin","trafficPolicy":{"connectionPool":{"http":{"http1MaxPendingRequests":1,"maxRequestsPerConnection":1},"tcp":{"maxConnections":1}},"outlierDetection":{"baseEjectionTime":"3m","consecutiveErrors":1,"interval":"1s","maxEjectionPercent":100}}}}
+  creationTimestamp: 2018-10-26T17:14:00Z
+  generation: 1
   name: httpbin
-  ...
+  namespace: default
+  resourceVersion: "27074"
+  selfLink: /apis/networking.istio.io/v1alpha3/namespaces/default/destinationrules/httpbin
+  uid: 87be07db-d942-11e8-88c5-0242f983c5dd
 spec:
   host: httpbin
   trafficPolicy:
@@ -130,13 +112,12 @@ spec:
         http1MaxPendingRequests: 1
         maxRequestsPerConnection: 1
       tcp:
-        maxConnections: 100
+        maxConnections: 1
     outlierDetection:
-      http:
-        baseEjectionTime: 180.000s
-        consecutiveErrors: 1
-        interval: 1.000s
-        maxEjectionPercent: 100
+      baseEjectionTime: 3m
+      consecutiveErrors: 1
+      interval: 1s
+      maxEjectionPercent: 100
 ```
 
 
@@ -148,10 +129,25 @@ Let us make 50 calls using 4 concurrent connections:
 load -c 4 -qps 0 -n 50 -loglevel Warning http://httpbin:8000/get
 ```
 
-To view the results of the test we can talk to the istio-proxy sidecar for some stats:
+In the output you will see a section similar to this one:
+```sh
+Code 200 : 13 (26.0 %)
+Code 503 : 37 (74.0 %)
+```
+As seen only a percentage of the requests succeeded and the rest were trapped by circuit breaking.
+
+To verify the results of the test we can also talk to the istio-proxy sidecar for some stats:
 ```sh
 kubectl exec -it $(kubectl get pod | grep fortio | awk '{ print $1 }')  -c istio-proxy  -- sh -c 'curl localhost:15000/stats' | grep httpbin | grep pending
 ```
+Output will be similar to this:
+```sh
+cluster.outbound|8000||httpbin.default.svc.cluster.local.upstream_rq_pending_active: 0
+cluster.outbound|8000||httpbin.default.svc.cluster.local.upstream_rq_pending_failure_eject: 0
+cluster.outbound|8000||httpbin.default.svc.cluster.local.upstream_rq_pending_overflow: 37
+cluster.outbound|8000||httpbin.default.svc.cluster.local.upstream_rq_pending_total: 13
+```
+You can see the numbers we got from sidecar and fortio match. `upstream_rq_pending_overflow` specifies the number of calls flagged for circuit breaking.
 
 
 This wraps up this lab and the workshop. Thank you for attending our workshop!
@@ -159,4 +155,4 @@ This wraps up this lab and the workshop. Thank you for attending our workshop!
 ---
 
 # Layer5.io
-For future updates and additional resources, see [layer5.io](http://layer5.io).
+For future updates and additional resources, check out [layer5.io](https://layer5.io).
