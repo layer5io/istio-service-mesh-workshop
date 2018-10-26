@@ -77,9 +77,9 @@ Without twitter auth:
 kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/bookinfo.yaml
 ```
 
-### <a name="#verify"></a> Verify Bookinfo deployment
+### <a name="verify"></a> Verify Bookinfo deployment
 
-1. Verify that previous deployments are all in a state of AVAILABLE before continuing. **Do not procede until they are up and running.**
+1. Verify that previous deployments are all in a state of AVAILABLE before continuing. **Do not proceed until they are up and running.**
 
     ```sh
     watch kubectl get deployment
