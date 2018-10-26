@@ -9,7 +9,7 @@ As part of the bookinfo sample app, there are multiple versions of reviews servi
 Set the default version for all requests to v1 of all service using :
 
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/route-rule-all-v1.yaml | istioctl create -f - 
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/virtual-service-all-v1.yaml | istioctl create -f - 
 ```
 
 This creates a bunch of `virtualservice` and `destinationrule` entries which route calls to v1 of the services.
