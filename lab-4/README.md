@@ -49,23 +49,23 @@ We can create a virtualservice & gateway for bookinfo app in the ingress gateway
 
 With twitter auth:
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/bookinfo-gateway-twitter-auth.yaml | istioctl create -f - 
+kubectl apply -f  https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/bookinfo-gateway-twitter-auth.yaml
 ```
 
 Without twitter auth:
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/bookinfo-gateway.yaml | istioctl create -f - 
+kubectl apply -f  https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/bookinfo-gateway.yaml
 ```
 
 ### 4.2.2 - View the Gateway and VirtualServices
 
 Check the created `Istio Gateway` and `Istio VirtualService` to see the changes deployed:
 ```sh
-istioctl get gateway
-istioctl get gateway -o yaml
+kubectl get gateway
+kubectl get gateway -o yaml
 
-istioctl get virtualservices
-istioctl get virtualservices -o yaml
+kubectl get virtualservices
+kubectl get virtualservices -o yaml
 ```
 
 ### 4.2.3 - Find the external port of the Istio Ingress Gateway by running:
