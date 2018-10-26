@@ -20,7 +20,7 @@ If your environment supports either of these two APIs, then you may use [automat
 
 We have a custom version of Bookinfo sample app which uses `Twitter` for authentication and posts a friendly message 
 ```
-I am really enjoying the @layer5io "Using Istio" workshop at #VelocityLondon2018 at 31 Oct 2018 2:00:00 pm !!
+I am really enjoying the @layer5io "Using Istio" workshop at #VelocityLondon2018 on 31 Oct 2018 at 2:00:00 pm !!
 ```
 
 on your behalf. We have named the file appropriately with a suffix of `-twitter-auth.yaml`. If you are comfortable using `Twitter` auth please use the appropriate version. 
