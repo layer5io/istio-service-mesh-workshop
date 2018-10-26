@@ -3,14 +3,14 @@
 Istio provides transparent mutal TLS to services inside the service mesh where both the client and the server authenticate each others certificates as part of the TLS handshake. As part of this workshop we have deployed Istio with mTLS.
 
 ## 9.1 Verify mTLS
-To verify mTLS is enabled:
+Citadel is Istio’s key management service. Let us first ensure citadel is up and running:
 ```sh
-kubectl get configmap istio -o yaml -n istio-system | grep authPolicy | head -1
+kubectl get deploy -l istio=citadel -n istio-system
 ```
-
-If it is enabled you will see output similar to the below from above command:
-```sh
-    authPolicy: MUTUAL_TLS
+Output will be similar to:
+```
+NAME            DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+istio-citadel   1         1         1            1           3h25m
 ```
 
 To experiment with mTLS, let us get into the sidecar proxy of productpage page by running the command below:
@@ -70,8 +70,8 @@ Output will be similar to this:
 *        certificate public key: RSA
 *        certificate version: #3
 *        subject: O=#1300
-*        start date: Thu, 07 Jun 2018 14:36:56 GMT
-*        expire date: Wed, 05 Sep 2018 14:36:56 GMT
+*        start date: Thu, 26 Oct 2018 14:36:56 GMT
+*        expire date: Wed, 05 Jan 2019 14:36:56 GMT
 *        issuer: O=k8s.cluster.local
 *        compression: NULL
 * ALPN, server accepted to use http/1.1
@@ -97,45 +97,42 @@ This proves the existence of mTLS between the services on the Istio mesh.
 
 ## 9.2 [Secure Production Identity Framework for Everyone (SPIFFE)](https://spiffe.io/)
 
-Istio uses [SPIFFE](https://spiffe.io/) to assert the identify of workloads on the cluster. SPIFFE consists of a notion of identity and a method of proving it. A SPIFFE identity consists of an authority part and a path. The meaning of the path in spiffe land is implementation defined. In k8s it takes the form `/ns/$namespace/sa/$service-account` with the expected meaning. A SPIFFE identify is embedded in a document. This document in principle can take many forms but currently the only defined format is x509. Let's see what a SPIFFE x509 looks like.
+Istio uses [SPIFFE](https://spiffe.io/) to assert the identify of workloads on the cluster. SPIFFE consists of a notion of identity and a method of proving it. A SPIFFE identity consists of an authority part and a path. The meaning of the path in spiffe land is implementation defined. In k8s it takes the form `/ns/$namespace/sa/$service-account` with the expected meaning. A SPIFFE identify is embedded in a document. This document in principle can take many forms but currently the only defined format is x509.
 
 
-To start our investigation, let us create a local `tmp` directory, grab the certs from the productpage sidecar & place it in `tmp`:
+To start our investigation, let us check if the certs are in place in the productpage sidecar:
 ```sh
-mkdir ~/tmp
-cd ~/tmp
-fs=(key.pem cert-chain.pem root-cert.pem)
-productProxy=$(kubectl get pod | grep productpage | awk '{ print $1 }')
-for f in ${fs[@]}; do kubectl exec -c istio-proxy $productProxy /bin/cat -- /etc/certs/$f >$f; done
+kubectl exec $(kubectl get pod -l app=productpage -o jsonpath={.items..metadata.name}) -c istio-proxy -- ls /etc/certs
+```
+Output will be similar to:
+```sh
+cert-chain.pem
+key.pem
+root-cert.pem
 ```
 
-Let us now investigate the ceritificate using openssl. `PWK` hosts don't come installed with openssl. Let us first install it:
-```
-yum install -y openssl
-```
-
-Now that we have openssl installed and the certificate files in place, let us view the certificate:
-```
-openssl x509 -in cert-chain.pem -text
+Now that we have found the certs, let us verify the certificate of productpage sidecar by running this command:
+```sh
+kubectl exec $(kubectl get pod -l app=productpage -o jsonpath={.items..metadata.name}) -c istio-proxy -- cat /etc/certs/cert-chain.pem | openssl x509 -text -noout  | grep Validity -A 2
 ```
 
-There are a few things which are interesting. To name a few, the subject isn't what you'd normally expect, URI SAN extension has a `spiffe` URI.
+Output will be similar to:
+```sh
+            Not Before: Oct 26 13:25:14 2018 GMT
+            Not After : Jan 24 13:25:14 2019 GMT
+```
 
+Lets also verify the URI SAN:
+```sh
+kubectl exec $(kubectl get pod -l app=productpage -o jsonpath={.items..metadata.name}) -c istio-proxy -- cat /etc/certs/cert-chain.pem | openssl x509 -text -noout  | grep 'Subject Alternative Name' -A 1
+```
+
+Output will be similar to:
 ```sh
     X509v3 Subject Alternative Name:
         URI:spiffe://cluster.local/ns/default/sa/default
 ```
-
-
-
-There is one more part to SPIFFE identity, and that's a signing authority. This a CA certificate with a SPIFFE identify with _no_ path component. We can use openssl to verify the certificate with the CA using the command below:
-
-```
-openssl verify -CAfile root-cert.pem cert-chain.pem
-```
-
-The verification should succeed.
-
+You can see that the subject isn't what you'd normally expect, URI SAN extension has a `spiffe` URI.
 
 
 ## [Continue to Lab 10 - Circuit Breaking](../lab-10/README.md)
