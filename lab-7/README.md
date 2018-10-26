@@ -16,8 +16,12 @@ This creates a bunch of `virtualservice` and `destinationrule` entries which rou
 
 To view the applied rule:
 ```sh
-istioctl get virtualservice reviews -o yaml
+kubectl get virtualservice reviews -o yaml
 ```
+
+*Please note:* In the place of the above command, we can either use kubectl or istioctl.
+
+
 Output:
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
@@ -73,7 +77,7 @@ kubectl apply -f user-v2.yaml
 
 To view the applied rule:
 ```sh
-istioctl get virtualservice reviews -o yaml
+kubectl get virtualservice reviews -o yaml
 ```
 
 Output will be similar to the one below:
@@ -130,7 +134,7 @@ kubectl apply -f  https://raw.githubusercontent.com/leecalcote/istio-service-mes
 
 To confirm the rule was applied:
 ```sh
-istioctl get virtualservice reviews -o yaml
+kubectl get virtualservice reviews -o yaml
 ```
 
 Output will be similar to:
@@ -173,7 +177,7 @@ kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh
 
 To confirm the rule was applied:
 ```sh
-istioctl get virtualservice reviews -o yaml
+kubectl get virtualservice reviews -o yaml
 ```
 Output:
 ```yaml
