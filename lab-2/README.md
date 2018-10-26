@@ -29,7 +29,7 @@ If you will see an error message like this one:
   error: unable to recognize "istio.yaml": no matches for admissionregistration.k8s.io/, Kind=MutatingWebhookConfiguration
 ```
 
-You are likely running Kubernetes version 1.9 or earlier, which does NOT have support for mutating webhooks and is the reason for the error. You can continue with the lab without any issues.
+You are likely running Kubernetes version 1.9 or earlier, which might NOT have support for mutating admission webhooks or might not have it anabled and is the reason for the error. You can continue with the lab without any issues.
 
 
 If you have not followed the [Optional Lab 2](optional.md), please run the 2 commands below to set the AppOptics token and the Loggly token as environment variables for this session.
