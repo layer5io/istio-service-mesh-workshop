@@ -7,7 +7,9 @@ Let's generate HTTP traffic against the BookInfo application, so we can see inte
 export INGRESS_PORT=$(kubectl get service istio-ingressgateway -n istio-system --template='{{(index .spec.ports 0).nodePort}}')
 ```
 
-Once we have the port, we can append the IP of one of the nodes to get the host. In `PWK` we can get the IP from the host list on the left.
+Once we have the port, we can append the IP of one of the nodes to get the host. In `PWK` we can get the IP from the top section of the page.
+![](img/ip.png)
+
 ```sh
 export INGRESS_HOST="<IP>:$INGRESS_PORT"
 ```
