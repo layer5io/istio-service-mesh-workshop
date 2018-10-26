@@ -79,6 +79,8 @@ To just get the first port of istio-ingressgateway service, we can run this:
 kubectl get service istio-ingressgateway -n istio-system --template='{{(index .spec.ports 0).nodePort}}'
 ```
 
+The HTTP port is usually 31380.
+
 ### 4.2.4 - Browse to Bookinfo
 Browse to the website of the Bookinfo: On `PWK` the exposed ingress ports are available as hyperlinks at the top of the page. Clicking on a valid ingress port will open a page.
 
