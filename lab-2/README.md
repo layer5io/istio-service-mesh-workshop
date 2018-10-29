@@ -25,6 +25,9 @@ curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/ma
 kubectl apply -f istio.yaml
 ```
 
+
+***Note to Docker for Desktop users:*** please ensure your Docker VM has atleast 4GiB of Memory without which the services will not all start. 
+
 For Docker for Desktop users:
 ```sh
 curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/istio-solarwinds-1.0.2-desktop.yaml > istio.yaml

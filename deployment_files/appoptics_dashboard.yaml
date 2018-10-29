@@ -1,5 +1,5 @@
 ---
-name: DockerCon 2018 - Istio Dashboard
+name: Velocity London 2018 - Istio Dashboard
 charts:
 - name: Request Count by Destination Service
   type: line
