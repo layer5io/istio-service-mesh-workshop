@@ -1,6 +1,6 @@
 # Lab 1 - Create a Kubernetes Cluster
 
-Throughout this workshop, we will use Play with Kubernetes (PWK) as our hosted lab environment. For this workshop only, a temporarily-provisioned space has been provided [pwk.layer5.io](http://pwk.layer5.io). If you would like to use a different Kubernetes cluster (like your lab cluster or Docker for Desktop or Minikube), you can skip lab-1 (this lab).
+Throughout this workshop, we will use Play with Kubernetes (PWK) as our hosted lab environment. For this workshop only, a temporarily-provisioned space has been provided at [pwk.layer5.io](http://pwk.layer5.io). If you would like to use a different Kubernetes cluster (like your lab cluster or Docker for Desktop or Minikube), you can skip lab-1 (this lab).
 
 ## Setup Steps
 
@@ -11,15 +11,14 @@ Throughout this workshop, we will use Play with Kubernetes (PWK) as our hosted l
 ## <a name="1"></a> 1 - Set up your Kubernetes master node
 
 <h3> 1.1 Visit <a href="http://pwk.layer5.io" target="_new_">pwk.layer5.io</a>.</h2>
-<img src="img/pwk_start.png" width="250" />
+<img src="img/pwk_start.png" width="85%" />
 
-Once you start the session, you will have your own lab environment.<br />
-<img src="img/pwk_main.png" width="550" />
+Once you start the session, you will have your own lab environment.<p>
+<img src="img/pwk_main.png" width="85%" /></p>
 
-<br />
 Credentials are username: `student` and password: `velocity2018`.
 
-### 1.1 Add first node
+### 1.2 Add first node
 Now add one instance by clicking the `ADD NEW INSTANCE` button on the left. When you create your first instance, it will have the name `node1`. Each instance has [Docker Community Edition (CE)](https://www.docker.com/community-edition) and [kubeadm](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) preinstalled. <br />
 <br />
 <img src="img/pwk_instance1.png" width="85%" />
