@@ -61,7 +61,7 @@ As part of the initialization `kubeadm` has written config files needed, setup R
 <img src="/img/info.png" width="48" align="left" /> Please copy and save the `kubeadm join` command from the previous output for later use. This command will be used to join other nodes to your cluster. The command should look like the one below (**please do not use this example output**):
 
 ```sh
-kubeadm join --token 0c6e9e.607906dbdcacbf64 192.168.0.8:6443 --discovery-token-ca-cert-hash sha256:b8116ec1b224d82983b10353498d222f6f2e8fcbdf5d1075b4eece0f37df5896
+kubeadm join --token <your-token-here> 192.168.0.8:6443 --discovery-token-ca-cert-hash <your-hash-here>
 ```
 ### 1.4 Check cluster status
 Check the status of the nodes and then the pods. To check the status of the nodes:
@@ -228,4 +228,6 @@ Check node status:
 watch kubectl get nodes
 ```
 
-# [Continue to lab 2 - Deploy Istio](../lab-2/README.md)
+# [Continue to Lab 2 - Deploy Istio](../lab-2/README.md)
+
+**Bonus**: What version of Kubernetes are you running?
