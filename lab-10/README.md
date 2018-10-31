@@ -38,6 +38,15 @@ kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh
 ```
 
 
+Before we proceed further, lets ensure the services are up and running:
+
+```sh
+kubectl get deployments
+
+kubectl get po
+```
+
+
 ### 10.1.3 Initial test calls from client to server
 To make testing easier, let us create an alias to execute `load` inside the httpbin client we created above:
 ```sh
