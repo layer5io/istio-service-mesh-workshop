@@ -20,7 +20,7 @@ If your environment **does NOT** supports either of these two APIs, then you may
 
 As part of Istio deployment in [Lab 2](../lab-2/README.md), we have deployed the sidecar injector.
 
-We have a custom version of Bookinfo sample app which uses `Twitter` for authentication and posts a friendly message 
+We have a custom version of Bookinfo app that uses `Twitter` for authentication and posts a message. 
 ```
 I am really enjoying the @layer5 "Using Istio" workshop at #VelocityConf on 31 Oct 2018 at 2:00:00 pm !!
 ```
