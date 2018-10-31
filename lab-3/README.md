@@ -20,12 +20,7 @@ If your environment **does NOT** supports either of these two APIs, then you may
 
 As part of Istio deployment in [Lab 2](../lab-2/README.md), we have deployed the sidecar injector.
 
-We have a custom version of Bookinfo app that uses `Twitter` for authentication and posts a message. 
-```
-I am really enjoying the @layer5 "Using Istio" workshop at #VelocityConf on 31 Oct 2018 at 2:00:00 pm !!
-```
-
-on your behalf. We have named the file appropriately with a suffix of `-twitter-auth.yaml`. If you are comfortable using `Twitter` auth please use the appropriate version. 
+<img src="/img/bonus.png"  width="64" align="left" /> Bonus! Your lab contais a custom version of the Bookinfo app that integrates your Twitter account to send out a special message. For those with a Twitter account, We have named the file appropriately with a suffix of `-twitter-auth.yaml`. If you are comfortable using `Twitter` auth please use the appropriate version. 
 
 Others, please use the file without the suffix.
 
