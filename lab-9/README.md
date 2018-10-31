@@ -128,6 +128,11 @@ Output will be similar to:
             Not After : Jan 24 13:25:14 2019 GMT
 ```
 
+PWK machine doesnot have openssl installed. Lets install it:
+```sh
+yum install -y openssl
+```
+
 Lets also verify the URI SAN:
 ```sh
 kubectl exec $(kubectl get pod -l app=productpage -o jsonpath={.items..metadata.name}) -c istio-proxy -- cat /etc/certs/cert-chain.pem | openssl x509 -text -noout  | grep 'Subject Alternative Name' -A 1
