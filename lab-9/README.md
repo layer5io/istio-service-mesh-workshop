@@ -94,6 +94,12 @@ Output will be similar to this:
 
 This proves the existence of mTLS between the services on the Istio mesh.
 
+Now lets come out of the container before we go to the next section:
+
+```sh
+exit
+```
+
 
 ## 9.2 [Secure Production Identity Framework for Everyone (SPIFFE)](https://spiffe.io/)
 
