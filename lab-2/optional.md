@@ -22,21 +22,21 @@ To signup for [Loggly signup](https://www.loggly.com/signup/)
 [Loggin sign in](https://www.loggly.com/login/)
 ![](img/loggly_signin.png)
 
-Loggly landing page: ![](img/loggly_landing_page.png)
+After login you will be taken to the Loggly landing page. From here, select `Source Setup` from the top menu: ![](img/loggly_landing_page.png)
 
-Select `Account` from the user menu
-![](img/loggly_account_menu.png)
+On the `Source Setup` page select the `Customer Tokens` item from the sub-menu
+![](img/loggly_source_setup.png)
 
-From the `Account` overview page select `API Tokens`
-![](img/loggly_account_overview.png)
 
-From the `API Tokens` page let us create a new API Token by using the `Add New` button
-![](img/loggly_api_tokens.png)
+On the `Customer Tokens` page let us create a new Token by using the `Add New` button.
+![](img/loggly_customer_token.png)
 
-This open a popup confirming the creation of a new token. Use the `Create` button to create a new API Token.
-![](img/loggly_create_token.png)
+This open a popup confirming the creation of a new token.
+![](img/loggly_new_customer_token.png)
 
-Once the token is created you will be able to see it in the API Tokens table. On the left there is a `copy to clipboard` button which can help with copying the new token.
+Please enter a good description for you to identify the token.
+
+Once the token is created you will be able to see it in the Tokens table. On the left there is a `copy to clipboard` button which can help with copying the new token.
 ![](img/loggly_new_token.png)
 
 We can now store this token in an environment variable for later use:
