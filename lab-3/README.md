@@ -16,7 +16,7 @@ Automatic sidecar injection requires that your Kubernetes api-server supports `a
 ```sh
 kubectl api-versions | grep admissionregistration
 ```
-If your environment **does NOT** supports either of these two APIs, then you may use [manual sidecar injection](#manual) to deploy the sample app. 
+If your environment **does NOT** supports either of these two APIs, then you may use [manual sidecar injection](./appendix-manual-injection.md) to deploy the sample app. 
 
 As part of Istio deployment in [Lab 2](../lab-2/README.md), we have deployed the sidecar injector.
 
