@@ -28,7 +28,7 @@ Istio, deployed as part of this workshop, will also deploy the sidecar injector.
 
 
 ```sh
-kubectl -n istio-system get deployment -listio=sidecar-injector
+kubectl -n istio-system get deployment -l istio=sidecar-injector
 ```
 Output:
 ```sh
