@@ -50,7 +50,7 @@ Reserve your lab account [here](https://docs.google.com/spreadsheets/d/174haSpPT
 
 Using your reserved token is token in an environment variable for later use:
 ```sh
-export AOTOKEN=<PASTE YOUR TOKEN HERE WITHOUT THE ANGLE BRACES>
+export AOTOKEN="PASTE YOUR TOKEN HERE"
 ```
 
 ## <a name="3"></a> 3 - Setup Appoptics Dashboard
