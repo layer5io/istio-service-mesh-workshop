@@ -20,10 +20,7 @@ If your environment **does NOT** supports either of these two APIs, then you may
 
 As part of Istio deployment in [Lab 2](../lab-2/README.md), we have deployed the sidecar injector.
 
-<img src="/img/bonus.png"  width="64" align="left" /> Bonus! Your lab contais a custom version of the Bookinfo app that integrates your Twitter account to send out a special message. For those with a Twitter account, We have named the file appropriately with a suffix of `-twitter-auth.yaml`. If you are comfortable using `Twitter` auth please use the appropriate version. 
-
-Others, please use the file without the suffix.
-
+<img src="/img/bonus.png"  width="80" align="left" /> Bonus! Your lab contais a custom version of the Bookinfo app that integrates with your Twitter account to send out a special message (and gift). For those without a Twitter account or who do not want to send a tweet, you can deploy the sample app without Twitter integration. 
 
 ### <a name="auto"></a> Deploying Sample App with Automatic sidecar injection
 
@@ -62,12 +59,12 @@ kube-system    Active    1h
 
 Now that we have the sidecar injector with mutating webhook in place and the namespace labelled for automatic sidecar injection, we can proceed to deploy the sample app:
 
-With twitter auth:
+With Twitter:
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.3/bookinfo-twitter-auth.yaml
 ```
 
-Without twitter auth:
+Without Twitter:
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.3/bookinfo.yaml
 ```
