@@ -8,7 +8,7 @@ As part of this workshop we will be sending access logs from Istio to [Loggly](h
 * [2. Setup Appoptics API Token](#2)
 * [3. Setup Appoptics Dashboard](#3)
 
-## <a name="1"></a> 1 - Set up loggly API Token
+## <a name="1"></a> 1 - Set up Loggly API Token
 
 
 Getting a Loggly API token for use with istio:
@@ -46,33 +46,9 @@ export LOGGLY_TOKEN=<PASTE YOUR TOKEN HERE WITHOUT THE ANGLE BRACES>
 
 
 ## <a name="2"></a> 2 - Setup Appoptics API Token
-Getting an Appoptics API token for use with istio:
-[Appoptics](https://www.appoptics.com/)
-![](img/ao_main.png)
+Reserve your lab account [here](https://docs.google.com/spreadsheets/d/174haSpPTlDZeZLJTJRUeHZydgxpnTQScthtLLWMj3mc/edit?usp=sharing).
 
-[appoptics signup](https://my.appoptics.com/sign_up)
-![](img/ao_signup.png)
-
-![](img/ao_login.png)
-
-
-After you have logged in you can navigate to create an API token by clicking on the `API Tokens` link at the top.
-![](img/ao_org_settings.png)
-
-We can now generate API tokens by hitting the `Generate New API Token` button
-![](img/ao_api_token.png)
-
-A popup for creating a token will open where you can select the access level needed (for this workshop we need `Record only` access) and a meaningful name for your token. When you hit `Generate` a token will be created 
-![](img/ao_add_api_token.png)
-
-The created token will be shown in the popup. We can now copy the token to clipboard from here.
-![](img/ao_token_created.png)
-
-The created token can also be seen in the table.
-![](img/ao_token_table.png)
-
-
-We can now store this token in an environment variable for later use:
+Using your reserved token is token in an environment variable for later use:
 ```sh
 export AOTOKEN=<PASTE YOUR TOKEN HERE WITHOUT THE ANGLE BRACES>
 ```
