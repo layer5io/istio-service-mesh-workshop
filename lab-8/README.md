@@ -5,11 +5,11 @@ In this lab we will learn how to test the resiliency of an application by inject
 Before we start let us reset the route rules:
 
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/virtual-service-all-v1.yaml 
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.3/virtual-service-all-v1.yaml 
 ```
 
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/virtual-service-reviews-test-v2.yaml > user-v2.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.3/virtual-service-reviews-test-v2.yaml > user-v2.yaml
 ```
 
 Update the `USER_NAME` placeholder with your user name:
@@ -28,7 +28,7 @@ To start, we will inject a 7s delay between the reviews v2 and ratings service f
 
 Let us first grab the yaml file and store it to disk:
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/virtual-service-ratings-test-delay.yaml > delay-test.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.3/virtual-service-ratings-test-delay.yaml > delay-test.yaml
 ```
 
 Now please replace the `USER_NAME` placeholder with your user name:
@@ -100,7 +100,7 @@ In this section, , we will introduce an HTTP abort to the ratings microservices 
 
 Let us first grab the yaml file:
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/virtual-service-ratings-test-abort.yaml > abort.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.3/virtual-service-ratings-test-abort.yaml > abort.yaml
 ```
 
 Replace the `USER_NAME` placeholder with your user name:

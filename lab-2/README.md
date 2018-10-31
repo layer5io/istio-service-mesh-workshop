@@ -10,7 +10,7 @@ Now that we have a Kubernetes cluster, we are ready to deploy Istio.
 * [4. Configuring Add-ons](#4)
 
 ## <a name="1"></a> 1 - Installing Istio
-You will install Istio 1.0.2 on your Kubernetes cluster. When doing so, this workshop provides you with a Choose Your Own Adventure style options.
+You will install Istio 1.0.3 on your Kubernetes cluster. When doing so, this workshop provides you with a Choose Your Own Adventure style options.
 
 ### Choose your own Adventure
 *Or your own **Adapters**...*
@@ -18,17 +18,12 @@ A number of Istio adapters and add-ons are included out of the box. In this work
 
 Configuration of the SolarWinds adapter is included as an optional lab, which enables shipping of metrics to [Appoptics](https://www.appoptics.com/), and/or logs to [Loggly](https://www.loggly.com/) and/or logs to [Papertrail](https://papertrailapp.com). To use the SolarWinds adapter, you may reserve your temporary, free account [here](https://docs.google.com/spreadsheets/d/1Rnqje4oQEQeaQRG24ApgdIzn8A2Pa3j5kzbm13_bJLA/edit). Then, choose proceed to the [Optional Lab 2](optional.md) for configuration instructions and return here when done.
 
-For PWK users:
-```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/istio-solarwinds-1.0.2.yaml > istio.yaml
 
-kubectl apply -f istio.yaml
-```
 ***Note to Docker for Desktop users:*** please ensure your Docker VM has atleast 4GiB of Memory, which is required for all services to run.
 
-For Docker for Desktop users:
+
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/istio-solarwinds-1.0.2-desktop.yaml > istio.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.3/istio-solarwinds-1.0.3.yaml > istio.yaml
 
 kubectl apply -f istio.yaml
 ```
@@ -50,7 +45,7 @@ export LOGGLY_TOKEN="PLEASE PASTE YOUR LOGGLY TOKEN HERE"
 Now let us configure the istio-policy and istio-telemetry to enable the use of the Solarwinds mixer adapter by running the following command:
 
 ```
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/solarwinds-1.0.2.yaml | sed "s/<appoptics token>/$AOTOKEN/g" | sed "s/<loggly token>/$LOGGLY_TOKEN/g" > solarwinds.yaml 
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.3/solarwinds-1.0.3.yaml | sed "s/<appoptics token>/$AOTOKEN/g" | sed "s/<loggly token>/$LOGGLY_TOKEN/g" > solarwinds.yaml 
 
 kubectl apply -f solarwinds.yaml
 ```
@@ -68,14 +63,14 @@ watch kubectl get all -n istio-system
 On a *nix system, you can setup istioctl by doing the following: 
 
 ```sh
-curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.0.2 sh -
+curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.0.3 sh -
 ```
-The above command will get the Istio 1.0.2 package and untar it in the same folder.
+The above command will get the Istio 1.0.3 package and untar it in the same folder.
 
-In the `PWK` environment you are most probably working as user `root` and now have the `istio-1.0.2` folder under `/root`. With this pressumption, run the following command to set the `PATH` appropriately. If not, please update the command below with the correct location of the `istio-1.0.2` folder.
+In the `PWK` environment you are most probably working as user `root` and now have the `istio-1.0.3` folder under `/root`. With this pressumption, run the following command to set the `PATH` appropriately. If not, please update the command below with the correct location of the `istio-1.0.3` folder.
 
 ```sh
-export PATH="$PATH:/root/istio-1.0.2/bin"
+export PATH="$PATH:/root/istio-1.0.3/bin"
 ```
 
 To verify `istioctl` is setup lets try to print out the command help

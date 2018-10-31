@@ -49,12 +49,12 @@ We can create a virtualservice & gateway for bookinfo app in the ingress gateway
 
 With twitter auth:
 ```sh
-kubectl apply -f  https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/bookinfo-gateway-twitter-auth.yaml
+kubectl apply -f  https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.3/bookinfo-gateway-twitter-auth.yaml
 ```
 
 Without twitter auth:
 ```sh
-kubectl apply -f  https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/bookinfo-gateway.yaml
+kubectl apply -f  https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.3/bookinfo-gateway.yaml
 ```
 
 ### 4.2.2 - View the Gateway and VirtualServices
@@ -118,7 +118,7 @@ Before we start using playing with Istio's traffic management capabilities we ne
 
 Run the following command to create default destination rules for the Bookinfo services:
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.2/destination-rule-all-mtls.yaml
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.3/destination-rule-all-mtls.yaml
 ```
 
 In a few seconds we should be able to verify the destination rules created by using the command below:
