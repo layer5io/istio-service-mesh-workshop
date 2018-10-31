@@ -1,11 +1,11 @@
-# Lab 3 - Deploy Sample Bookinfo app
-To play with Istio and demonstrate some of it's capabilities we will deploy the sample BookInfo application, which is included the Istio package.
+# Lab 3 - Deploy example application
+To play with Istio and demonstrate some of it's capabilities, you will deploy the example BookInfo application, which is included the Istio package.
 
 ## What is the BookInfo Application?
 
 This application is a polyglot composition of microservices are written in different languages and sample BookInfo application displays information about a book, similar to a single catalog entry of an online book store. Displayed on the page is a description of the book, book details (ISBN, number of pages, and so on), and a few book reviews.
 
-The end-to-end architecture of the application is shown [here](https://calcotestudios.com/talks/slides-velocity-london-2018-using-istio.html#/4/1).
+The end-to-end architecture of the application is shown [here](https://calcotestudios.com/talks/decks/slides-velocity-london-2018-using-istio-workshop.html#/5/4).
 
 It’s worth noting that these services have no dependencies on Istio, but make an interesting service mesh example, particularly because of the multitude of services, languages and versions for the reviews service.
 
@@ -22,7 +22,7 @@ As part of Istio deployment in [Lab 2](../lab-2/README.md), we have deployed the
 
 We have a custom version of Bookinfo sample app which uses `Twitter` for authentication and posts a friendly message 
 ```
-I am really enjoying the @layer5 "Using Istio" workshop at #VelocityLondon2018 on 31 Oct 2018 at 2:00:00 pm !!
+I am really enjoying the @layer5 "Using Istio" workshop at #VelocityConf on 31 Oct 2018 at 2:00:00 pm !!
 ```
 
 on your behalf. We have named the file appropriately with a suffix of `-twitter-auth.yaml`. If you are comfortable using `Twitter` auth please use the appropriate version. 
