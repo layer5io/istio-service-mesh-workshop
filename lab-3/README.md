@@ -74,19 +74,19 @@ kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh
 1. Verify that previous deployments are all in a state of AVAILABLE before continuing. **Do not proceed until they are up and running.**
 
     ```sh
-    kubectl get deployment -w 
+    watch kubectl get deployment
     ```
 
 2. Inspect the details of the pods
 
     Let us look at the details of the pods:
     ```sh
-    kubectl get po -w
+    watch kubectl get po
     ```
 
     Let us look at the details of the services:
     ```sh
-    kubectl get svc -w
+    watch kubectl get svc
     ```
 
     Now let us pick a service, for instance productpage service, and view it's sidecar configuration:
