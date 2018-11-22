@@ -22,9 +22,19 @@ Configuration of the SolarWinds adapter is included as an optional lab, which en
 ***Note to Docker for Desktop users:*** please ensure your Docker VM has atleast 4GiB of Memory, which is required for all services to run.
 
 
+On PWK:
 ```sh
 curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/istio-solarwinds-1.0.4.yaml > istio.yaml
+```
 
+On Docker for Desktop:
+```sh
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/istio-solarwinds-1.0.4-desktop.yaml > istio.yaml
+```
+
+
+
+```sh
 kubectl apply -f istio.yaml
 ```
 
