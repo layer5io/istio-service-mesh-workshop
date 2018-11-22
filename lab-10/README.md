@@ -12,13 +12,13 @@ Now, let us start by deploying a simpler application to test circuit breaking:
 ***With manual sidecar injection:***
 
 ```sh
-kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.3/httpbin.yaml | istioctl kube-inject --debug -f -)
+kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/httpbin.yaml | istioctl kube-inject --debug -f -)
 ```
 
 ***With automatic sidecar injector:***
 
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.3/httpbin.yaml
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/httpbin.yaml
 ```
 
 
@@ -28,13 +28,13 @@ Let us then deploy a client which is capable of talking to the httpbin service:
 ***With manual sidecar injection:***
 
 ```sh
-kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.3/fortio-deploy.yaml | istioctl kube-inject --debug -f -)
+kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/fortio-deploy.yaml | istioctl kube-inject --debug -f -)
 ```
 
 ***With automatic sidecar injector:***
 
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.3/fortio-deploy.yaml
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/fortio-deploy.yaml
 ```
 
 
@@ -90,7 +90,7 @@ x-envoy-upstream-service-time: 36
 Now that we have the needed service in place, it is time to configure circuit breaking using a destination rule:
 
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.3/circuit-breaking.yaml
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/circuit-breaking.yaml
 ```
 
 To confirm the rule is in place:

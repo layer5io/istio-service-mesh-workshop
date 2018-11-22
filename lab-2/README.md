@@ -10,7 +10,7 @@ Now that we have a Kubernetes cluster, we are ready to deploy Istio.
 * [4. Configuring Add-ons](#4)
 
 ## <a name="1"></a> 1 - Installing Istio
-You will install Istio 1.0.3 on your Kubernetes cluster. When doing so, this workshop provides you with a Choose Your Own Adventure style options.
+You will install Istio 1.0.4 on your Kubernetes cluster. When doing so, this workshop provides you with a Choose Your Own Adventure style options.
 
 ### Choose your own Adventure
 *Or your own **Adapters**...*
@@ -23,7 +23,7 @@ Configuration of the SolarWinds adapter is included as an optional lab, which en
 
 
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.3/istio-solarwinds-1.0.3.yaml > istio.yaml
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/istio-solarwinds-1.0.4.yaml > istio.yaml
 
 kubectl apply -f istio.yaml
 ```
@@ -45,7 +45,7 @@ export LOGGLY_TOKEN="PLEASE PASTE YOUR LOGGLY TOKEN HERE"
 Now let us configure the istio-policy and istio-telemetry to enable the use of the Solarwinds mixer adapter by running the following command:
 
 ```
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.3/solarwinds-1.0.3.yaml | sed "s/<appoptics token>/$AOTOKEN/g" | sed "s/<loggly token>/$LOGGLY_TOKEN/g" > solarwinds.yaml 
+curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/solarwinds-1.0.4.yaml | sed "s/<appoptics token>/$AOTOKEN/g" | sed "s/<loggly token>/$LOGGLY_TOKEN/g" > solarwinds.yaml 
 
 kubectl apply -f solarwinds.yaml
 ```
@@ -63,14 +63,14 @@ watch kubectl get all -n istio-system
 On a *nix system, you can setup istioctl by doing the following: 
 
 ```sh
-curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.0.3 sh -
+curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.0.4 sh -
 ```
-The above command will get the Istio 1.0.3 package and untar it in the same folder.
+The above command will get the Istio 1.0.4 package and untar it in the same folder.
 
-In the `PWK` environment you are most probably working as user `root` and now have the `istio-1.0.3` folder under `/root`. With this pressumption, run the following command to set the `PATH` appropriately. If not, please update the command below with the correct location of the `istio-1.0.3` folder.
+In the `PWK` environment you are most probably working as user `root` and now have the `istio-1.0.4` folder under `/root`. With this pressumption, run the following command to set the `PATH` appropriately. If not, please update the command below with the correct location of the `istio-1.0.4` folder.
 
 ```sh
-export PATH="$PATH:/root/istio-1.0.3/bin"
+export PATH="$PATH:/root/istio-1.0.4/bin"
 ```
 
 To verify `istioctl` is setup lets try to print out the command help

@@ -61,12 +61,12 @@ Now that we have the sidecar injector with mutating webhook in place and the nam
 
 With Twitter:
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.3/bookinfo-twitter-auth.yaml
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/bookinfo-twitter-auth.yaml
 ```
 
 Without Twitter:
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.3/bookinfo.yaml
+kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/bookinfo.yaml
 ```
 
 ### <a name="verify"></a> Verify Bookinfo deployment
