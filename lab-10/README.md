@@ -9,27 +9,21 @@ In this lab we will configure circuit breaking using Istio. Circuit breaking all
 Now, let us start by deploying a simpler application to test circuit breaking:
 
 
-***With manual sidecar injection:***
-
-```sh
-kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/httpbin.yaml | istioctl kube-inject --debug -f -)
-```
-
 ***With automatic sidecar injector:***
 
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/httpbin.yaml
 ```
 
-
-### 10.1.2 Deploy a client for the app
-Let us then deploy a client which is capable of talking to the httpbin service:
-
 ***With manual sidecar injection:***
 
 ```sh
-kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/fortio-deploy.yaml | istioctl kube-inject --debug -f -)
+kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/httpbin.yaml | istioctl kube-inject --debug -f -)
 ```
+
+
+### 10.1.2 Deploy a client for the app
+Let us then deploy a client which is capable of talking to the httpbin service:
 
 ***With automatic sidecar injector:***
 
@@ -37,6 +31,11 @@ kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-servi
 kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/fortio-deploy.yaml
 ```
 
+***With manual sidecar injection:***
+
+```sh
+kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/fortio-deploy.yaml | istioctl kube-inject --debug -f -)
+```
 
 Before we proceed further, lets ensure the services are up and running:
 

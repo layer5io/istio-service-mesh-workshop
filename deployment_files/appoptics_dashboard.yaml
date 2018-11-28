@@ -1,5 +1,5 @@
 ---
-name: Velocity London 2018 - Istio Dashboard
+name: Istio Dashboard
 charts:
 - name: Request Count by Destination Service
   type: line

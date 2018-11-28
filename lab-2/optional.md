@@ -41,7 +41,7 @@ Once the token is created you will be able to see it in the Tokens table. On the
 
 We can now store this token in an environment variable for later use:
 ```sh
-export LOGGLY_TOKEN=<PASTE YOUR TOKEN HERE WITHOUT THE ANGLE BRACES>
+LOGGLY_TOKEN="PASTE YOUR TOKEN HERE"
 ```
 
 
@@ -50,7 +50,7 @@ Reserve your lab account [here](https://docs.google.com/spreadsheets/d/174haSpPT
 
 Using your reserved token is token in an environment variable for later use:
 ```sh
-export AOTOKEN="PASTE YOUR TOKEN HERE"
+AOTOKEN="PASTE YOUR TOKEN HERE"
 ```
 
 ## <a name="3"></a> 3 - Setup Appoptics Dashboard

@@ -27,15 +27,20 @@ You can view the statistics, listeners, routes, clusters and server info for the
 curl localhost:15000/help
 curl localhost:15000/stats
 curl localhost:15000/listeners
-curl localhost:15000/routes
 curl localhost:15000/clusters
 curl localhost:15000/server_info
 ```
 
 See the [admin docs](https://www.envoyproxy.io/docs/envoy/latest/operations/admin) for more details.
 
-Also it can be helpful to look at the log files of the Istio ingress controller to see what request is being routed. We should also be able to view the `curl` calls we just made from inside the ingressgateway. Let us first find the ingress pod and output the log files:
+Also it can be helpful to look at the log files of the Istio ingress controller to see what request is being routed. We should also be able to view the `curl` calls we just made from inside the ingressgateway. 
 
+Before we check the logs, let us get out of the container back on the host:
+```sh
+exit
+```
+
+Now let us find the ingress pod and output the log:
 
 ```sh
 kubectl logs istio-ingressgateway-... -n istio-system
@@ -114,7 +119,7 @@ For more details on envoy proxy please check out their [admin docs](https://www.
 
 ## 4.4 Apply default destination rules
 
-Before we start using playing with Istio's traffic management capabilities we need to define the available versions of the deployed services. They are called subsets, in destination rules.
+Before we start playing with Istio's traffic management capabilities we need to define the available versions of the deployed services. They are called subsets, in destination rules.
 
 Run the following command to create default destination rules for the Bookinfo services:
 ```sh
@@ -124,6 +129,9 @@ kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh
 In a few seconds we should be able to verify the destination rules created by using the command below:
 
 ```sh
+kubectl get destinationrules
+
+
 kubectl get destinationrules -o yaml
 ```
 

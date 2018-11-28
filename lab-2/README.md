@@ -48,8 +48,8 @@ You are likely running Kubernetes version 1.9 or earlier, which might NOT have s
 
 If you have followed the [Optional Lab 2](optional.md), please run the 2 commands below to set the AppOptics token and the Loggly token as environment variables for this session.
 ```
-export AOTOKEN="PLEASE PASTE YOUR APPOPTICS TOKEN HERE"
-export LOGGLY_TOKEN="PLEASE PASTE YOUR LOGGLY TOKEN HERE"
+AOTOKEN="PLEASE PASTE YOUR APPOPTICS TOKEN HERE"
+LOGGLY_TOKEN="PLEASE PASTE YOUR LOGGLY TOKEN HERE"
 ```
 
 Now let us configure the istio-policy and istio-telemetry to enable the use of the Solarwinds mixer adapter by running the following command:
@@ -66,7 +66,7 @@ kubectl apply -f solarwinds.yaml
 Istio is deployed in a separate Kubernetes namespace `istio-system`. To check if Istio is deployed, and also, to see all the pieces that are deployed, execute the following:
 
 ```sh
-watch kubectl get all -n istio-system
+kubectl get all -n istio-system
 ```
 
 ## <a name="3"></a> 3 - Setting up istioctl
@@ -90,7 +90,7 @@ istioctl version
 
 ## Configuring Add-ons
 
-`Istio` comes with several addons like:
+`Istio`, as part of this workshop, is installed with several optional addons like:
   1. [Prometheus](https://prometheus.io/)
   2. [Grafana](https://grafana.com/)
   3. [Zipkin](https://zipkin.io/)
