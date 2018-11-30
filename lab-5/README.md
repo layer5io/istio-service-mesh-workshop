@@ -24,9 +24,40 @@ docker run istio/fortio load -t 5m -qps 5 http://$INGRESS_HOST/productpage
 Let's now checkout the generated metrics.
 
 ## Appoptics
-If you had followed [optional lab-2](../lab-2/optional.md), created or have an Appoptics account, created a dashboard, obtained a valid Appoptics API token and deployed Istio with [solarwinds mixer adapter](https://github.com/solarwinds/istio-adapter), you will be able to view the metrics data from Istio in the Appoptics Dashboard.
+If you had followed [optional lab-2](../lab-2/optional.md) and created or have an Appoptics account, we should now be able to create a dashboard to view the metrics from Istio.
 
-![](img/AO_Dashboard.png)
+
+### Setup Appoptics Dashboard
+
+Login to [AppOptics](https://my.appoptics.com).
+
+Now from the left menu select `Dashboard & Metrics`.
+![](img/ao_dashboard_menu.png)
+
+It will take you to a Dashboards page
+![](img/ao_dashboard.png)
+
+Once you are in the `Dashboards` screen you can create a new dashboard by using `Create a New Dashboard` button. It will take you right to a new dashboard.
+![](img/ao_new_dashboard.png)
+
+You can now give your dashboard a temporary name. Next click on the button shown in the previous image. It will open up a menu with an option to import a dashboard.
+
+![](img/ao_import_menu.png)
+
+Clicking the `Import Dashboard` menu item will open a popup where we can enter the contents of `https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/appoptics_dashboard.yaml` file
+![](img/ao_import.png)
+
+After pasting the contents, we can validate it by using the `Validate` button
+
+![](img/ao_validate.png)
+
+Once validated, we can import the dashboard by using the `Import` button. You will be presented with a warning popup as shown here. Proceed by clicking `OK` here.
+
+![](img/ao_import_warning.png)
+
+You will be taken to a pre-constructed dashboard.
+![](img/ao_istio_dashboard.png)
+
 
 ## Loggly
 If you had followed [optional lab-2](../lab-2/optional.md), created or have an Loggly account, obtained a valid Loggly API token and deployed Istio with [solarwinds mixer adapter](https://github.com/solarwinds/istio-adapter), you will be able to view the access logs from Istio in Loggly.

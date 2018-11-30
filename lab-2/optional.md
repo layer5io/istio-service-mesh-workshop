@@ -6,7 +6,6 @@ As part of this workshop we will be sending access logs from Istio to [Loggly](h
 
 * [1. Set up loggly API Token](#1)
 * [2. Setup Appoptics API Token](#2)
-* [3. Setup Appoptics Dashboard](#3)
 
 ## <a name="1"></a> 1 - Set up Loggly API Token
 
@@ -48,36 +47,7 @@ LOGGLY_TOKEN="PASTE YOUR TOKEN HERE"
 ## <a name="2"></a> 2 - Setup Appoptics API Token
 Reserve your lab account [here](https://docs.google.com/spreadsheets/d/174haSpPTlDZeZLJTJRUeHZydgxpnTQScthtLLWMj3mc/edit?usp=sharing).
 
-Using your reserved token is token in an environment variable for later use:
+Let us store reserved token in an environment variable for later use:
 ```sh
 AOTOKEN="PASTE YOUR TOKEN HERE"
 ```
-
-## <a name="3"></a> 3 - Setup Appoptics Dashboard
-
-Now from the left menu select `Dashboard & Metrics`.
-![](img/ao_dashboard_menu.png)
-
-It will take you to a Dashboards page
-![](img/ao_dashboard.png)
-
-Once you are in the `Dashboards` screen you can create a new dashboard by using `Create a New Dashboard` button. It will take you right to a new dashboard.
-![](img/ao_new_dashboard.png)
-
-You can now give your dashboard a temporary name. Next click on the button shown in the previous image. It will open up a menu with an option to import a dashboard.
-
-![](img/ao_import_menu.png)
-
-Clicking the `Import Dashboard` menu item will open a popup where we can enter the contents of `https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/appoptics_dashboard.yaml` file
-![](img/ao_import.png)
-
-After pasting the contents, we can validate it by using the `Validate` button
-
-![](img/ao_validate.png)
-
-Once validated, we can import the dashboard by using the `Import` button. You will be presented with a warning popup as shown here. Proceed by clicking `OK` here.
-
-![](img/ao_import_warning.png)
-
-You will be taken to a pre-constructed dashboard.
-![](img/ao_istio_dashboard.png)
