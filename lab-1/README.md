@@ -16,7 +16,7 @@ Throughout this workshop, we will use Play with Kubernetes (PWK) as our hosted l
 Once you start the session, you will have your own lab environment.<p>
 <img src="img/pwk_main.png" width="85%" /></p>
 
-Credentials are username: `student` and password: `velocity2018`.
+Credentials are username: `student` and password: `istio2018`.
 
 ### 1.2 Add first node
 Now add one instance by clicking the `ADD NEW INSTANCE` button on the left. When you create your first instance, it will have the name `node1`. Each instance has [Docker Community Edition (CE)](https://www.docker.com/community-edition) and [kubeadm](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) preinstalled. <br />
