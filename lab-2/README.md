@@ -69,6 +69,9 @@ Istio is deployed in a separate Kubernetes namespace `istio-system`. To check if
 kubectl get all -n istio-system
 ```
 
+Also on PWK you will notice several ports being exposed as shown in the image below once Istio deployment yaml is applied on the cluster:
+![](img/exposed_ports.png)
+
 ## <a name="3"></a> 3 - Setting up istioctl
 On a *nix system, you can setup istioctl by doing the following: 
 
