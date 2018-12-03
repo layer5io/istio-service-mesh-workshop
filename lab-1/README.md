@@ -192,13 +192,13 @@ node3     Ready     <none>    55s       v1.10.2
 ```
 
 We now have a 3-node Kubernetes cluster ready for an Istio deployment.
-
+<!-- 
 ### 3.3 Taint master
 To better utilize the resources, let us taint the master nodes to be able to provision pods there as well.
 
 ```sh
 kubectl taint nodes --all node-role.kubernetes.io/master-
-```
+``` -->
 
 ## Cheatsheet
 To sum up or catch up ;)
@@ -217,11 +217,11 @@ Add slave nodes (please use your own join command output by `kubeadm init` on yo
 ```
 kubeadm join --token 0c6e9e.607906dbdcacbf64 192.168.0.8:6443 --discovery-token-ca-cert-hash sha256:b8116ec1b224d82983b10353498d222f6f2e8fcbdf5d1075b4eece0f37df5896
 ```
-
+<!-- 
 Taint master:
 ```
 kubectl taint nodes --all node-role.kubernetes.io/master-
-```
+``` -->
 
 Check node status:
 ```sh
