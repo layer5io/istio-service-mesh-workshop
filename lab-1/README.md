@@ -225,7 +225,7 @@ To sum up or catch up ;)
 
 Run this on master node:
 ```sh
-kubeadm init --apiserver-advertise-address $(hostname -i)
+kubeadm init --apiserver-advertise-address $(hostname -i) --kubernetes-version v1.12.3
 ```
 Deploy network:
 ```sh
