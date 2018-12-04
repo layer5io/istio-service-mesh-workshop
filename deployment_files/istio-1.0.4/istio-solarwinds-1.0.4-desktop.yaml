@@ -12771,7 +12771,7 @@ spec:
       serviceAccountName: istio-galley-service-account
       containers:
         - name: validator
-          image: "docker.io/istio/galley:1.0.4"
+          image: "solarwinds/istio-galley:1.0.4"
           imagePullPolicy: IfNotPresent
           ports:
           - containerPort: 443
@@ -13313,7 +13313,7 @@ spec:
                 - s390x
       containers:
       - name: mixer
-        image: "docker.io/istio/mixer:1.0.4"
+        image: "solarwinds/istio-adapter:1.0.4"
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9093
@@ -13419,7 +13419,7 @@ spec:
         emptyDir: {}
       containers:
       - name: mixer
-        image: "docker.io/istio/mixer:1.0.4"
+        image: "solarwinds/istio-adapter:1.0.4"
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9093
