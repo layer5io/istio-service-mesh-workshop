@@ -18,6 +18,16 @@ Once you start the session, you will have your own lab environment.<p>
 
 Credentials are username: `student` and password: `istio2018`.
 
+If you are having issues with getting a session in this environment, you can try all the workshop labs on your local machines.
+
+- Mac users should be able to continue with Kubernetes on Docker for Mac.
+
+- Windows users should be able to continue with Kubernetes on Docker for Desktop.
+
+- Linux users should be able to install kubeadm and kubelet version 1.12.1 with your respective package managers on your machines and continue with the labs. [Here](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) is a link which might be helpful in this regard.
+
+If you are using Docker for Desktop/Mac for the labs, please [continue to Lab 2 - Deploy Istio](../lab-2/README.md) 
+
 ### 1.2 Add first node
 Now add one instance by clicking the `ADD NEW INSTANCE` button on the left. When you create your first instance, it will have the name `node1`. Each instance has [Docker Community Edition (CE)](https://www.docker.com/community-edition) and [kubeadm](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) preinstalled. <br />
 <br />
@@ -26,10 +36,18 @@ Now add one instance by clicking the `ADD NEW INSTANCE` button on the left. When
 We will use `node1` as the master node for our cluster. While we will create a _multi-node_ cluster in this lab, creating a _multi-master_ cluster is out of the scope of this workshop.
 
 ### 1.2 Bootstrap cluster
-Next, bootstrap the Kubernetes cluster by initializing the master (`node1`) node:
+Next, let us bootstrap the Kubernetes cluster by initializing the master (`node1`) node using the command below. On our PWK environment we are restricting the version of kubernetes that will be installed to version 1.12.3.
+
 ```sh
-kubeadm init --apiserver-advertise-address $(hostname -i)
+kubeadm init --apiserver-advertise-address $(hostname -i) --kubernetes-version v1.12.3
 ```
+
+If you are using a different environment, running the below command will mostly suffice.
+
+```sh
+kubeadm init --apiserver-advertise-address $(hostname -i) 
+```
+
 
 Sample output from initialization:
 ```sh
