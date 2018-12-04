@@ -13,6 +13,8 @@ Throughout this workshop, we will use Play with Kubernetes (PWK) as our hosted l
 <h3> 1.1 Visit <a href="http://pwk.layer5.io" target="_new_">pwk.layer5.io</a>.</h2>
 <img src="img/pwk_start.png" width="85%" />
 
+If the page takes too long to load, please update your machine's DNS settings to use Google's DNS server at IP: 8.8.8.8 and try again.
+
 Once you start the session, you will have your own lab environment.<p>
 <img src="img/pwk_main.png" width="85%" /></p>
 
