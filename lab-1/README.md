@@ -16,7 +16,7 @@ Please visit [pwk.layer5.io](http://pwk.layer5.io) to get your own kubernetes en
 
 If the page takes too long to load, please update your machine's DNS settings to use any public DNS server like Google's DNS server at IP: 8.8.8.8 and try again.
 
-Credentials for [pwk.layer5.io](http://pwk.layer5.io) are username: `student` and password: `istio2018`. 
+Credentials for [pwk.layer5.io](http://pwk.layer5.io) - username: `student` and password: `istio2018`. 
 
 ***Please note:*** Once you are presented with a Basic Auth login popup, you have a maximum of 2 minutes to enter the credentials and get a session. If you take longer than 2 minutes, please go go back to [pwk.layer5.io](http://pwk.layer5.io) and start over.
 
