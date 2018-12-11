@@ -29,7 +29,7 @@ If you are having issues with getting a session in this environment, you can try
 
 - Windows users should be able to continue with Kubernetes on Docker for Desktop.
 
-- Linux users should be able to install kubeadm and kubelet version 1.12.1 with your respective package managers on your machines and continue with the labs. [Here](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) is a link which might be helpful in this regard.
+- Linux users should be able to install kubeadm and kubelet version 1.12.3 with your respective package managers on your machines and continue with the labs. [Here](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) is a link which might be helpful in this regard.
 
 If you are using Docker for Desktop/Mac for the labs, please [continue to Lab 2 - Deploy Istio](../lab-2/README.md) 
 
