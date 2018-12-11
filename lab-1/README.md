@@ -11,14 +11,17 @@ Throughout this workshop, we will use Play with Kubernetes (PWK) as our hosted l
 ## <a name="1"></a> 1 - Set up your Kubernetes master node
 
 <h3> 1.1 Visit <a href="http://pwk.layer5.io" target="_new_">pwk.layer5.io</a>.</h2>
-<img src="img/pwk_start.png" width="85%" />
 
-If the page takes too long to load, please update your machine's DNS settings to use Google's DNS server at IP: 8.8.8.8 and try again.
+Please visit [pwk.layer5.io](http://pwk.layer5.io) to get your own kubernetes environment for this workshop.
+
+If the page takes too long to load, please update your machine's DNS settings to use any public DNS server like Google's DNS server at IP: 8.8.8.8 and try again.
+
+Credentials for [pwk.layer5.io](http://pwk.layer5.io) are username: `student` and password: `istio2018`. 
+
+***Please note:*** Once you are presented with a Basic Auth login popup, you have a maximum of 2 minutes to enter the credentials and get a session. If you take longer than 2 minutes, please go go back to [pwk.layer5.io](http://pwk.layer5.io) and start over.
 
 Once you start the session, you will have your own lab environment.<p>
 <img src="img/pwk_main.png" width="85%" /></p>
-
-Credentials are username: `student` and password: `istio2018`.
 
 If you are having issues with getting a session in this environment, you can try all the workshop labs on your local machines.
 
