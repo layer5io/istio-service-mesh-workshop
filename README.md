@@ -6,7 +6,7 @@ This workshop has been or will be presented at:
 * [Innovate Summit 2018](https://innovate.solarwinds.io)
 * [KubeCon NA 2018](https://kccna18.sched.com/event/Gram/tutorial-using-istio-lee-calcote-girish-ranganathan-solarwinds?iframe=yes&w=100%&sidebar=yes&bg=no#)
 
-All workshop resources (slides, labs, accounts, books, mailing list, landscape) can found at [Layer5.io](https://layer5.io). Ask questions or post comments in this [channel](https://layer5io.slack.com) on Slack [use this invite to join](https://join.slack.com/t/layer5io/shared_invite/enQtNDY3NDU3NDQyODIwLWUxOTEwOWYzNWI0MmFmN2I4ZTYyNzM2YjUyOTVkOGI3ZDM1NGQ3MzlhZjczY2VkN2Y5ODViNGRiOTE0ZTM1MTA) or at [@Layer5](https://twitter.com/layer5) on Twitter.
+All workshop resources (slides, labs, accounts, books, mailing list, landscape) can found at [Layer5.io](https://layer5.io). Ask questions or post comments in this [channel](http://slack.layer5.io) on Slack or at [@Layer5](https://twitter.com/layer5) on Twitter.
 
 # Labs
 
@@ -35,9 +35,9 @@ All workshop resources (slides, labs, accounts, books, mailing list, landscape) 
 - [Lab 10 - Circuit Breaking](lab-10/README.md)
 
 # Authors
-* Lee Calcote [Twitter](https://twitter.com/lcalcote), [LinkedIn](https://linkedin.com/in/leecalcote), [Blog](https://gingergeek.com), [Talks](https://calcotestudios.com)
+* Lee Calcote [Twitter](https://twitter.com/lcalcote), [LinkedIn](https://linkedin.com/in/leecalcote), [Blog](https://gingergeek.com), [Talks](https://calcotestudios.com/talks)
 * Girish Ranganathan [Twitter](https://twitter.com/ingenious_G)
-* Layer5 Authors [Twitter](https://twitter.com/layer5), [Slack](layer5io.slack.com)
+* Layer5 Authors [Twitter](https://twitter.com/layer5), [Slack](http://slack.layer5.io)
 
 # Resources
-All workshop resources (slides, labs, accounts, books, landscape, mailing list, slack) can found at [Layer5.io](https://layer5.io).
+All workshop resources (slides, labs, accounts, books, landscape, mailing list, slack) can found at [Layer5.io](https://layer5.io/#workshops).
