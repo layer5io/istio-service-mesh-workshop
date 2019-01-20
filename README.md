@@ -6,7 +6,7 @@ This workshop has been or will be presented at:
 * [Innovate Summit 2018](https://innovate.solarwinds.io)
 * [KubeCon NA 2018](https://kccna18.sched.com/event/Gram/tutorial-using-istio-lee-calcote-girish-ranganathan-solarwinds?iframe=yes&w=100%&sidebar=yes&bg=no#)
 
-All workshop resources (slides, labs, accounts, books, mailing list, landscape) can found at [Layer5.io](https://layer5.io). Ask questions or post comments in this [channel](http://slack.layer5.io) on Slack or at [@Layer5](https://twitter.com/layer5) on Twitter.
+All workshop resources (slides, labs, accounts, books, mailing list, landscape) can found at [Layer5.io](https://layer5.io). Ask questions or post comments in [Slack](http://slack.layer5.io) or at [@Layer5](https://twitter.com/layer5) on Twitter.
 
 # Labs
 
