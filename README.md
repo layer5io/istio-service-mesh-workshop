@@ -1,13 +1,7 @@
-# Using [Istio](https://istio.io/) Workshop Overview
-This workshop has been or will be presented at:
-* [DockerCon 2018](https://dockercon18.smarteventscloud.com/connect/sessionDetail.ww?SESSION_ID=187485) 
-* [Velocity London 2018](https://conferences.oreilly.com/velocity/vl-eu/public/schedule/detail/70506)
-* [DockerCon EU 2018](https://europe-2018.dockercon.com)
-* [Innovate Summit 2018](https://innovate.solarwinds.io)
-* [KubeCon NA 2018](https://kccna18.sched.com/event/Gram/tutorial-using-istio-lee-calcote-girish-ranganathan-solarwinds?iframe=yes&w=100%&sidebar=yes&bg=no#)
-* [O'Reilly Live Online Training](https://www.oreilly.com/live-training/courses/introduction-to-istio/0636920282938/)
+# Introduction to Istio
+Curriculum for [O'Reilly Live Online Training](https://www.oreilly.com/live-training/courses/introduction-to-istio/0636920282938/)
 
-All workshop resources (slides, labs, accounts, books, mailing list, landscape) can found at [Layer5.io](https://layer5.io). Ask questions or post comments in [Slack](http://slack.layer5.io) or at [@Layer5](https://twitter.com/layer5) on Twitter.
+All training resources (slides, labs, accounts, books, mailing list, landscape) can found at [Layer5.io](https://layer5.io). Ask questions or post comments in [Slack](http://slack.layer5.io) or at [@Layer5](https://twitter.com/layer5) on Twitter.
 
 # Labs
 
