@@ -1,8 +1,19 @@
 # Lab 1 - Create a Kubernetes Cluster
 
-Throughout this workshop, we will use Play with Kubernetes (PWK) as our hosted lab environment. For this workshop only, a temporarily-provisioned space has been provided at [pwk.layer5.io](http://pwk.layer5.io). If you would like to use a different Kubernetes cluster (like your lab cluster or Docker for Desktop or Minikube), you can skip lab-1 (this lab).
+Throughout this training, we will use your local Docker Desktop instance as our lab environment. If you would like to use a different Kubernetes cluster (like your lab cluster or Minikube), you can skip lab-1 (this lab).
 
-## Setup Steps
+## Docker Desktop Setup
+
+1. Download and install Docker Desktop, if you haven't already.
+1. Enable Kubernetes in Docker Desktop preferences.
+
+If you are having issues with getting a session in this environment, you can try all the workshop labs on your local machines.
+
+- Mac users should be able to continue with Kubernetes on Docker for Mac.
+- Windows users should be able to continue with Kubernetes on Docker for Desktop.
+- Linux users should be able to install kubeadm and kubelet version 1.12.3 with your respective package managers on your machines and continue with the labs. [Here](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) is a link which might be helpful in this regard.
+
+If you are using Docker for Desktop/Mac for the labs, please [continue to Lab 2 - Deploy Istio](../lab-2/README.md) 
 
 1. [Set up your Kubernetes master node](#1)
 1. [Install overlay networking](#2)
@@ -23,15 +34,7 @@ Credentials for [pwk.layer5.io](http://pwk.layer5.io) - username: `student` and 
 Once you start the session, you will have your own lab environment.<p>
 <img src="img/pwk_main.png" width="85%" /></p>
 
-If you are having issues with getting a session in this environment, you can try all the workshop labs on your local machines.
 
-- Mac users should be able to continue with Kubernetes on Docker for Mac.
-
-- Windows users should be able to continue with Kubernetes on Docker for Desktop.
-
-- Linux users should be able to install kubeadm and kubelet version 1.12.3 with your respective package managers on your machines and continue with the labs. [Here](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) is a link which might be helpful in this regard.
-
-If you are using Docker for Desktop/Mac for the labs, please [continue to Lab 2 - Deploy Istio](../lab-2/README.md) 
 
 ### 1.2 Add first node
 Now add one instance by clicking the `ADD NEW INSTANCE` button on the left. When you create your first instance, it will have the name `node1`. Each instance has [Docker Community Edition (CE)](https://www.docker.com/community-edition) and [kubeadm](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) preinstalled. <br />
