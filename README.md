@@ -5,8 +5,7 @@ Curriculum for [O'Reilly Live Online Training](https://www.oreilly.com/live-trai
 ## Setup Kubernetes & Istio
 - [Lab 1 - Setup Kubernetes](lab-1/README.md)
 - [Lab 2 - Setup Istio](lab-2/README.md)
-  - [Configure Adapter Set (1)](lab-2/README.md)
-  - [Configure Adapter Set (2)](lab-2/optional.md)
+  - [Configure Adapters](lab-2/README.md)
 
 # Segment 3
 ## Deploying an app onto the mesh
