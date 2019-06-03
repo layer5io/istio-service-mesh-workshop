@@ -145,5 +145,9 @@ Output will be similar to:
 ```
 You can see that the subject isn't what you'd normally expect, URI SAN extension has a `spiffe` URI.
 
+This wraps up this lab and the training. Thank you for attending our workshop!
 
-## [Continue to Lab 10 - Circuit Breaking](../lab-10/README.md)
+---
+
+# Layer5.io
+For future updates and additional resources, check out [layer5.io](https://layer5.io).

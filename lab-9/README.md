@@ -157,8 +157,7 @@ cluster.outbound|8000||httpbin.default.svc.cluster.local.upstream_rq_pending_tot
 ```
 You can see the numbers we got from sidecar and fortio match. `upstream_rq_pending_overflow` specifies the number of calls flagged for circuit breaking.
 
-
-This wraps up this lab and the workshop. Thank you for attending our workshop!
+## [Continue to Lab 10 - Mutual TLS & Identity Verification](../lab-10/README.md)
 
 ---
 
