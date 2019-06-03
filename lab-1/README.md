@@ -15,31 +15,8 @@ If you are having issues with getting a session in this environment, you can try
 
 If you are using Docker for Desktop/Mac for the labs, please [continue to Lab 2 - Deploy Istio](../lab-2/README.md) 
 
-1. [Set up your Kubernetes master node](#1)
-1. [Install overlay networking](#2)
-1. [Add more nodes to the cluster](#3)
-
-## <a name="1"></a> 1 - Set up your Kubernetes master node
-
-<h3> 1.1 Visit <a href="http://pwk.layer5.io" target="_new_">pwk.layer5.io</a>.</h2>
-
-Please visit [pwk.layer5.io](http://pwk.layer5.io) to get your own kubernetes environment for this workshop.
-
-If the page takes too long to load, please update your machine's DNS settings to use any public DNS server like Google's DNS server at IP: 8.8.8.8 and try again.
-
-Credentials for [pwk.layer5.io](http://pwk.layer5.io) - username: `student` and password: `istio2018`. 
-
-***Please note:*** Once you are presented with a Basic Auth login popup, you have a maximum of 2 minutes to enter the credentials and get a session. If you take longer than 2 minutes, please go go back to [pwk.layer5.io](http://pwk.layer5.io) and start over.
-
-Once you start the session, you will have your own lab environment.<p>
-<img src="img/pwk_main.png" width="85%" /></p>
-
-
-
 ### 1.2 Add first node
 Now add one instance by clicking the `ADD NEW INSTANCE` button on the left. When you create your first instance, it will have the name `node1`. Each instance has [Docker Community Edition (CE)](https://www.docker.com/community-edition) and [kubeadm](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) preinstalled. <br />
-<br />
-<img src="img/pwk_instance1.png" width="85%" />
 
 We will use `node1` as the master node for our cluster. While we will create a _multi-node_ cluster in this lab, creating a _multi-master_ cluster is out of the scope of this workshop.
 
@@ -227,7 +204,7 @@ kubectl taint nodes --all node-role.kubernetes.io/master-
 ``` -->
 
 ## Cheatsheet
-To sum up or catch up ;)
+All commands in one place.
 
 Run this on master node:
 ```sh
