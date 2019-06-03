@@ -10,32 +10,24 @@ Now that we have a Kubernetes cluster, we are ready to deploy Istio.
 * [4. Configuring Add-ons](#4)
 
 ## <a name="1"></a> 1 - Installing Istio
-You will install Istio 1.0.4 on your Kubernetes cluster. When doing so, this workshop provides you with a Choose Your Own Adventure style options.
+You will download and deploy Istio 1.1.7 resources on your Kubernetes cluster. 
 
-### Choose your own Adventure
-*Or your own **Adapters**...*
-A number of Istio adapters and add-ons are included out of the box. In this workshop, we will enable the Prometheus, ServiceGraph, Jaeger, Grafana and [SolarWinds](https://github.com/solarwinds/istio-adapter) adapters and add-ons. 
-
-Configuration of the SolarWinds adapter is included as an optional lab, which enables shipping of metrics to [Appoptics](https://www.appoptics.com/), and/or logs to [Loggly](https://www.loggly.com/) and/or logs to [Papertrail](https://papertrailapp.com). To use the SolarWinds adapter, you may reserve your temporary, free account [here](https://docs.google.com/spreadsheets/d/1Rnqje4oQEQeaQRG24ApgdIzn8A2Pa3j5kzbm13_bJLA/edit). Then, choose proceed to the [Optional Lab 2](optional.md) for configuration instructions and return here when done.
-
-
-***Note to Docker for Desktop users:*** please ensure your Docker VM has atleast 4GiB of Memory, which is required for all services to run.
-
-
-On PWK:
-```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/istio-solarwinds-1.0.4.yaml > istio.yaml
-```
+***Note to Docker Desktop users:*** please ensure your Docker VM has atleast 4GiB of Memory, which is required for all services to run.
 
 On Docker for Desktop:
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/istio-solarwinds-1.0.4-desktop.yaml > istio.yaml
+curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.1.7 sh -
+```
+Move into the Istio package directory.
+
+Add the `istioctl` client to your PATH environment variable.
+```sh
+export PATH=$PWD/bin:$PATH
 ```
 
-
-
+Deploy Istio custom resources:
 ```sh
-kubectl apply -f istio.yaml
+for i in install/kubernetes/helm/istio-init/files/crd*yaml; do kubectl apply -f $i; done
 ```
 
 If you see an error message like this:
@@ -45,21 +37,9 @@ error: unable to recognize "istio.yaml": no matches for admissionregistration.k8
 
 You are likely running Kubernetes version 1.9 or earlier, which might NOT have support for mutating admission webhooks or might not have it enabled and is the reason for the error. You can continue with the lab without any issues.
 
-
-If you have followed the [Optional Lab 2](optional.md), please run the 2 commands below to set the AppOptics token and the Loggly token as environment variables for this session.
+```sh
+kubectl apply -f install/kubernetes/istio-demo.yaml
 ```
-AOTOKEN="PLEASE PASTE YOUR APPOPTICS TOKEN HERE"
-LOGGLY_TOKEN="PLEASE PASTE YOUR LOGGLY TOKEN HERE"
-```
-
-Now let us configure the istio-policy and istio-telemetry to enable the use of the Solarwinds mixer adapter by running the following command:
-
-```
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/solarwinds-1.0.4.yaml | sed "s/<appoptics token>/$AOTOKEN/g" | sed "s/<loggly token>/$LOGGLY_TOKEN/g" > solarwinds.yaml 
-
-kubectl apply -f solarwinds.yaml
-```
-
 
 ## <a name="2"></a> 2 - Verify install
 
@@ -80,10 +60,10 @@ curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.0.4 sh -
 ```
 The above command will get the Istio 1.0.4 package and untar it in the same folder.
 
-In the `PWK` environment you are most probably working as user `root` and now have the `istio-1.0.4` folder under `/root`. With this pressumption, run the following command to set the `PATH` appropriately. If not, please update the command below with the correct location of the `istio-1.0.4` folder.
+In the Docker Desktop environment you are most probably working as user `root` and now have the `istio-1.1.7` folder under `/root`. With this pressumption, run the following command to set the `PATH` appropriately. If not, please update the command below with the correct location of the `istio-1.1.7` folder.
 
 ```sh
-export PATH="$PATH:/root/istio-1.0.4/bin"
+export PATH="$PATH:/root/istio-1.1.7/bin"
 ```
 
 To verify `istioctl` is setup lets try to print out the command help
@@ -100,7 +80,7 @@ istioctl version
   4. [Jaeger](https://www.jaegertracing.io/)
   5. [Service Graph](https://istio.io/docs/tasks/telemetry/servicegraph/)
 
-For students who did NOT want to use Appoptics, you will use Prometheus and Grafana for collecting and viewing metrics, while for viewing distributed traces, you can choose between [Zipkin](https://zipkin.io/) or [Jaeger](https://www.jaegertracing.io/). In this workshop we will go with Jaeger.
+You will use Prometheus and Grafana for collecting and viewing metrics, while for viewing distributed traces, you can choose between [Zipkin](https://zipkin.io/) or [Jaeger](https://www.jaegertracing.io/). In this training, we will use Jaeger.
 
 Service graph is another add-on which can be used to generate a graph of services within an Istio mesh and is deployed as part of Istio in this lab.
 
