@@ -9,7 +9,7 @@ As part of the bookinfo sample app, there are multiple versions of reviews servi
 Set the default version for all requests to v1 of all service using :
 
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/virtual-service-all-v1.yaml 
+kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml 
 ```
 
 This creates a bunch of `virtualservice` and `destinationrule` entries which route calls to v1 of the services.
