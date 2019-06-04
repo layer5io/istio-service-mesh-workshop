@@ -1,10 +1,10 @@
-# Lab 2 - Deploy Istio
+# Lab 2 - Download and deploy Istio resources
 
-Now that we have a Kubernetes cluster, we are ready to deploy Istio.
+Now that we have a Kubernetes cluster, we are ready to download and deploy Istio resources.
 
 ## Steps
 
-* [1. Installing Istio](#1)
+* [1. Downloading Istio](#1)
 * [2. Seting up istioctl](#2)
 * [3. Verify install](#3)
 * [4. Configuring Add-ons](#4)
