@@ -99,11 +99,6 @@ kubectl -n istio-system edit svc grafana
 kubectl -n istio-system edit svc servicegraph
 ```
 
-For Jaeger, either of `tracing` or `jaeger-query` can be exposed.
-```sh
-kubectl -n istio-system edit svc tracing
-```
-
 
 Once this is done the services will be assigned dedicated ports on the hosts. 
 
@@ -120,11 +115,6 @@ kubectl -n istio-system get svc prometheus
 To find the assigned ports for Servicegraph:
 ```sh
 kubectl -n istio-system get svc servicegraph
-```
-
-To find the assigned ports for Jaeger:
-```sh
-kubectl -n istio-system get svc tracing
 ```
 
 #### Option 2: Expose services with port-forwarding
@@ -147,14 +137,6 @@ kubectl -n istio-system port-forward \
   $(kubectl -n istio-system get pod -l app=servicegraph -o jsonpath='{.items[0].metadata.name}') \
   8088:8088 &
 ```
-
-To port-forward Jaeger:
-```sh
-kubectl -n istio-system port-forward \
-  $(kubectl -n istio-system get pod -l app=jaeger -o jsonpath='{.items[0].metadata.name}') \
-  16686:16686 &
-```
-
 
 Port-forwarding runs in the foreground. We have appeneded `&` to the end of the above 2 commands to run them in the background. If you donot want this behavior, please remove the `&` from the end.
 
