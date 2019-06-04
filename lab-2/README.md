@@ -4,24 +4,25 @@ Now that we have a Kubernetes cluster, we are ready to download and deploy Istio
 
 ## Steps
 
-* [1. Downloading Istio](#1)
-* [2. Seting up istioctl](#2)
-* [3. Verify install](#3)
-* [4. Configuring Add-ons](#4)
+* [1. Downloading Istio resources](#1)
+* [2. Setup istioctl](#2)
+* [3. Install Istio](#3)
+* [4. Verify install](#4)
+* [5. Configuring Add-ons](#5)
 
 ## <a name="1"></a> 1 - Installing Istio
 You will download and deploy Istio 1.1.7 resources on your Kubernetes cluster. 
 
 ***Note to Docker Desktop users:*** please ensure your Docker VM has atleast 4GiB of Memory, which is required for all services to run.
 
-On Docker for Desktop:
+On your local machine:
 ```sh
 curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.1.7 sh -
 ```
-Move into the Istio package directory.
 
-Add the `istioctl` client to your PATH environment variable.
+Move into the Istio package directory and add the `istioctl` client to your PATH environment variable.
 ```sh
+cd istio-1.1.7
 export PATH=$PWD/bin:$PATH
 ```
 
@@ -37,27 +38,9 @@ error: unable to recognize "istio.yaml": no matches for admissionregistration.k8
 
 You are likely running Kubernetes version 1.9 or earlier, which might NOT have support for mutating admission webhooks or might not have it enabled and is the reason for the error. You can continue with the lab without any issues.
 
-```sh
-kubectl apply -f install/kubernetes/istio-demo.yaml
-```
-
-## <a name="2"></a> 2 - Verify install
-
-Istio is deployed in a separate Kubernetes namespace `istio-system`. To check if Istio is deployed, and also, to see all the pieces that are deployed, execute the following:
-
-```sh
-kubectl get all -n istio-system
-```
-
-Also on PWK you will notice several ports being exposed as shown in the image below once Istio deployment yaml is applied on the cluster:
-![](img/exposed_ports.png)
-
-## <a name="3"></a> 3 - Setting up istioctl
+## <a name="2"></a> 3 - Setting up istioctl
 On a *nix system, you can setup istioctl by doing the following: 
 
-```sh
-curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.0.4 sh -
-```
 The above command will get the Istio 1.0.4 package and untar it in the same folder.
 
 In the Docker Desktop environment you are most probably working as user `root` and now have the `istio-1.1.7` folder under `/root`. With this pressumption, run the following command to set the `PATH` appropriately. If not, please update the command below with the correct location of the `istio-1.1.7` folder.
@@ -70,8 +53,21 @@ To verify `istioctl` is setup lets try to print out the command help
 ```sh
 istioctl version
 ```
+## <a name="3"></a> 2 - Install Istio
 
-## Configuring Add-ons
+```sh
+kubectl apply -f install/kubernetes/istio-demo.yaml
+```
+
+## <a name="4"></a> 2 - Verify install
+
+Istio is deployed in a separate Kubernetes namespace `istio-system`. To check if Istio is deployed, and also, to see all the pieces that are deployed, execute the following:
+
+```sh
+kubectl get all -n istio-system
+```
+
+## <a name="4"></a> Configuring Add-ons
 
 `Istio`, as part of this workshop, is installed with several optional addons like:
   1. [Prometheus](https://prometheus.io/)
