@@ -5,12 +5,10 @@ Access to a Kubernetes cluster is required. You may use any Kubernetes platform 
 ## Docker Desktop Setup
 
 1. Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop).
+1. Ensure 4GB is allocated to your Docker Desktop VM in Docker Desktop preferences ([see screenshot](img/docker-desktop-memory.png)).
 1. Enable Kubernetes in Docker Desktop preferences ([see screenshot](img/docker-desktop-kube.png)).
-Enable Kubernetes in Docker Desktop preferences ([see screenshot](img/docker-desktop-memory.png)).
-If you are having issues with getting a session in this environment, you can try all the workshop labs on your local machines.
 
-- Mac users should be able to continue with Kubernetes on Docker for Mac.
-- Windows users should be able to continue with Kubernetes on Docker for Desktop.
+- Mac and Windows users should be able to continue with Kubernetes on Docker Desktop.
 - Linux users should be able to install kubeadm and kubelet version 1.14.1 with your respective package managers on your machines and continue with the labs. [Here](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) is a link which might be helpful in this regard.
 
 ### Check Cluster Status
