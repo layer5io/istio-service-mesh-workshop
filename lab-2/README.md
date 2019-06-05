@@ -1,82 +1,94 @@
-# Lab 2 - Download and deploy Istio resources
+# Lab 3 - Deploy example application
+To play with Istio and demonstrate some of it's capabilities, you will deploy the example BookInfo application, which is included the Istio package.
 
-Now that we have a Kubernetes cluster, we are ready to download and deploy Istio resources.
+## What is the BookInfo Application?
 
-## Steps
+This application is a polyglot composition of microservices are written in different languages and sample BookInfo application displays information about a book, similar to a single catalog entry of an online book store. Displayed on the page is a description of the book, book details (ISBN, number of pages, and so on), and a few book reviews.
 
-* [1. Download Istio resources](#1)
-* [2. Setup `istioctl`](#2)
-* [3. Install Istio](#3)
-* [4. Verify install](#4)
-* [5. Confirm Add-ons](#5)
+The end-to-end architecture of the application is shown [here](https://calcotestudios.com/talks/decks/slides-velocity-london-2018-using-istio-workshop.html#/6/1).
 
-## <a name="1"></a> 1 - Download Istio
-You will download and deploy Istio 1.1.7 resources on your Kubernetes cluster. 
+It’s worth noting that these services have no dependencies on Istio, but make an interesting service mesh example, particularly because of the multitude of services, languages and versions for the reviews service.
 
-***Note to Docker Desktop users:*** please ensure your Docker VM has atleast 4GiB of Memory, which is required for all services to run.
+Sidecars proxy can be either manually or automatically injected into your pods.
 
-On your local machine:
-```sh
-curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.1.7 sh -
-```
-
-Move into the Istio package directory and add the `istioctl` client to your PATH environment variable.
-```sh
-cd istio-1.1.7
-export PATH=$PWD/bin:$PATH
-```
-
-Deploy Istio custom resources:
-```sh
-for i in install/kubernetes/helm/istio-init/files/crd*yaml; do kubectl apply -f $i; done
-```
-
-If you see an error message like this:
-```sh
-error: unable to recognize "istio.yaml": no matches for admissionregistration.k8s.io/, Kind=MutatingWebhookConfiguration
-```
-
-You are likely running Kubernetes version 1.9 or earlier, which might NOT have support for mutating admission webhooks or might not have it enabled and is the reason for the error. You can continue with the lab without any issues.
-
-## <a name="2"></a> 2 - Setting up istioctl
-On a *nix system, you can setup istioctl by doing the following: 
-
-The above command will get the Istio 1.1.7 package and untar it in the same folder.
-
-In the Docker Desktop environment you are most probably working as user `root` and now have the `istio-1.1.7` folder under `/root`. With this pressumption, run the following command to set the `PATH` appropriately. If not, please update the command below with the correct location of the `istio-1.1.7` folder.
+Automatic sidecar injection requires that your Kubernetes api-server supports `admissionregistration.k8s.io/v1beta1` or `admissionregistration.k8s.io/v1beta2` APIs. Verify whether your Kubernetes deployment supports these APIs by executing:
 
 ```sh
-export PATH="$PATH:/root/istio-1.1.7/bin"
+kubectl api-versions | grep admissionregistration
 ```
+If your environment **does NOT** supports either of these two APIs, then you may use [manual sidecar injection](./appendix-manual-injection.md) to deploy the sample app. 
 
-To verify `istioctl` is setup lets try to print out the command help
-```sh
-istioctl version
-```
-## <a name="3"></a> 3 - Install Istio
+As part of Istio deployment in [Lab 2](../lab-2/README.md), we have deployed the sidecar injector.
 
-```sh
-kubectl apply -f install/kubernetes/istio-demo.yaml
-```
+<img src="/img/bonus.png"  width="80" align="left" /> Bonus! Your lab contais a custom version of the Bookinfo app that integrates with your Twitter account to send out a special message (and gift). For those without a Twitter account or who do not want to send a tweet, you can deploy the sample app without Twitter integration. 
 
-## <a name="4"></a> 4 - Verify install
+### <a name="auto"></a> Deploying Sample App with Automatic sidecar injection
 
-Istio is deployed in a separate Kubernetes namespace `istio-system`. To check if Istio is deployed, and also, to see all the pieces that are deployed, execute the following:
+Istio, deployed as part of this workshop, will also deploy the sidecar injector. Let us now verify sidecar injector deployment & label namespace for automatic sidecar injection.
+
 
 ```sh
-kubectl get all -n istio-system
+kubectl -n istio-system get deployment -l istio=sidecar-injector
 ```
-## <a name="5"></a> 5 - Confirming Add-ons
-	
-Istio, as part of this workshop, is installed with several optional addons like:
-	  1. [Prometheus](https://prometheus.io/)
-	  2. [Grafana](https://grafana.com/)
-	  3. [Zipkin](https://zipkin.io/)
-	  4. [Jaeger](https://www.jaegertracing.io/)
-	  5. [Kiali](https://www.kiali.io/)
-	
-You will use Prometheus and Grafana for collecting and viewing metrics, while for viewing distributed traces, you can choose between [Zipkin](https://zipkin.io/) or [Jaeger](https://www.jaegertracing.io/). In this training, we will use Jaeger.
-	
-Kiali is another add-on which can be used to generate a graph of services within an Istio mesh and is deployed as part of Istio in this lab.
-  
-## [Continue to Lab 3 - Deploy Sample Bookinfo app](../lab-3/README.md)
+Output:
+```sh
+NAME                     DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+istio-sidecar-injector   1         1         1            1           1d
+```
+
+NamespaceSelector decides whether to run the webhook on an object based on whether the namespace for that object matches the [selector](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors).
+
+Label the default namespace with istio-injection=enabled
+
+```sh
+kubectl label namespace default istio-injection=enabled
+```
+
+```sh
+kubectl get namespace -L istio-injection
+```
+
+Output:
+```sh
+NAME           STATUS    AGE       ISTIO-INJECTION
+default        Active    1h        enabled
+istio-system   Active    1h        
+kube-public    Active    1h        
+kube-system    Active    1h
+```
+
+Now that we have the sidecar injector with mutating webhook in place and the namespace labelled for automatic sidecar injection, we can proceed to deploy the sample app:
+
+```sh
+kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml
+```
+
+### <a name="verify"></a> Verify Bookinfo deployment
+
+1. Verify that previous deployments are all in a state of AVAILABLE before continuing. **Do not proceed until they are up and running.**
+
+    ```sh
+    watch kubectl get deployment
+    ```
+
+2. Inspect the details of the pods
+
+    Let us look at the details of the pods:
+    ```sh
+    watch kubectl get po
+    ```
+
+    Let us look at the details of the services:
+    ```sh
+    watch kubectl get svc
+    ```
+
+    Now let us pick a service, for instance productpage service, and view it's sidecar configuration:
+    ```sh
+    kubectl get po
+
+    kubectl describe pod productpage-v1-.....
+    ```
+
+
+## [Continue to Lab 4 - Expose BookInfo via Istio Ingress Gateway](../lab-4/README.md)
