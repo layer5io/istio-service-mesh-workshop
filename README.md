@@ -5,7 +5,7 @@ Curriculum for [O'Reilly Live Online Training](https://www.oreilly.com/live-trai
 - [Prereq - Setup Kubernetes](prereq/README.md)
 
 ## Segment 2
-### Setup Kubernetes & Istio
+### Setup Istio
 - [Lab 1 - Setup Istio](lab-1/README.md)
 
 ## Segment 3
