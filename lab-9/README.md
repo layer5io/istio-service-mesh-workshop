@@ -12,13 +12,13 @@ Now, let us start by deploying a simpler application to test circuit breaking:
 ***With automatic sidecar injector:***
 
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/httpbin.yaml
+kubectl apply -f samples/httpbin/httpbin.yaml
 ```
 
 ***With manual sidecar injection:***
 
 ```sh
-kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/httpbin.yaml | istioctl kube-inject --debug -f -)
+kubectl apply -f <(istioctl kube-inject --debug -f samples/httpbin/httpbin.yaml)
 ```
 
 
@@ -28,13 +28,13 @@ Let us then deploy a client which is capable of talking to the httpbin service:
 ***With automatic sidecar injector:***
 
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/fortio-deploy.yaml
+kubectl apply -f samples/httpbin/sample-client/fortio-deploy.yaml
 ```
 
 ***With manual sidecar injection:***
 
 ```sh
-kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/fortio-deploy.yaml | istioctl kube-inject --debug -f -)
+kubectl apply -f <(istioctl kube-inject --debug -f samples/httpbin/sample-client/fortio-deploy.yaml)
 ```
 
 Before we proceed further, lets ensure the services are up and running:
@@ -89,7 +89,26 @@ x-envoy-upstream-service-time: 36
 Now that we have the needed service in place, it is time to configure circuit breaking using a destination rule:
 
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/circuit-breaking.yaml
+kubectl apply -f - <<EOF
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: httpbin
+spec:
+  host: httpbin
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        maxConnections: 1
+      http:
+        http1MaxPendingRequests: 1
+        maxRequestsPerConnection: 1
+    outlierDetection:
+      consecutiveErrors: 1
+      interval: 1s
+      baseEjectionTime: 3m
+      maxEjectionPercent: 100
+EOF
 ```
 
 To confirm the rule is in place:
