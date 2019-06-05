@@ -50,29 +50,11 @@ Now when we reload the `/productpage` several times, we will ONLY be viewing the
 
 ## 7.2 Content based routing
 
-Let's replace our first rules with a new set. Enable the `ratings` service for your user by routing `productpage` traffic to `reviews` v2.
-
-Let us first grab the yaml file we will be working with:
-```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/virtual-service-reviews-test-v2.yaml > user-v2.yaml
-```
-
-
-Now, find the user name of the user you are logged into the Bookinfo app from the browser:
-![](img/)
-
-Once you have found out the user name, we can update the `user-v2.yaml` file with the right user name in the placeholder `USER_NAME` we have in place:
+Let's replace our first rules with a new set. Enable the `ratings` service for a user `jason` by routing `productpage` traffic to `reviews` v2:
 
 ```sh
-vi user-v2.yaml
+kubectl apply -f samples/bookinfo/networking/virtual-service-reviews-test-v2.yaml
 ```
-
-After you have updated the user name in the right place, let us save the changes and then apply it on the cluster:
-
-```sh
-kubectl apply -f user-v2.yaml
-```
-
 
 
 To view the applied rule:
@@ -120,7 +102,7 @@ Now if we login as your user, you will be able to see data from reviews v2. Whil
 Before we start the next exercise, lets first reset the routing rules back to our 7.1 rules:
 
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/virtual-service-all-v1.yaml 
+kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml 
 ```
 
 Once again, all traffic will be routed to `v1` of all the services. 
@@ -129,7 +111,7 @@ Once again, all traffic will be routed to `v1` of all the services.
 To start canary testing, let's begin by transferring 50% of the traffic from reviews:v1 to reviews:v3 with the following command:
 
 ```sh
-kubectl apply -f  https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/virtual-service-reviews-50-v3.yaml
+kubectl apply -f  samples/bookinfo/networking/virtual-service-reviews-50-v3.yaml
 ```
 
 To confirm the rule was applied:
@@ -172,7 +154,7 @@ Now, if we reload the `/productpage` in your browser several times, you should n
 When version v3 of the reviews microservice is considered stable, we can route 100% of the traffic to reviews:v3:
 
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/virtual-service-reviews-v3.yaml
+kubectl apply -f samples/bookinfo/networking/virtual-service-reviews-v3.yaml
 ```
 
 To confirm the rule was applied:
