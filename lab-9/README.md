@@ -88,7 +88,7 @@ In the circuit-breaking settings, we specified maxRequestsPerConnection: 1 and h
 
 Let us make several calls using 5 concurrent connections from within `Meshery`
 
-In the output you will see a section similar to this one:
+!()[img/meshery_cb_load_test.png]
 
 As seen only a percentage of the requests succeeded and the rest were trapped by circuit breaking.
 
