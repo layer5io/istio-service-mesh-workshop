@@ -117,7 +117,7 @@ key.pem
 root-cert.pem
 ```
 
-PWK machine doesnot have openssl installed. Lets install it:
+MacOS should have openssl available. If your machine does not have openssl install, install it:
 ```sh
 yum install -y openssl
 ```

@@ -81,15 +81,13 @@ kubectl get service istio-ingressgateway -n istio-system -o wide
 
 To just get the first port of istio-ingressgateway service, we can run this:
 ```sh
-kubectl get service istio-ingressgateway -n istio-system --template='{{(index .spec.ports 0).nodePort}}'
+kubectl get service istio-ingressgateway -n istio-system --template='{{(index .spec.ports 1).nodePort}}'
 ```
 
-The HTTP port is usually 31380 on PWK.
+The HTTP port is usually 31380.
 
 ### 4.2.4 - Browse to Bookinfo
-Browse to the website of the Bookinfo: On `PWK` the exposed ingress ports are available as hyperlinks at the top of the page. Clicking on a valid ingress port will open a page.
-
-To view the product page, you will have to append
+Browse to the website of the Bookinfo. To view the product page, you will have to append
 `/productpage` to the url.
 
 
@@ -123,7 +121,7 @@ Before we start playing with Istio's traffic management capabilities we need to 
 
 Run the following command to create default destination rules for the Bookinfo services:
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/destination-rule-all-mtls.yaml
+kubectl apply -f samples/bookinfo/networking/destination-rule-all-mtls.yaml
 ```
 
 In a few seconds we should be able to verify the destination rules created by using the command below:
