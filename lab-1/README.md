@@ -1,37 +1,82 @@
-# Lab 1 - Create a Kubernetes Cluster
+# Lab 2 - Download and deploy Istio resources
 
-Access to a Kubernetes cluster is required. You may use any Kubernetes platform of your choice. The "Introduction to Istio" training uses Docker Desktop the example Kubernetes platform. If you would like to use a different Kubernetes cluster (like your lab cluster or Minikube), you can skip lab-1 (this lab).
+Now that we have a Kubernetes cluster, we are ready to download and deploy Istio resources.
 
-## Docker Desktop Setup
+## Steps
 
-1. Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop).
-1. Ensure 4GB is allocated to your Docker Desktop VM in Docker Desktop preferences ([see screenshot](img/docker-desktop-memory.png)).
-1. Enable Kubernetes in Docker Desktop preferences ([see screenshot](img/docker-desktop-kube.png)).
+* [1. Download Istio resources](#1)
+* [2. Setup `istioctl`](#2)
+* [3. Install Istio](#3)
+* [4. Verify install](#4)
+* [5. Confirm Add-ons](#5)
 
-- Mac and Windows users should be able to continue with Kubernetes on Docker Desktop.
-- Linux users should be able to install kubeadm and kubelet version 1.14.1 with your respective package managers on your machines and continue with the labs. [Here](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) is a link which might be helpful in this regard.
+## <a name="1"></a> 1 - Download Istio
+You will download and deploy Istio 1.1.7 resources on your Kubernetes cluster. 
 
-### Check Cluster Status
-Check the status of the nodes. Ensure `Ready` state.
+***Note to Docker Desktop users:*** please ensure your Docker VM has atleast 4GiB of Memory, which is required for all services to run.
+
+On your local machine:
 ```sh
-[node1 ~]$ kubectl get nodes
-NAME      STATUS    ROLES     AGE       VERSION
-node1     Ready     master    1h        v1.10.2
+curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.1.7 sh -
 ```
 
-Check the status of the pods next:
+Move into the Istio package directory and add the `istioctl` client to your PATH environment variable.
 ```sh
-[node1 ~]$ kubectl get pods --all-namespaces
-NAMESPACE     NAME                            READY     STATUS    RESTARTS   AGE
-kube-system   etcd-node1                      1/1       Running   0          1h
-kube-system   kube-apiserver-node1            1/1       Running   0          1h
-kube-system   kube-controller-manager-node1   1/1       Running   0          1h
-kube-system   kube-dns-545bc4bfd4-nnbwn       3/3       Running   0          1h
-kube-system   kube-proxy-pxq27                1/1       Running   0          1h
-kube-system   kube-scheduler-node1            1/1       Running   0          1h
-kube-system   weave-net-wq5t5                 2/2       Running   0          2m
+cd istio-1.1.7
+export PATH=$PWD/bin:$PATH
 ```
 
-We can see all the pods are in `Running` state. If you have a running Kubernetes clsuter, please [continue to Lab 2 - Deploy Istio](../lab-2/README.md) 
+Deploy Istio custom resources:
+```sh
+for i in install/kubernetes/helm/istio-init/files/crd*yaml; do kubectl apply -f $i; done
+```
 
-# [Continue to Lab 2 - Deploy Istio](../lab-2/README.md)
+If you see an error message like this:
+```sh
+error: unable to recognize "istio.yaml": no matches for admissionregistration.k8s.io/, Kind=MutatingWebhookConfiguration
+```
+
+You are likely running Kubernetes version 1.9 or earlier, which might NOT have support for mutating admission webhooks or might not have it enabled and is the reason for the error. You can continue with the lab without any issues.
+
+## <a name="2"></a> 2 - Setting up istioctl
+On a *nix system, you can setup istioctl by doing the following: 
+
+The above command will get the Istio 1.1.7 package and untar it in the same folder.
+
+In the Docker Desktop environment you are most probably working as user `root` and now have the `istio-1.1.7` folder under `/root`. With this pressumption, run the following command to set the `PATH` appropriately. If not, please update the command below with the correct location of the `istio-1.1.7` folder.
+
+```sh
+export PATH="$PATH:/root/istio-1.1.7/bin"
+```
+
+To verify `istioctl` is setup lets try to print out the command help
+```sh
+istioctl version
+```
+## <a name="3"></a> 3 - Install Istio
+
+```sh
+kubectl apply -f install/kubernetes/istio-demo.yaml
+```
+
+## <a name="4"></a> 4 - Verify install
+
+Istio is deployed in a separate Kubernetes namespace `istio-system`. To check if Istio is deployed, and also, to see all the pieces that are deployed, execute the following:
+
+```sh
+kubectl get all -n istio-system
+```
+## <a name="5"></a> 5 - Confirming Add-ons
+	
+Istio, as part of this workshop, is installed with several optional addons like:
+	  1. [Prometheus](https://prometheus.io/)
+	  2. [Grafana](https://grafana.com/)
+	  3. [Zipkin](https://zipkin.io/)
+	  4. [Jaeger](https://www.jaegertracing.io/)
+	  5. [Kiali](https://www.kiali.io/)
+	
+You will use Prometheus and Grafana for collecting and viewing metrics, while for viewing distributed traces, you can choose between [Zipkin](https://zipkin.io/) or [Jaeger](https://www.jaegertracing.io/). In this training, we will use Jaeger.
+	
+Kiali is another add-on which can be used to generate a graph of services within an Istio mesh and is deployed as part of Istio in this lab.
+  
+## [Continue to Lab 3 - Deploy Sample Bookinfo app](../lab-3/README.md)

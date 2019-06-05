@@ -1,115 +1,109 @@
-# Lab 4 - Expose Bookinfo site through Istio Ingress Gateway
+# Lab 5 - Telemetry
 
-The components deployed on the service mesh by default are not exposed outside the cluster. External access to individual services so far has been provided by creating an external load balancer on each service.
-
-An ingress gateway service is deployed as a LoadBalancer service. For making Bookinfo accessible from outside, we have to create an `Istio Gateway` for the service and also define an `Istio VirtualService` for Bookinfo with the routes we need.
-
-## 4.1 Inspecting the Istio Ingress gateway
-
-The ingress gateway gets expossed as a normal kubernetes service load balancer:
-```sh
-kubectl get svc istio-ingressgateway -n istio-system -o yaml
-```
-
-Because the Istio Ingress Gateway is an Envoy Proxy you can inspect it using the admin routes.  First find the name of the istio-ingressgateway:
+## 5.1 Generate Load on Bookinfo
+Let's generate HTTP traffic against the BookInfo application, so we can see interesting telemetry. Grab the ingress gateway port number and store it in a variable:
 
 ```sh
-kubectl get pods -n istio-system
-```
-Copy and paste your ingress gateway's pod name. Execute:
-```sh
-kubectl -n istio-system exec -it <istio-ingressgateway-...> bash
+export INGRESS_PORT=$(kubectl get service istio-ingressgateway -n istio-system --template='{{(index .spec.ports 1).nodePort}}')
 ```
 
-You can view the statistics, listeners, routes, clusters and server info for the Envoy proxy by forwarding the local port:
+Once we have the port, we can append the IP of one of the nodes to get the host.
 
 ```sh
-curl localhost:15000/help
-curl localhost:15000/stats
-curl localhost:15000/listeners
-curl localhost:15000/clusters
-curl localhost:15000/server_info
+export INGRESS_HOST="<IP>:$INGRESS_PORT"
 ```
 
-See the [admin docs](https://www.envoyproxy.io/docs/envoy/latest/operations/admin) for more details.
+Now, let us generate a small load on the sample app by using [Meshery](https://layer5.io/meshery), which service mesh management plane.
 
-Also it can be helpful to look at the log files of the Istio ingress controller to see what request is being routed. We should also be able to view the `curl` calls we just made from inside the ingressgateway. 
+View the generated metrics.
 
-Before we check the logs, let us get out of the container back on the host:
+### Exposing services
+In this training, two methods may be used depending on your preference. One is to use a `NodePort` and the other is to use `kubectl proxy`. Istio add-on services are deployed by default as `ClusterIP` type services. We can expose the services outside the cluster by either changing the Kubernetes service type to `NodePort` or `LoadBalancer` or by port-forwarding or by configuring Kubernetes Ingress. 
+
+**Option 1: Expose services with NodePort**
+To expose them using NodePort service type, we can edit the services and change the service type from `ClusterIP` to `NodePort`
+
+**Option 2: Expose services with port-forwarding**
+Port-forwarding runs in the foreground. We have appeneded `&` to the end of the above 2 commands to run them in the background. If you donot want this behavior, please remove the `&` from the end.
+
+## Grafana
+You will need to expose the Grafana service on a port either of the two following methods: 
 ```sh
-exit
+kubectl -n istio-system edit svc grafana
 ```
+Once this is done the services will be assigned dedicated ports on the hosts. 
 
-Now let us find the ingress pod and output the log:
-
+To find the assigned ports for Grafana:
 ```sh
-kubectl logs istio-ingressgateway-... -n istio-system
+kubectl -n istio-system get svc grafana
 ```
 
-## 4.2 Configure Istio Ingress Gateway for Bookinfo
-
-### 4.2.1 - Configure the Bookinfo route with the Istio Ingress gateway:
-
-We can create a virtualservice & gateway for bookinfo app in the ingress gateway by running the following:
-
-```sh
-kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml
-```
-
-### 4.2.2 - View the Gateway and VirtualServices
-
-Check the created `Istio Gateway` and `Istio VirtualService` to see the changes deployed:
-```sh
-kubectl get gateway
-kubectl get gateway -o yaml
-
-kubectl get virtualservices
-kubectl get virtualservices -o yaml
-```
-
-### 4.2.3 - Find the external port of the Istio Ingress Gateway by running:
+**Expose Grafana service with port-forwarding:**
 
 ```sh
-kubectl get service istio-ingressgateway -n istio-system -o wide
+kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=grafana \
+  -o jsonpath='{.items[0].metadata.name}') 3000:3000 &
 ```
 
-To just get the first port of istio-ingressgateway service, we can run this:
-```sh
-kubectl get service istio-ingressgateway -n istio-system --template='{{(index .spec.ports 1).nodePort}}'
-```
+![](img/Grafana_Istio_Dashboard.png)
 
-The HTTP port is usually 31380.
 
-Or run these commands to retrieve the full URL:
+## Prometheus
+You will need to expose the Prometheus service on a port either of the two following methods: 
 
-```sh
-echo "http://$(kubectl get nodes -o template --template='{{range.items}}{{range.status.addresses}}{{if eq .type "InternalIP"}}{{.address}}{{end}}{{end}}{{end}}'):$(kubectl get svc istio-ingressgateway -n istio-system -o jsonpath='{.spec.ports[1].nodePort}')/productpage"
-```
-
-### 4.2.4 - Browse to Bookinfo
-Browse to the website of the Bookinfo. To view the product page, you will have to append
-`/productpage` to the url.
-
-### 4.2.5 - Reload Page
-Now, reload the page multiple times and notice how it round robins between v1, v2 and v3 of the reviews service.
-
-## 4.3 Inspect the Istio proxy of the productpage pod
-
-To better understand the istio proxy, let's inspect the details.  Let us `exec` into the productpage pod to find the proxy details.  To do so we need to first find the full pod name and then `exec` into the istio-proxy container:
+**Option 1: Expose services with NodePort**
 
 ```sh
-kubectl get pods
-kubectl exec -it productpage-v1-... -c istio-proxy  sh
+kubectl -n istio-system edit svc prometheus
 ```
 
-Once in the container look at some of the envoy proxy details by inspecting it's config file:
+To find the assigned ports for Prometheus:
+```sh
+kubectl -n istio-system get svc prometheus
+```
+
+**Option 2: Expose Prometheus service with port-forwarding:**
+**
+Expose Prometheus service with port-forwarding:
+```sh
+kubectl -n istio-system port-forward \
+  $(kubectl -n istio-system get pod -l app=prometheus -o jsonpath='{.items[0].metadata.name}') \
+  9090:9090 &
+```
+Browse to `/graph` and in the `Expression` input box enter: `istio_request_count`. Click the Execute button.
+
+![](img/Prometheus.png)
+
+## Kiali
+
+**Option 1: Expose services with NodePort**
 
 ```sh
-ps aux
-ls -l /etc/istio/proxy
-cat /etc/istio/proxy/envoy-rev0.json
+kubectl -n istio-system edit svc kiali
 ```
 
-For more details on envoy proxy please check out their [admin docs](https://www.envoyproxy.io/docs/envoy/v1.5.0/operations/admin) for more details.
+To find the assigned ports for Servicegraph:
+```sh
+kubectl -n istio-system get svc kiali
+```
 
-## [Continue to lab 5 - Telemetry](../lab-5/README.md)
+**Option 2: Expose Kiali service with port-forwarding:**
+
+```sh
+kubectl -n istio-system port-forward \
+  $(kubectl -n istio-system get pod -l app=kiali -o jsonpath='{.items[0].metadata.name}') \
+  20001:20001 &
+```
+Update the URI to `/kiali` and you will be presented with a login screen. Please use `admin` for both user name and password. After you login, you can navigate to the different sections using the menu on the left.
+
+Here are some sample snapshots:
+![](https://istio.io/docs/tasks/telemetry/kiali/kiali-overview.png)
+
+![](https://istio.io/docs/tasks/telemetry/kiali/kiali-graph.png)
+
+
+## [Continue to Lab 6 - Distributed Tracing](../lab-6/README.md)
+
+
+#### Appendix 5.A Docker for Desktop
+***Please note:*** In step 5.1, if you are using Docker Desktop, INGRESS_HOST should be set to `localhost`.
