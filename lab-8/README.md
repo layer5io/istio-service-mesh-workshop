@@ -5,40 +5,19 @@ In this lab we will learn how to test the resiliency of an application by inject
 Before we start let us reset the route rules:
 
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/virtual-service-all-v1.yaml 
+kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml 
 ```
 
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/virtual-service-reviews-test-v2.yaml > user-v2.yaml
-```
-
-Update the `USER_NAME` placeholder with your user name:
-```sh
-vi user-v2.yaml
-```
-
-Apply the change:
-```sh
-kubectl apply -f user-v2.yaml
+kubectl apply -f samples/bookinfo/networking/virtual-service-reviews-test-v2.yaml
 ```
 
 ## 8.1 Inject a route rule to create a fault using HTTP delay
 
-To start, we will inject a 7s delay between the reviews v2 and ratings service for your user. reviews v2 service has a 10s hard-coded connection timeout for its calls to the ratings service.
+To start, we will inject a 7s delay between the reviews v2 and ratings service for a user `jason`. reviews v2 service has a 10s hard-coded connection timeout for its calls to the ratings service configured globally.
 
-Let us first grab the yaml file and store it to disk:
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/virtual-service-ratings-test-delay.yaml > delay-test.yaml
-```
-
-Now please replace the `USER_NAME` placeholder with your user name:
-```sh
-vi delay-test.yaml
-```
-
-Lets apply the change to the cluster:
-```sh
-kubectl apply -f delay-test.yaml
+kubectl apply -f samples/bookinfo/networking/virtual-service-ratings-test-delay.yaml
 ```
 
 
@@ -73,7 +52,7 @@ spec:
     match:
     - headers:
         end-user:
-          exact: USER_NAME
+          exact: jason
     route:
     - destination:
         host: ratings
@@ -98,19 +77,9 @@ If you logout or login as a different user, the page should load normally withou
 
 In this section, , we will introduce an HTTP abort to the ratings microservices for your user.
 
-Let us first grab the yaml file:
-```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/virtual-service-ratings-test-abort.yaml > abort.yaml
-```
-
-Replace the `USER_NAME` placeholder with your user name:
-```sh
-vi abort.yaml
-```
-
 Now apply the change to the cluster:
 ```sh
-kubectl apply -f abort.yaml
+kubectl apply -f samples/bookinfo/networking/virtual-service-ratings-test-abort.yaml
 ```
 
 
@@ -144,7 +113,7 @@ spec:
     match:
     - headers:
         end-user:
-          exact: USER_NAME
+          exact: jason
     route:
     - destination:
         host: ratings
