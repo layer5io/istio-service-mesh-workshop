@@ -1,4 +1,4 @@
-# Lab 1 - Create a Kubernetes Cluster
+# Prereq - Create a Kubernetes Cluster
 
 Access to a Kubernetes cluster is required. You may use any Kubernetes platform of your choice. The "Introduction to Istio" training uses Docker Desktop the example Kubernetes platform. If you would like to use a different Kubernetes cluster (like your lab cluster or Minikube), you can skip lab-1 (this lab).
 
@@ -34,4 +34,4 @@ kube-system   weave-net-wq5t5                 2/2       Running   0          2m
 
 We can see all the pods are in `Running` state. If you have a running Kubernetes clsuter, please [continue to Lab 2 - Deploy Istio](../lab-2/README.md) 
 
-# [Continue to Lab 2 - Deploy Istio](../lab-2/README.md)
+# [Continue to Lab 1 - Deploy Istio](../lab-1/README.md)
