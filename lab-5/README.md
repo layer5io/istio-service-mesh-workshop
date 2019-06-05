@@ -4,7 +4,7 @@
 Let's generate HTTP traffic against the BookInfo application, so we can see interesting telemetry. Grab the ingress gateway port number and store it in a variable:
 
 ```sh
-export INGRESS_PORT=$(kubectl get service istio-ingressgateway -n istio-system --template='{{(index .spec.ports 0).nodePort}}')
+export INGRESS_PORT=$(kubectl get service istio-ingressgateway -n istio-system --template='{{(index .spec.ports 1).nodePort}}')
 ```
 
 Once we have the port, we can append the IP of one of the nodes to get the host.

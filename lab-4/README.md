@@ -86,6 +86,12 @@ kubectl get service istio-ingressgateway -n istio-system --template='{{(index .s
 
 The HTTP port is usually 31380.
 
+Or run these commands to retrieve the full URL:
+
+```sh
+echo "http://$(kubectl get nodes -o template --template='{{range.items}}{{range.status.addresses}}{{if eq .type "InternalIP"}}{{.address}}{{end}}{{end}}{{end}}'):$(kubectl get svc istio-ingressgateway -n istio-system -o jsonpath='{.spec.ports[1].nodePort}')/productpage"
+```
+
 ### 4.2.4 - Browse to Bookinfo
 Browse to the website of the Bookinfo. To view the product page, you will have to append
 `/productpage` to the url.
