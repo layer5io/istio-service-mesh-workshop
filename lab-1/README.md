@@ -69,11 +69,11 @@ kubectl get all -n istio-system
 ## <a name="5"></a> 5 - Confirming Add-ons
 	
 Istio, as part of this workshop, is installed with several optional addons like:
-	  1. [Prometheus](https://prometheus.io/)
-	  2. [Grafana](https://grafana.com/)
-	  3. [Zipkin](https://zipkin.io/)
-	  4. [Jaeger](https://www.jaegertracing.io/)
-	  5. [Kiali](https://www.kiali.io/)
+1. [Prometheus](https://prometheus.io/)
+2. [Grafana](https://grafana.com/)
+3. [Zipkin](https://zipkin.io/)
+4. [Jaeger](https://www.jaegertracing.io/)
+5. [Kiali](https://www.kiali.io/)
 	
 You will use Prometheus and Grafana for collecting and viewing metrics, while for viewing distributed traces, you can choose between [Zipkin](https://zipkin.io/) or [Jaeger](https://www.jaegertracing.io/). In this training, we will use Jaeger.
 	
