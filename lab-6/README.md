@@ -43,7 +43,7 @@ kubectl -n istio-system port-forward \
 
 If you have not set `INGRESS_HOST` environment variable, please do so by following [Lab 5](../lab-5/README.md).
 
-Now, let us generate a small load on the sample app by using [fortio](https://github.com/istio/fortio):
+Now, let us generate a small load on the sample app by using [Meshery](https://layer5.io/meshery):
 
 ```sh
 docker run istio/fortio load -t 5m -qps 5 http://$INGRESS_HOST/productpage
@@ -57,8 +57,6 @@ kubectl -n istio-system get svc tracing
 You can click on the link at the top of the page which maps to the right port and it will open Jaeger UI in a new tab. 
 
 ![](img/jaeger.png)
-
-![](img/jaeger_1.png)
 
 ![](img/jaeger_2.png)
 
