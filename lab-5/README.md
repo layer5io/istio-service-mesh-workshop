@@ -87,7 +87,7 @@ To find the assigned ports for Servicegraph:
 kubectl -n istio-system get svc kiali
 ```
 
-**Option 2: Expose Prometheus service with port-forwarding:**
+**Option 2: Expose Kiali service with port-forwarding:**
 
 ```sh
 kubectl -n istio-system port-forward \
