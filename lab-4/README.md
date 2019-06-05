@@ -26,29 +26,7 @@ To expose them using NodePort service type, we can edit the services and change 
 **Option 2: Expose services with port-forwarding**
 Port-forwarding runs in the foreground. We have appeneded `&` to the end of the above 2 commands to run them in the background. If you donot want this behavior, please remove the `&` from the end.
 
-## Grafana
-You will need to expose the Grafana service on a port either of the two following methods: 
-```sh
-kubectl -n istio-system edit svc grafana
-```
-Once this is done the services will be assigned dedicated ports on the hosts. 
-
-To find the assigned ports for Grafana:
-```sh
-kubectl -n istio-system get svc grafana
-```
-
-**Expose Grafana service with port-forwarding:**
-
-```sh
-kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=grafana \
-  -o jsonpath='{.items[0].metadata.name}') 3000:3000 &
-```
-
-![](img/Grafana_Istio_Dashboard.png)
-
-
-## Prometheus
+## 4.2 Prometheus
 You will need to expose the Prometheus service on a port either of the two following methods: 
 
 **Option 1: Expose services with NodePort**
@@ -74,7 +52,29 @@ Browse to `/graph` and in the `Expression` input box enter: `istio_request_count
 
 ![](img/Prometheus.png)
 
-## Kiali
+
+## 4.3 Grafana
+You will need to expose the Grafana service on a port either of the two following methods: 
+```sh
+kubectl -n istio-system edit svc grafana
+```
+Once this is done the services will be assigned dedicated ports on the hosts. 
+
+To find the assigned ports for Grafana:
+```sh
+kubectl -n istio-system get svc grafana
+```
+
+**Expose Grafana service with port-forwarding:**
+
+```sh
+kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=grafana \
+  -o jsonpath='{.items[0].metadata.name}') 3000:3000 &
+```
+
+![](img/Grafana_Istio_Dashboard.png)
+
+## 4.4 Kiali
 
 **Option 1: Expose services with NodePort**
 
@@ -101,8 +101,67 @@ Here are some sample snapshots:
 
 ![](https://istio.io/docs/tasks/telemetry/kiali/kiali-graph.png)
 
+# Lab 4.5 - Distributed Tracing
 
-## [Continue to Lab 5 - Distributed Tracing](../lab-5/README.md)
+The sample Bookinfo application is configured to collect trace spans using Zipkin or Jaeger. Although Istio proxies are able to automatically send spans, it needs help from the application to tie together the entire trace. To do this applications need to propagate the appropriate HTTP headers so that when the proxies send span information to Zipkin or Jaeger, the spans can be correlated correctly into a single trace.
+
+To do this the application collects and propagates the following headers from the incoming request to any outgoing requests:
+
+- `x-request-id`
+- `x-b3-traceid`
+- `x-b3-spanid`
+- `x-b3-parentspanid`
+- `x-b3-sampled`
+- `x-b3-flags`
+- `x-ot-span-context`
+
+### Exposing services
+
+Istio add-on services are deployed by default as `ClusterIP` type services. We can expose the services outside the cluster by either changing the Kubernetes service type to `NodePort` or `LoadBalancer` or by port-forwarding or by configuring Kubernetes Ingress. In this lab, we will briefly demonstrate the `NodePort` and port-forwarding ways of exposing services.
+
+#### Option 1: Expose services with NodePort
+To expose them using NodePort service type, we can edit the services and change the service type from `ClusterIP` to `NodePort`
+
+For Jaeger, either of `tracing` or `jaeger-query` can be exposed.
+```sh
+kubectl -n istio-system edit svc tracing
+```
+
+Once this is done the services will be assigned dedicated ports on the hosts. 
+
+To find the assigned ports for Jaeger:
+```sh
+kubectl -n istio-system get svc tracing
+```
+
+#### Option 2: Expose services with port-forwarding
+
+To port-forward Jaeger:
+```sh
+kubectl -n istio-system port-forward \
+  $(kubectl -n istio-system get pod -l app=jaeger -o jsonpath='{.items[0].metadata.name}') \
+  16686:16686 &
+```
+## 4.5.1 View Traces
+
+If you have not set `INGRESS_HOST` environment variable, please do so by following [Lab 5](../lab-5/README.md).
+
+Now, let us generate a small load on the sample app by using [Meshery].
+
+Let us find the port Jaeger is exposed on by running the following command:
+```sh
+kubectl -n istio-system get svc tracing
+```
+
+You can click on the link at the top of the page which maps to the right port and it will open Jaeger UI in a new tab. 
+
+![](img/jaeger.png)
+
+![](img/jaeger_2.png)
+
+
+
+## [Continue to Lab 5 - Request Routing and Canary Testing](../lab-5/README.md)
 
 
 #### Appendix 4.A Docker for Desktop
