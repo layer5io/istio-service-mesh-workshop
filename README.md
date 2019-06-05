@@ -16,17 +16,16 @@ Curriculum for [O'Reilly Live Online Training](https://www.oreilly.com/live-trai
 ## Segment 4
 ### Observability
 - [Lab 4 - Telemetry](lab-4/README.md)
-- [Lab 5 - Distributed Tracing](lab-5/README.md)
 
 ## Segment 5
 ### Traffic Control
-- [Lab 6 - Request Routing and Canary Testing](lab-6/README.md)
-- [Lab 7 - Fault Injection](lab-7/README.md)
-- [Lab 8 - Circuit Breaking](lab-8/README.md)
+- [Lab 5 - Request Routing and Canary Testing](lab-5/README.md)
+- [Lab 6 - Fault Injection](lab-6/README.md)
+- [Lab 7 - Circuit Breaking](lab-7/README.md)
 
 ## Segment 6
 ### Security
-- [Lab 9 - Mutual TLS & Identity Verification](lab-9/README.md)
+- [Lab 8 - Mutual TLS & Identity Verification](lab-8/README.md)
 
 # Authors
 * Lee Calcote [Twitter](https://twitter.com/lcalcote), [LinkedIn](https://linkedin.com/in/leecalcote), [Blog](https://gingergeek.com), [Talks](https://calcotestudios.com/talks)
