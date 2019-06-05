@@ -9,13 +9,13 @@ curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/ma
 
 Without twitter auth:
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/bookinfo.yaml | istioctl kube-inject --debug -f - > newBookInfo.yaml
+kubectl apply -f sample/bookinfo/platforms/kube/bookinfo.yaml | istioctl kube-inject --debug -f
 ```
 
 Observing the new yaml file reveals that additional container Istio Proxy has been added to the Pods with necessary configurations:
 
 ```
-        image: docker.io/istio/proxyv2:1.0.4
+        image: docker.io/istio/proxyv2:1.1.7
         imagePullPolicy: IfNotPresent
         name: istio-proxy
 ```
@@ -27,10 +27,6 @@ kubectl apply -f newBookInfo.yaml
 
 To do both in a single command:
 
-With twitter auth:
-```sh
-kubectl apply -f <(curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/bookinfo-twitter-auth.yaml | istioctl kube-inject --debug -f -)
-```
 
 Without twitter auth:
 ```sh

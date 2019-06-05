@@ -41,7 +41,7 @@ You are likely running Kubernetes version 1.9 or earlier, which might NOT have s
 ## <a name="2"></a> 3 - Setting up istioctl
 On a *nix system, you can setup istioctl by doing the following: 
 
-The above command will get the Istio 1.0.4 package and untar it in the same folder.
+The above command will get the Istio 1.1.7 package and untar it in the same folder.
 
 In the Docker Desktop environment you are most probably working as user `root` and now have the `istio-1.1.7` folder under `/root`. With this pressumption, run the following command to set the `PATH` appropriately. If not, please update the command below with the correct location of the `istio-1.1.7` folder.
 

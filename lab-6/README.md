@@ -24,7 +24,6 @@ For Jaeger, either of `tracing` or `jaeger-query` can be exposed.
 kubectl -n istio-system edit svc tracing
 ```
 
-
 Once this is done the services will be assigned dedicated ports on the hosts. 
 
 To find the assigned ports for Jaeger:
