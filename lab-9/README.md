@@ -8,8 +8,8 @@ Before we can configure circuit breaking, please try to access the `product page
 ![](img/meshery_initial_load_test.png)
 
 
-### 9.1.3 Initial test calls from client to server
-Now that we have the needed service in place, it is time to configure circuit breaking using a destination rule:
+## 9.2 Configure circuit breaking
+Now that we have the needed services in place, it is time to configure circuit breaking using a destination rule:
 
 ```sh
 kubectl apply -f - <<EOF
@@ -83,27 +83,14 @@ spec:
 ```
 
 
-## 9.2 Time to trip the circuit
-In the circuit-breaking settings, we specified maxRequestsPerConnection: 1 and http1MaxPendingRequests: 1. This should mean that if we exceed more than one request per connection and more than one pending request, we should see the istio-proxy sidecar open the circuit for further requests/connections. 
+## 9.3 Time to trip the circuit
+In the circuit-breaker settings, we specified maxRequestsPerConnection: 1 and http1MaxPendingRequests: 1. This should mean that if we exceed more than one request per connection and more than one pending request, we should see the istio-proxy sidecar open the circuit for further requests/connections. 
 
-Let us make several calls using 5 concurrent connections from within `Meshery`
+Let us now use `Meshery` to make several calls to the `productpage` app using 5 concurrent connections from within `Meshery`.
 
 ![](img/meshery_cb_load_test.png)
 
-As seen only a percentage of the requests succeeded and the rest were trapped by circuit breaking.
-
-To verify the results of the test we can also talk to the istio-proxy sidecar for some stats:
-```sh
-kubectl exec -it $(kubectl get pod | grep fortio | awk '{ print $1 }')  -c istio-proxy  -- sh -c 'curl localhost:15000/stats' | grep httpbin | grep pending
-```
-Output will be similar to this:
-```sh
-cluster.outbound|8000||httpbin.default.svc.cluster.local.upstream_rq_pending_active: 0
-cluster.outbound|8000||httpbin.default.svc.cluster.local.upstream_rq_pending_failure_eject: 0
-cluster.outbound|8000||httpbin.default.svc.cluster.local.upstream_rq_pending_overflow: 37
-cluster.outbound|8000||httpbin.default.svc.cluster.local.upstream_rq_pending_total: 13
-```
-You can see the numbers we got from sidecar and fortio match. `upstream_rq_pending_overflow` specifies the number of calls flagged for circuit breaking.
+As seen only a percentage of the requests succeeded and the rest were trapped by circuit breaker.
 
 ## [Continue to Lab 10 - Mutual TLS & Identity Verification](../lab-10/README.md)
 
