@@ -73,10 +73,10 @@ Istio, as part of this workshop, is installed with several optional addons like:
 	  2. [Grafana](https://grafana.com/)
 	  3. [Zipkin](https://zipkin.io/)
 	  4. [Jaeger](https://www.jaegertracing.io/)
-	  5. [Service Graph](https://istio.io/docs/tasks/telemetry/servicegraph/)
+	  5. [Kiali](https://www.kiali.io/)
 	
 You will use Prometheus and Grafana for collecting and viewing metrics, while for viewing distributed traces, you can choose between [Zipkin](https://zipkin.io/) or [Jaeger](https://www.jaegertracing.io/). In this training, we will use Jaeger.
 	
-Service graph is another add-on which can be used to generate a graph of services within an Istio mesh and is deployed as part of Istio in this lab.
+Kiali is another add-on which can be used to generate a graph of services within an Istio mesh and is deployed as part of Istio in this lab.
   
 ## [Continue to Lab 3 - Deploy Sample Bookinfo app](../lab-3/README.md)
