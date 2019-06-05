@@ -1,4 +1,4 @@
-# Lab 6 - Distributed Tracing
+# Lab 5 - Distributed Tracing
 
 The sample Bookinfo application is configured to collect trace spans using Zipkin or Jaeger. Although Istio proxies are able to automatically send spans, it needs help from the application to tie together the entire trace. To do this applications need to propagate the appropriate HTTP headers so that when the proxies send span information to Zipkin or Jaeger, the spans can be correlated correctly into a single trace.
 
@@ -58,4 +58,4 @@ You can click on the link at the top of the page which maps to the right port an
 
 
 
-## [Continue to Lab 7 - Request Routing and Canary Testing](../lab-7/README.md)
+## [Continue to Lab 6 - Request Routing and Canary Testing](../lab-6/README.md)

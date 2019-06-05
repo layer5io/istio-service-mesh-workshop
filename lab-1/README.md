@@ -1,4 +1,4 @@
-# Lab 2 - Download and deploy Istio resources
+# Lab 1 - Download and deploy Istio resources
 
 Now that we have a Kubernetes cluster, we are ready to download and deploy Istio resources.
 
@@ -79,4 +79,4 @@ You will use Prometheus and Grafana for collecting and viewing metrics, while fo
 	
 Kiali is another add-on which can be used to generate a graph of services within an Istio mesh and is deployed as part of Istio in this lab.
   
-## [Continue to Lab 3 - Deploy Sample Bookinfo app](../lab-3/README.md)
+## [Continue to Lab 2 - Deploy Sample Bookinfo app](../lab-2/README.md)

@@ -1,6 +1,6 @@
-# Lab 5 - Telemetry
+# Lab 4 - Telemetry
 
-## 5.1 Generate Load on Bookinfo
+## 4.1 Generate Load on Bookinfo
 Let's generate HTTP traffic against the BookInfo application, so we can see interesting telemetry. Grab the ingress gateway port number and store it in a variable:
 
 ```sh
@@ -102,8 +102,8 @@ Here are some sample snapshots:
 ![](https://istio.io/docs/tasks/telemetry/kiali/kiali-graph.png)
 
 
-## [Continue to Lab 6 - Distributed Tracing](../lab-6/README.md)
+## [Continue to Lab 5 - Distributed Tracing](../lab-5/README.md)
 
 
-#### Appendix 5.A Docker for Desktop
+#### Appendix 4.A Docker for Desktop
 ***Please note:*** In step 5.1, if you are using Docker Desktop, INGRESS_HOST should be set to `localhost`.

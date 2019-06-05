@@ -1,14 +1,14 @@
-# Lab 9 - Circuit Breaking
+# Lab 8 - Circuit Breaking
 
 In this lab we will configure circuit breaking using Istio. Circuit breaking allows developers to write applications that limit the impact of failures, latency spikes, and other undesirable effects of network peculiarities. This task will show how to configure circuit breaking for connections, requests, and outlier detection.
 
-## 9.1 Preparing for circuit breaking
+## 8.1 Preparing for circuit breaking
 Before we can configure circuit breaking, please try to access the `product page` app from within `Meshery` to ensure all the calls are making it through **without** errors.
 
 ![](img/meshery_initial_load_test.png)
 
 
-## 9.2 Configure circuit breaking
+## 8.2 Configure circuit breaking
 Now that we have the needed services in place, it is time to configure circuit breaking using a destination rule:
 
 ```sh
@@ -83,7 +83,7 @@ spec:
 ```
 
 
-## 9.3 Time to trip the circuit
+## 8.3 Time to trip the circuit
 In the circuit-breaker settings, we specified maxRequestsPerConnection: 1 and http1MaxPendingRequests: 1. This should mean that if we exceed more than one request per connection and more than one pending request, we should see the istio-proxy sidecar open the circuit for further requests/connections. 
 
 Let us now use `Meshery` to make several calls to the `productpage` app using 5 concurrent connections from within `Meshery`.
@@ -92,9 +92,4 @@ Let us now use `Meshery` to make several calls to the `productpage` app using 5 
 
 As seen only a percentage of the requests succeeded and the rest were trapped by circuit breaker.
 
-## [Continue to Lab 10 - Mutual TLS & Identity Verification](../lab-10/README.md)
-
----
-
-# Layer5.io
-For future updates and additional resources, check out [layer5.io](https://layer5.io).
+## [Continue to Lab 9 - Mutual TLS & Identity Verification](../lab-9/README.md)
