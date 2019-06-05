@@ -38,7 +38,7 @@ error: unable to recognize "istio.yaml": no matches for admissionregistration.k8
 
 You are likely running Kubernetes version 1.9 or earlier, which might NOT have support for mutating admission webhooks or might not have it enabled and is the reason for the error. You can continue with the lab without any issues.
 
-## <a name="2"></a> 3 - Setting up istioctl
+## <a name="2"></a> 2 - Setting up istioctl
 On a *nix system, you can setup istioctl by doing the following: 
 
 The above command will get the Istio 1.1.7 package and untar it in the same folder.
@@ -53,20 +53,20 @@ To verify `istioctl` is setup lets try to print out the command help
 ```sh
 istioctl version
 ```
-## <a name="3"></a> 2 - Install Istio
+## <a name="3"></a> 3 - Install Istio
 
 ```sh
 kubectl apply -f install/kubernetes/istio-demo.yaml
 ```
 
-## <a name="4"></a> 2 - Verify install
+## <a name="4"></a> 4 - Verify install
 
 Istio is deployed in a separate Kubernetes namespace `istio-system`. To check if Istio is deployed, and also, to see all the pieces that are deployed, execute the following:
 
 ```sh
 kubectl get all -n istio-system
 ```
-## <a name="5"></a> Confirming Add-ons
+## <a name="5"></a> 5 - Confirming Add-ons
 	
 Istio, as part of this workshop, is installed with several optional addons like:
 	  1. [Prometheus](https://prometheus.io/)
