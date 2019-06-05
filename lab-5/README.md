@@ -74,31 +74,31 @@ Browse to `/graph` and in the `Expression` input box enter: `istio_request_count
 
 ![](img/Prometheus.png)
 
-## Service Graph
+## Kiali
 
 **Option 1: Expose services with NodePort**
 
 ```sh
-kubectl -n istio-system edit svc servicegraph
+kubectl -n istio-system edit svc kiali
 ```
 
 To find the assigned ports for Servicegraph:
 ```sh
-kubectl -n istio-system get svc servicegraph
+kubectl -n istio-system get svc kiali
 ```
 
 **Option 2: Expose Prometheus service with port-forwarding:**
 
 ```sh
 kubectl -n istio-system port-forward \
-  $(kubectl -n istio-system get pod -l app=servicegraph -o jsonpath='{.items[0].metadata.name}') \
-  8088:8088 &
+  $(kubectl -n istio-system get pod -l app=kiali -o jsonpath='{.items[0].metadata.name}') \
+  20001:20001 &
 ```
-![](img/servicegraph.png)
+Update the URI to `/kiali` and you will be presented with a login screen. Please use `admin` for both user name and password. After you login, you can navigate to the `Graph` section and view the different graphs kiali can generate.
 
-Update the URI to `/dotviz` and you will see the generated service graph. For a more interactive graph, navigate to `force/forcegraph.html`.
+![](https://istio.io/docs/tasks/telemetry/kiali/kiali-overview.png)
 
-![](https://istio.io/docs/tasks/telemetry/img/servicegraph-example.png)
+![](https://istio.io/docs/tasks/telemetry/kiali/kiali-graph.png)
 
 
 ## [Continue to Lab 6 - Distributed Tracing](../lab-6/README.md)
