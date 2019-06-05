@@ -5,7 +5,7 @@ In this lab we will configure circuit breaking using Istio. Circuit breaking all
 ## 9.1 Preparing for circuit breaking
 Before we can configure circuit breaking, please try to access the `product page` app from within `Meshery` to ensure all the calls are making it through **without** errors.
 
-[](!img/meshery_initial_load_test.png)
+![](img/meshery_initial_load_test.png)
 
 
 ### 9.1.3 Initial test calls from client to server
