@@ -101,7 +101,7 @@ Here are some sample snapshots:
 
 ![](https://istio.io/docs/tasks/telemetry/kiali/kiali-graph.png)
 
-# Lab 4.5 - Distributed Tracing
+## 4.5 - Distributed Tracing
 
 The sample Bookinfo application is configured to collect trace spans using Zipkin or Jaeger. Although Istio proxies are able to automatically send spans, it needs help from the application to tie together the entire trace. To do this applications need to propagate the appropriate HTTP headers so that when the proxies send span information to Zipkin or Jaeger, the spans can be correlated correctly into a single trace.
 
@@ -142,7 +142,7 @@ kubectl -n istio-system port-forward \
   $(kubectl -n istio-system get pod -l app=jaeger -o jsonpath='{.items[0].metadata.name}') \
   16686:16686 &
 ```
-## 4.5.1 View Traces
+### 4.5.1 View Traces
 
 If you have not set `INGRESS_HOST` environment variable, please do so by following [Lab 5](../lab-5/README.md).
 
