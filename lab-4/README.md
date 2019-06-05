@@ -52,14 +52,8 @@ kubectl logs istio-ingressgateway-... -n istio-system
 
 We can create a virtualservice & gateway for bookinfo app in the ingress gateway by running the following:
 
-With twitter auth:
 ```sh
-kubectl apply -f  https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/bookinfo-gateway-twitter-auth.yaml
-```
-
-Without twitter auth:
-```sh
-kubectl apply -f  https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/bookinfo-gateway.yaml
+kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml
 ```
 
 ### 4.2.2 - View the Gateway and VirtualServices
