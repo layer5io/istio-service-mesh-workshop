@@ -94,8 +94,9 @@ kubectl -n istio-system port-forward \
   $(kubectl -n istio-system get pod -l app=kiali -o jsonpath='{.items[0].metadata.name}') \
   20001:20001 &
 ```
-Update the URI to `/kiali` and you will be presented with a login screen. Please use `admin` for both user name and password. After you login, you can navigate to the `Graph` section and view the different graphs kiali can generate.
+Update the URI to `/kiali` and you will be presented with a login screen. Please use `admin` for both user name and password. After you login, you can navigate to the different sections using the menu on the left.
 
+Here are some sample snapshots:
 ![](https://istio.io/docs/tasks/telemetry/kiali/kiali-overview.png)
 
 ![](https://istio.io/docs/tasks/telemetry/kiali/kiali-graph.png)
