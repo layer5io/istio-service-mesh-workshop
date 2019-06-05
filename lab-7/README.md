@@ -81,7 +81,7 @@ spec:
   - match:
     - headers:
         end-user:
-          exact: USER_NAME
+          exact: jason
     route:
     - destination:
         host: reviews
