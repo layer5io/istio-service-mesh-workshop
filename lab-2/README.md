@@ -4,13 +4,13 @@ Now that we have a Kubernetes cluster, we are ready to download and deploy Istio
 
 ## Steps
 
-* [1. Downloading Istio resources](#1)
-* [2. Setup istioctl](#2)
+* [1. Download Istio resources](#1)
+* [2. Setup `istioctl`](#2)
 * [3. Install Istio](#3)
 * [4. Verify install](#4)
-* [5. Confirming Add-ons](#5)
+* [5. Confirm Add-ons](#5)
 
-## <a name="1"></a> 1 - Installing Istio
+## <a name="1"></a> 1 - Download Istio
 You will download and deploy Istio 1.1.7 resources on your Kubernetes cluster. 
 
 ***Note to Docker Desktop users:*** please ensure your Docker VM has atleast 4GiB of Memory, which is required for all services to run.
