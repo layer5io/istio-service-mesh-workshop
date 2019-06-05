@@ -1,10 +1,10 @@
-# Lab 4 - Expose Bookinfo site through Istio Ingress Gateway
+# Lab 3 - Expose Bookinfo site through Istio Ingress Gateway
 
 The components deployed on the service mesh by default are not exposed outside the cluster. External access to individual services so far has been provided by creating an external load balancer on each service.
 
 An ingress gateway service is deployed as a LoadBalancer service. For making Bookinfo accessible from outside, we have to create an `Istio Gateway` for the service and also define an `Istio VirtualService` for Bookinfo with the routes we need.
 
-## 4.1 Inspecting the Istio Ingress gateway
+## 3.1 Inspecting the Istio Ingress gateway
 
 The ingress gateway gets expossed as a normal kubernetes service load balancer:
 ```sh
@@ -46,9 +46,9 @@ Now let us find the ingress pod and output the log:
 kubectl logs istio-ingressgateway-... -n istio-system
 ```
 
-## 4.2 Configure Istio Ingress Gateway for Bookinfo
+## 3.2 Configure Istio Ingress Gateway for Bookinfo
 
-### 4.2.1 - Configure the Bookinfo route with the Istio Ingress gateway:
+### 3.2.1 - Configure the Bookinfo route with the Istio Ingress gateway:
 
 We can create a virtualservice & gateway for bookinfo app in the ingress gateway by running the following:
 
@@ -56,7 +56,7 @@ We can create a virtualservice & gateway for bookinfo app in the ingress gateway
 kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml
 ```
 
-### 4.2.2 - View the Gateway and VirtualServices
+### 3.2.2 - View the Gateway and VirtualServices
 
 Check the created `Istio Gateway` and `Istio VirtualService` to see the changes deployed:
 ```sh
@@ -67,7 +67,7 @@ kubectl get virtualservices
 kubectl get virtualservices -o yaml
 ```
 
-### 4.2.3 - Find the external port of the Istio Ingress Gateway by running:
+### 3.2.3 - Find the external port of the Istio Ingress Gateway by running:
 
 ```sh
 kubectl get service istio-ingressgateway -n istio-system -o wide
@@ -86,14 +86,14 @@ Or run these commands to retrieve the full URL:
 echo "http://$(kubectl get nodes -o template --template='{{range.items}}{{range.status.addresses}}{{if eq .type "InternalIP"}}{{.address}}{{end}}{{end}}{{end}}'):$(kubectl get svc istio-ingressgateway -n istio-system -o jsonpath='{.spec.ports[1].nodePort}')/productpage"
 ```
 
-### 4.2.4 - Browse to Bookinfo
+### 3.2.4 - Browse to Bookinfo
 Browse to the website of the Bookinfo. To view the product page, you will have to append
 `/productpage` to the url.
 
-### 4.2.5 - Reload Page
+### 3.2.5 - Reload Page
 Now, reload the page multiple times and notice how it round robins between v1, v2 and v3 of the reviews service.
 
-## 4.3 Inspect the Istio proxy of the productpage pod
+## 3.3 Inspect the Istio proxy of the productpage pod
 
 To better understand the istio proxy, let's inspect the details.  Let us `exec` into the productpage pod to find the proxy details.  To do so we need to first find the full pod name and then `exec` into the istio-proxy container:
 
@@ -112,4 +112,4 @@ cat /etc/istio/proxy/envoy-rev0.json
 
 For more details on envoy proxy please check out their [admin docs](https://www.envoyproxy.io/docs/envoy/v1.5.0/operations/admin) for more details.
 
-## [Continue to lab 5 - Telemetry](../lab-5/README.md)
+## [Continue to lab 4 - Telemetry](../lab-4/README.md)

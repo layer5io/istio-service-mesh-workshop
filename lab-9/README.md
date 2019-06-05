@@ -1,8 +1,8 @@
-# Lab 10 - Mutual TLS & Identity Verification
+# Lab 9 - Mutual TLS & Identity Verification
 
 Istio provides transparent mutal TLS to services inside the service mesh where both the client and the server authenticate each others certificates as part of the TLS handshake. As part of this workshop we have deployed Istio with mTLS.
 
-## 10.1 Verify mTLS
+## 9.1 Verify mTLS
 Citadel is Istio’s key management service. Let us first ensure citadel is up and running:
 ```sh
 kubectl get deploy -l istio=citadel -n istio-system
@@ -101,7 +101,7 @@ exit
 ```
 
 
-## 10.2 [Secure Production Identity Framework for Everyone (SPIFFE)](https://spiffe.io/)
+## 9.2 [Secure Production Identity Framework for Everyone (SPIFFE)](https://spiffe.io/)
 
 Istio uses [SPIFFE](https://spiffe.io/) to assert the identify of workloads on the cluster. SPIFFE consists of a notion of identity and a method of proving it. A SPIFFE identity consists of an authority part and a path. The meaning of the path in spiffe land is implementation defined. In k8s it takes the form `/ns/$namespace/sa/$service-account` with the expected meaning. A SPIFFE identify is embedded in a document. This document in principle can take many forms but currently the only defined format is x509.
 
@@ -149,5 +149,5 @@ This wraps up this lab and the training. Thank you for attending our workshop!
 
 ---
 
-# Layer5.io
+# Additional Resources
 For future updates and additional resources, check out [layer5.io](https://layer5.io).

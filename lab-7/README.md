@@ -1,4 +1,4 @@
-# Lab 8 - Fault Injection and Rate-Limiting
+# Lab 7 - Fault Injection and Rate-Limiting
 
 In this lab we will learn how to test the resiliency of an application by injecting systematic faults.
 
@@ -12,7 +12,7 @@ kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml
 kubectl apply -f samples/bookinfo/networking/virtual-service-reviews-test-v2.yaml
 ```
 
-## 8.1 Inject a route rule to create a fault using HTTP delay
+## 7.1 Inject a route rule to create a fault using HTTP delay
 
 To start, we will inject a 7s delay between the reviews v2 and ratings service for a user `jason`. reviews v2 service has a 10s hard-coded connection timeout for its calls to the ratings service configured globally.
 
@@ -73,7 +73,7 @@ Sorry, product reviews are currently unavailable for this book.
 
 If you logout or login as a different user, the page should load normally without any errors.
 
-## 8.2 Inject a route rule to create a fault using HTTP abort
+## 7.2 Inject a route rule to create a fault using HTTP abort
 
 In this section, , we will introduce an HTTP abort to the ratings microservices for your user.
 
@@ -128,8 +128,8 @@ Now we login to `/productpage` as your user and observe that the page loads with
 
  `Ratings service is currently unavailable`.
 
-### 8.3 Verify fault injection
+### 7.3 Verify fault injection
 Verify the fault injection rule by logging out (or logging in as a different user), the page should load normally without any errors.
 
 
-## [Continue to Lab 9 - Circuit Breaking](../lab-9/README.md)
+## [Continue to Lab 8 - Circuit Breaking](../lab-8/README.md)

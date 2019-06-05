@@ -1,8 +1,8 @@
-# Lab 7 - Request Routing and Canary Testing
+# Lab 6 - Request Routing and Canary Testing
 
 In this lab we are going to get our hands on some of the traffic management capabilities of Istio.
 
-## 7.1 Apply default destination rules
+## 6.1 Apply default destination rules
 
 Before we start playing with Istio's traffic management capabilities we need to define the available versions of the deployed services. They are called subsets, in destination rules.
 
@@ -20,7 +20,7 @@ kubectl get destinationrules
 kubectl get destinationrules -o yaml
 ```
 
-## 7.2 Configure the default route for all services to V1
+## 6.2 Configure the default route for all services to V1
 
 As part of the bookinfo sample app, there are multiple versions of reviews service. When we load the `/productpage` in the browser multiple times we have seen the reviews service round robin between v1, v2 or v3. As the first exercise, let us first restrict traffic to just V1 of all the services.
 
@@ -66,7 +66,7 @@ spec:
 Now when we reload the `/productpage` several times, we will ONLY be viewing the data from v1 of all the services, which means we will not see any ratings (any stars).
 
 
-## 7.3 Content based routing
+## 6.3 Content-based routing
 
 Let's replace our first rules with a new set. Enable the `ratings` service for a user `jason` by routing `productpage` traffic to `reviews` v2:
 
@@ -114,9 +114,9 @@ spec:
 Now if we login as your user, you will be able to see data from reviews v2. While if you NOT logged in or logged in as a different user, you will see data from `reviews` v1.
 
 
-## 7.4 Canary Testing - Traffic Shifting
+## 6.4 Canary Testing - Traffic Shifting
 
-### 7.4.1 Reset rules
+### 6.4.1 Reset rules
 Before we start the next exercise, lets first reset the routing rules back to our 7.1 rules:
 
 ```sh
@@ -125,7 +125,7 @@ kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml
 
 Once again, all traffic will be routed to `v1` of all the services. 
 
-### 7.4.2 Canary testing w/50% load
+### 6.4.2 Canary testing w/50% load
 To start canary testing, let's begin by transferring 50% of the traffic from reviews:v1 to reviews:v3 with the following command:
 
 ```sh
@@ -168,7 +168,7 @@ spec:
 Now, if we reload the `/productpage` in your browser several times, you should now see red-colored star ratings approximately 50% of the time.
 
 
-### 7.4.3 Shift 100% to v3
+### 6.4.3 Shift 100% to v3
 When version v3 of the reviews microservice is considered stable, we can route 100% of the traffic to reviews:v3:
 
 ```sh
@@ -205,4 +205,4 @@ spec:
 
 Now, if we reload the `/productpage` in your browser several times, you should now see red-colored star ratings 100% of the time.
 
-## [Continue to lab 8 - Fault Injection and Rate Limiting](../lab-8/README.md)
+## [Continue to lab 7 - Fault Injection and Rate Limiting](../lab-7/README.md)

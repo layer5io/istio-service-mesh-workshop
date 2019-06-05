@@ -1,4 +1,4 @@
-# Lab 3 - Deploy example application
+# Lab 2 - Deploy example application
 To play with Istio and demonstrate some of it's capabilities, you will deploy the example BookInfo application, which is included the Istio package.
 
 ## What is the BookInfo Application?
@@ -91,4 +91,4 @@ kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml
     ```
 
 
-## [Continue to Lab 4 - Expose BookInfo via Istio Ingress Gateway](../lab-4/README.md)
+## [Continue to Lab 3 - Expose BookInfo via Istio Ingress Gateway](../lab-3/README.md)
