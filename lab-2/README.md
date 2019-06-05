@@ -8,7 +8,7 @@ Now that we have a Kubernetes cluster, we are ready to download and deploy Istio
 * [2. Setup istioctl](#2)
 * [3. Install Istio](#3)
 * [4. Verify install](#4)
-* [5. Configuring Add-ons](#5)
+* [5. Confirming Add-ons](#5)
 
 ## <a name="1"></a> 1 - Installing Istio
 You will download and deploy Istio 1.1.7 resources on your Kubernetes cluster. 
@@ -66,5 +66,17 @@ Istio is deployed in a separate Kubernetes namespace `istio-system`. To check if
 ```sh
 kubectl get all -n istio-system
 ```
-
+## <a name="5"></a> Confirming Add-ons
+	
+	`Istio`, as part of this workshop, is installed with several optional addons like:
+	  1. [Prometheus](https://prometheus.io/)
+	  2. [Grafana](https://grafana.com/)
+	  3. [Zipkin](https://zipkin.io/)
+	  4. [Jaeger](https://www.jaegertracing.io/)
+	  5. [Service Graph](https://istio.io/docs/tasks/telemetry/servicegraph/)
+	
+	You will use Prometheus and Grafana for collecting and viewing metrics, while for viewing distributed traces, you can choose between [Zipkin](https://zipkin.io/) or [Jaeger](https://www.jaegertracing.io/). In this training, we will use Jaeger.
+	
+	Service graph is another add-on which can be used to generate a graph of services within an Istio mesh and is deployed as part of Istio in this lab.
+  
 ## [Continue to Lab 3 - Deploy Sample Bookinfo app](../lab-3/README.md)
