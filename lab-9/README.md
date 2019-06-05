@@ -3,6 +3,9 @@
 In this lab we will configure circuit breaking using Istio. Circuit breaking allows developers to write applications that limit the impact of failures, latency spikes, and other undesirable effects of network peculiarities. This task will show how to configure circuit breaking for connections, requests, and outlier detection.
 
 ## 9.1 Preparing for circuit breaking
+Before we can configure circuit breaking, please try to access the `product page` app from within `Meshery` to ensure all the calls are making it through **without** errors.
+
+[](!img/meshery_initial_load_test.png)
 
 
 ### 9.1.3 Initial test calls from client to server
@@ -83,16 +86,10 @@ spec:
 ## 9.2 Time to trip the circuit
 In the circuit-breaking settings, we specified maxRequestsPerConnection: 1 and http1MaxPendingRequests: 1. This should mean that if we exceed more than one request per connection and more than one pending request, we should see the istio-proxy sidecar open the circuit for further requests/connections. 
 
-Let us make 50 calls using 4 concurrent connections:
-```sh
-load -c 4 -qps 0 -n 50 -loglevel Warning http://httpbin:8000/get
-```
+Let us make several calls using 5 concurrent connections from within `Meshery`
 
 In the output you will see a section similar to this one:
-```sh
-Code 200 : 13 (26.0 %)
-Code 503 : 37 (74.0 %)
-```
+
 As seen only a percentage of the requests succeeded and the rest were trapped by circuit breaking.
 
 To verify the results of the test we can also talk to the istio-proxy sidecar for some stats:
