@@ -56,7 +56,7 @@ istioctl version
 ## <a name="3"></a> 3 - Install Istio
 
 ```sh
-kubectl apply -f install/kubernetes/istio-demo.yaml
+kubectl apply -f install/kubernetes/istio-demo-auth.yaml
 ```
 
 ## <a name="4"></a> 4 - Verify install
