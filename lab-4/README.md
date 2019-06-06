@@ -7,7 +7,7 @@ Let's generate HTTP traffic against the BookInfo application, so we can see inte
 export INGRESS_PORT=$(kubectl get service istio-ingressgateway -n istio-system --template='{{(index .spec.ports 1).nodePort}}')
 ```
 
-Once we have the port, we can append the IP of one of the nodes to get the host.
+Once we have the port, we can append the IP of one of the nodes to get the host. If you are using Docker Desktop, INGRESS_HOST should be set to `localhost`.
 
 ```sh
 export INGRESS_HOST="<IP>:$INGRESS_PORT"
@@ -157,9 +157,4 @@ You can click on the link at the top of the page which maps to the right port an
 ![](img/jaeger_2.png)
 
 
-
 ## [Continue to Lab 5 - Request Routing and Canary Testing](../lab-5/README.md)
-
-
-#### Appendix 4.A Docker for Desktop
-***Please note:*** In step 5.1, if you are using Docker Desktop, INGRESS_HOST should be set to `localhost`.
