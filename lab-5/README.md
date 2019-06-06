@@ -117,7 +117,7 @@ Now if we login as your user, you will be able to see data from reviews v2. Whil
 ## 5.4 Canary Testing - Traffic Shifting
 
 ### 5.4.1 Reset rules
-Before we start the next exercise, lets first reset the routing rules back to our 7.1 rules:
+Before we start the next exercise, lets first reset the routing rules back to our 5.1 rules:
 
 ```sh
 kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml 
