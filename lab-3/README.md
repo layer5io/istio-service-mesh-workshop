@@ -86,14 +86,32 @@ Or run these commands to retrieve the full URL:
 echo "http://$(kubectl get nodes -o template --template='{{range.items}}{{range.status.addresses}}{{if eq .type "InternalIP"}}{{.address}}{{end}}{{end}}{{end}}'):$(kubectl get svc istio-ingressgateway -n istio-system -o jsonpath='{.spec.ports[1].nodePort}')/productpage"
 ```
 
-### 3.2.4 - Browse to Bookinfo
+## 3.3 Apply default destination rules
+
+Before we start playing with Istio's traffic management capabilities we need to define the available versions of the deployed services. They are called subsets, in destination rules.
+
+Run the following command to create default destination rules for the Bookinfo services:
+```sh
+kubectl apply -f samples/bookinfo/networking/destination-rule-all-mtls.yaml
+```
+
+In a few seconds we should be able to verify the destination rules created by using the command below:
+
+```sh
+kubectl get destinationrules
+
+
+kubectl get destinationrules -o yaml
+```
+
+## 3.4 - Browse to Bookinfo
 Browse to the website of the Bookinfo. To view the product page, you will have to append
 `/productpage` to the url.
 
-### 3.2.5 - Reload Page
+### 3.4.1 - Reload Page
 Now, reload the page multiple times and notice how it round robins between v1, v2 and v3 of the reviews service.
 
-## 3.3 Inspect the Istio proxy of the productpage pod
+## 3.5 Inspect the Istio proxy of the productpage pod
 
 To better understand the istio proxy, let's inspect the details.  Let us `exec` into the productpage pod to find the proxy details.  To do so we need to first find the full pod name and then `exec` into the istio-proxy container:
 
@@ -111,5 +129,7 @@ cat /etc/istio/proxy/envoy-rev0.json
 ```
 
 For more details on envoy proxy please check out their [admin docs](https://www.envoyproxy.io/docs/envoy/v1.5.0/operations/admin) for more details.
+
+
 
 ## [Continue to lab 4 - Telemetry](../lab-4/README.md)
