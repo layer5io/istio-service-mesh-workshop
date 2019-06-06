@@ -96,9 +96,6 @@ kubectl -n istio-system port-forward \
 ```
 Update the URI to `/kiali` and you will be presented with a login screen. Please use `admin` for both user name and password. After you login, you can navigate to the different sections using the menu on the left.
 
-Here are some sample snapshots:
-![](https://istio.io/docs/tasks/telemetry/kiali/kiali-overview.png)
-
 ![](https://istio.io/docs/tasks/telemetry/kiali/kiali-graph.png)
 
 ## 4.5 - Distributed Tracing
