@@ -1,4 +1,4 @@
-# Lab 6 - Fault Injection and Rate-Limiting
+# Lab 6 - Fault Injection
 
 In this lab we will learn how to test the resiliency of an application by injecting systematic faults.
 
