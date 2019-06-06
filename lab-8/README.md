@@ -145,7 +145,7 @@ Output will be similar to:
 ```
 You can see that the subject isn't what you'd normally expect, URI SAN extension has a `spiffe` URI.
 
-This wraps up this lab and the training. Thank you for attending our workshop!
+This wraps up this lab and the training. Thank you for attending training!
 
 ---
 
