@@ -11,18 +11,18 @@ Now that we have a Kubernetes cluster, we are ready to download and deploy Istio
 * [5. Confirm Add-ons](#5)
 
 ## <a name="1"></a> 1 - Download Istio
-You will download and deploy Istio 1.1.7 resources on your Kubernetes cluster. 
+You will download and deploy Istio 1.2.2 resources on your Kubernetes cluster. 
 
 ***Note to Docker Desktop users:*** please ensure your Docker VM has atleast 4GiB of Memory, which is required for all services to run.
 
 On your local machine:
 ```sh
-curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.1.7 sh -
+curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.2.2 sh -
 ```
 
 Move into the Istio package directory and add the `istioctl` client to your PATH environment variable.
 ```sh
-cd istio-1.1.7
+cd istio-1.2.2
 export PATH=$PWD/bin:$PATH
 ```
 
@@ -41,12 +41,12 @@ You are likely running Kubernetes version 1.9 or earlier, which might NOT have s
 ## <a name="2"></a> 2 - Setting up istioctl
 On a *nix system, you can setup istioctl by doing the following: 
 
-The above command will get the Istio 1.1.7 package and untar it in the same folder.
+The above command will get the Istio 1.2.2 package and untar it in the same folder.
 
-In the Docker Desktop environment you are most probably working as user `root` and now have the `istio-1.1.7` folder under `/root`. With this pressumption, run the following command to set the `PATH` appropriately. If not, please update the command below with the correct location of the `istio-1.1.7` folder.
+In the Docker Desktop environment you are most probably working as user `root` and now have the `istio-1.2.2` folder under `/root`. With this pressumption, run the following command to set the `PATH` appropriately. If not, please update the command below with the correct location of the `istio-1.2.2` folder.
 
 ```sh
-export PATH="$PATH:/root/istio-1.1.7/bin"
+export PATH="$PATH:/root/istio-1.2.2/bin"
 ```
 
 To verify `istioctl` is setup lets try to print out the command help
