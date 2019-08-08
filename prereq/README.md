@@ -9,14 +9,14 @@ Access to a Kubernetes cluster is required. You may use any Kubernetes platform 
 1. Enable Kubernetes in Docker Desktop preferences ([see screenshot](img/docker-desktop-kube.png)).
 
 - Mac and Windows users should be able to continue with Kubernetes on Docker Desktop.
-- Linux users should be able to install kubeadm and kubelet version 1.14.1 with your respective package managers on your machines and continue with the labs. [Here](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) is a link which might be helpful in this regard.
+- Linux users should be able to install kubeadm and kubelet version 1.15.2 with your respective package managers on your machines and continue with the labs. [Here](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) is a link which might be helpful in this regard.
 
 ### Check Cluster Status
 Check the status of the nodes. Ensure `Ready` state.
 ```sh
 [node1 ~]$ kubectl get nodes
 NAME      STATUS    ROLES     AGE       VERSION
-node1     Ready     master    1h        v1.10.2
+node1     Ready     master    1h        v1.15.2
 ```
 
 Check the status of the pods next:
