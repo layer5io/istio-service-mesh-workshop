@@ -1,100 +1,137 @@
-# Lab 3 - Deploy example application
-To play with Istio and demonstrate some of it's capabilities, you will deploy the example BookInfo application, which is included the Istio package.
+# Lab 3 - Expose Bookinfo site through Istio Ingress Gateway
 
-## What is the BookInfo Application?
+The components deployed on the service mesh by default are not exposed outside the cluster. External access to individual services so far has been provided by creating an external load balancer on each service.
 
-This application is a polyglot composition of microservices are written in different languages and sample BookInfo application displays information about a book, similar to a single catalog entry of an online book store. Displayed on the page is a description of the book, book details (ISBN, number of pages, and so on), and a few book reviews.
+An ingress gateway service is deployed as a LoadBalancer service. For making Bookinfo accessible from outside, we have to create an `Istio Gateway` for the service and also define an `Istio VirtualService` for Bookinfo with the routes we need.
 
-The end-to-end architecture of the application is shown [here](https://calcotestudios.com/talks/decks/slides-velocity-london-2018-using-istio-workshop.html#/6/1).
+## 3.1 Inspecting the Istio Ingress gateway
 
-It’s worth noting that these services have no dependencies on Istio, but make an interesting service mesh example, particularly because of the multitude of services, languages and versions for the reviews service.
-
-Sidecars proxy can be either manually or automatically injected into your pods.
-
-Automatic sidecar injection requires that your Kubernetes api-server supports `admissionregistration.k8s.io/v1beta1` or `admissionregistration.k8s.io/v1beta2` APIs. Verify whether your Kubernetes deployment supports these APIs by executing:
-
+The ingress gateway gets expossed as a normal kubernetes service load balancer:
 ```sh
-kubectl api-versions | grep admissionregistration
-```
-If your environment **does NOT** supports either of these two APIs, then you may use [manual sidecar injection](./appendix-manual-injection.md) to deploy the sample app. 
-
-As part of Istio deployment in [Lab 2](../lab-2/README.md), we have deployed the sidecar injector.
-
-<img src="/img/bonus.png"  width="80" align="left" /> Bonus! Your lab contais a custom version of the Bookinfo app that integrates with your Twitter account to send out a special message (and gift). For those without a Twitter account or who do not want to send a tweet, you can deploy the sample app without Twitter integration. 
-
-### <a name="auto"></a> Deploying Sample App with Automatic sidecar injection
-
-Istio, deployed as part of this workshop, will also deploy the sidecar injector. Let us now verify sidecar injector deployment & label namespace for automatic sidecar injection.
-
-
-```sh
-kubectl -n istio-system get deployment -l istio=sidecar-injector
-```
-Output:
-```sh
-NAME                     DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-istio-sidecar-injector   1         1         1            1           1d
+kubectl get svc istio-ingressgateway -n istio-system -o yaml
 ```
 
-NamespaceSelector decides whether to run the webhook on an object based on whether the namespace for that object matches the [selector](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors).
-
-Label the default namespace with istio-injection=enabled
+Because the Istio Ingress Gateway is an Envoy Proxy you can inspect it using the admin routes.  First find the name of the istio-ingressgateway:
 
 ```sh
-kubectl label namespace default istio-injection=enabled
+kubectl get pods -n istio-system
 ```
+Copy and paste your ingress gateway's pod name. Execute:
+```sh
+kubectl -n istio-system exec -it <istio-ingressgateway-...> bash
+```
+
+You can view the statistics, listeners, routes, clusters and server info for the Envoy proxy by forwarding the local port:
 
 ```sh
-kubectl get namespace -L istio-injection
+curl localhost:15000/help
+curl localhost:15000/stats
+curl localhost:15000/listeners
+curl localhost:15000/clusters
+curl localhost:15000/server_info
 ```
 
-Output:
+See the [admin docs](https://www.envoyproxy.io/docs/envoy/latest/operations/admin) for more details.
+
+Also it can be helpful to look at the log files of the Istio ingress controller to see what request is being routed. We should also be able to view the `curl` calls we just made from inside the ingressgateway. 
+
+Before we check the logs, let us get out of the container back on the host:
 ```sh
-NAME           STATUS    AGE       ISTIO-INJECTION
-default        Active    1h        enabled
-istio-system   Active    1h        
-kube-public    Active    1h        
-kube-system    Active    1h
+exit
 ```
 
-Now that we have the sidecar injector with mutating webhook in place and the namespace labelled for automatic sidecar injection, we can proceed to deploy the sample app:
+Now let us find the ingress pod and output the log:
 
-With Twitter:
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/bookinfo-twitter-auth.yaml
+kubectl logs istio-ingressgateway-... -n istio-system
 ```
 
-Without Twitter:
+## 3.2 Configure Istio Ingress Gateway for Bookinfo
+
+### 3.2.1 - Configure the Bookinfo route with the Istio Ingress gateway:
+
+We can create a virtualservice & gateway for bookinfo app in the ingress gateway by running the following:
+
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/bookinfo.yaml
+kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml
 ```
 
-### <a name="verify"></a> Verify Bookinfo deployment
+### 3.2.2 - View the Gateway and VirtualServices
 
-1. Verify that previous deployments are all in a state of AVAILABLE before continuing. **Do not proceed until they are up and running.**
+Check the created `Istio Gateway` and `Istio VirtualService` to see the changes deployed:
+```sh
+kubectl get gateway
+kubectl get gateway -o yaml
 
-    ```sh
-    watch kubectl get deployment
-    ```
+kubectl get virtualservices
+kubectl get virtualservices -o yaml
+```
 
-2. Inspect the details of the pods
+### 3.2.3 - Find the external port of the Istio Ingress Gateway by running:
 
-    Let us look at the details of the pods:
-    ```sh
-    watch kubectl get po
-    ```
+```sh
+kubectl get service istio-ingressgateway -n istio-system -o wide
+```
 
-    Let us look at the details of the services:
-    ```sh
-    watch kubectl get svc
-    ```
+To just get the first port of istio-ingressgateway service, we can run this:
+```sh
+kubectl get service istio-ingressgateway -n istio-system --template='{{(index .spec.ports 1).nodePort}}'
+```
 
-    Now let us pick a service, for instance productpage service, and view it's sidecar configuration:
-    ```sh
-    kubectl get po
+The HTTP port is usually 31380.
 
-    kubectl describe pod productpage-v1-.....
-    ```
+Or run these commands to retrieve the full URL:
+
+```sh
+echo "http://$(kubectl get nodes --selector=kubernetes.io/role!=master -o jsonpath={.items[0].status.addresses[?\(@.type==\"InternalIP\"\)].address}):$(kubectl get svc istio-ingressgateway -n istio-system -o jsonpath='{.spec.ports[1].nodePort}')/productpage"
+```
+
+Docker Desktop users please use `http://localhost/productpage`.
+
+## 3.3 Apply default destination rules
+
+Before we start playing with Istio's traffic management capabilities we need to define the available versions of the deployed services. They are called subsets, in destination rules.
+
+Run the following command to create default destination rules for the Bookinfo services:
+```sh
+kubectl apply -f samples/bookinfo/networking/destination-rule-all-mtls.yaml
+```
+
+In a few seconds we should be able to verify the destination rules created by using the command below:
+
+```sh
+kubectl get destinationrules
 
 
-## [Continue to Lab 4 - Expose BookInfo via Istio Ingress Gateway](../lab-4/README.md)
+kubectl get destinationrules -o yaml
+```
+
+## 3.4 - Browse to Bookinfo
+Browse to the website of the Bookinfo. To view the product page, you will have to append
+`/productpage` to the url.
+
+### 3.4.1 - Reload Page
+Now, reload the page multiple times and notice how it round robins between v1, v2 and v3 of the reviews service.
+
+## 3.5 Inspect the Istio proxy of the productpage pod
+
+To better understand the istio proxy, let's inspect the details.  Let us `exec` into the productpage pod to find the proxy details.  To do so we need to first find the full pod name and then `exec` into the istio-proxy container:
+
+```sh
+kubectl get pods
+kubectl exec -it productpage-v1-... -c istio-proxy  sh
+```
+
+Once in the container look at some of the envoy proxy details by inspecting it's config file:
+
+```sh
+ps aux
+ls -l /etc/istio/proxy
+cat /etc/istio/proxy/envoy-rev0.json
+```
+
+For more details on envoy proxy please check out their [admin docs](https://www.envoyproxy.io/docs/envoy/v1.5.0/operations/admin) for more details.
+
+
+
+## [Continue to lab 4 - Telemetry](../lab-4/README.md)

@@ -1,38 +1,31 @@
-# Using [Istio](https://istio.io/) Workshop Overview
-This workshop has been or will be presented at:
-* [DockerCon 2018](https://dockercon18.smarteventscloud.com/connect/sessionDetail.ww?SESSION_ID=187485) 
-* [Velocity London 2018](https://conferences.oreilly.com/velocity/vl-eu/public/schedule/detail/70506)
-* [DockerCon EU 2018](https://europe-2018.dockercon.com)
-* [Innovate Summit 2018](https://innovate.solarwinds.io)
-* [KubeCon NA 2018](https://kccna18.sched.com/event/Gram/tutorial-using-istio-lee-calcote-girish-ranganathan-solarwinds?iframe=yes&w=100%&sidebar=yes&bg=no#)
+# Introduction to Istio
+Curriculum for [O'Reilly Live Online Training](https://www.oreilly.com/live-training/courses/introduction-to-istio/0636920282938/). All training resources (slides, labs, accounts, books, mailing list, landscape) can found at [Layer5.io](https://layer5.io). Join the Layer5 service mesh community on [Slack](http://slack.layer5.io) or point questions to [@Layer5](https://twitter.com/layer5) on Twitter.
 
-All workshop resources (slides, labs, accounts, books, mailing list, landscape) can found at [Layer5.io](https://layer5.io). Ask questions or post comments in [Slack](http://slack.layer5.io) or at [@Layer5](https://twitter.com/layer5) on Twitter.
+## Prerequisites
+- [Prereq - Setup Kubernetes](prereq/README.md)
 
-# Labs
+## Segment 2
+### Setup Istio
+- [Lab 1 - Setup Istio](lab-1/README.md)
 
-## Setup Kubernetes & Istio
-- [Lab 1 - Setup Kubernetes](lab-1/README.md)
-- [Lab 2 - Setup Istio](lab-2/README.md)
-  - [Configure Adapter Set (1)](lab-2/README.md)
-  - [Configure Adapter Set (2)](lab-2/optional.md)
+## Segment 3
+### Deploying an app onto the mesh
+- [Lab 2 - Deploy Sample App - BookInfo](lab-2/README.md)
+- [Lab 3 - Istio Ingress Controller/Gateway](lab-3/README.md)
 
-## Deploying an app onto the mesh
-- [Lab 3 - Deploy Sample App - BookInfo](lab-3/README.md)
-- [Lab 4 - Istio Ingress Controller/Gateway](lab-4/README.md)
+## Segment 4
+### Observability
+- [Lab 4 - Telemetry](lab-4/README.md)
 
-## Observability
-- [Lab 5 - Telemetry](lab-5/README.md)
-- [Lab 6 - Distributed Tracing](lab-6/README.md)
+## Segment 5
+### Traffic Control
+- [Lab 5 - Request Routing and Canary Testing](lab-5/README.md)
+- [Lab 6 - Fault Injection](lab-6/README.md)
+- [Lab 7 - Circuit Breaking](lab-7/README.md)
 
-## Traffic Control - I
-- [Lab 7 - Request Routing and Canary Testing](lab-7/README.md)
-- [Lab 8 - Fault Injection](lab-8/README.md)
-
-## Security
-- [Lab 9 - Mutual TLS & Identity Verification](lab-9/README.md)
-
-## Traffic Control - II
-- [Lab 10 - Circuit Breaking](lab-10/README.md)
+## Segment 6
+### Security
+- [Lab 8 - Mutual TLS & Identity Verification](lab-8/README.md)
 
 # Authors
 * Lee Calcote [Twitter](https://twitter.com/lcalcote), [LinkedIn](https://linkedin.com/in/leecalcote), [Blog](https://gingergeek.com), [Talks](https://calcotestudios.com/talks)

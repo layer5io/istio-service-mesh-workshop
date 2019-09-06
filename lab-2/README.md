@@ -1,195 +1,94 @@
-# Lab 2 - Deploy Istio
+# Lab 2 - Deploy example application
+To play with Istio and demonstrate some of it's capabilities, you will deploy the example BookInfo application, which is included the Istio package.
 
-Now that we have a Kubernetes cluster, we are ready to deploy Istio.
+## What is the BookInfo Application?
 
-## Steps
+This application is a polyglot composition of microservices are written in different languages and sample BookInfo application displays information about a book, similar to a single catalog entry of an online book store. Displayed on the page is a description of the book, book details (ISBN, number of pages, and so on), and a few book reviews.
 
-* [1. Installing Istio](#1)
-* [2. Seting up istioctl](#2)
-* [3. Verify install](#3)
-* [4. Configuring Add-ons](#4)
+The end-to-end architecture of the application is shown [here](https://calcotestudios.com/talks/decks/slides-velocity-london-2018-using-istio-workshop.html#/6/1).
 
-## <a name="1"></a> 1 - Installing Istio
-You will install Istio 1.0.4 on your Kubernetes cluster. When doing so, this workshop provides you with a Choose Your Own Adventure style options.
+It’s worth noting that these services have no dependencies on Istio, but make an interesting service mesh example, particularly because of the multitude of services, languages and versions for the reviews service.
 
-### Choose your own Adventure
-*Or your own **Adapters**...*
-A number of Istio adapters and add-ons are included out of the box. In this workshop, we will enable the Prometheus, ServiceGraph, Jaeger, Grafana and [SolarWinds](https://github.com/solarwinds/istio-adapter) adapters and add-ons. 
+Sidecars proxy can be either manually or automatically injected into your pods.
 
-Configuration of the SolarWinds adapter is included as an optional lab, which enables shipping of metrics to [Appoptics](https://www.appoptics.com/), and/or logs to [Loggly](https://www.loggly.com/) and/or logs to [Papertrail](https://papertrailapp.com). To use the SolarWinds adapter, you may reserve your temporary, free account [here](https://docs.google.com/spreadsheets/d/1Rnqje4oQEQeaQRG24ApgdIzn8A2Pa3j5kzbm13_bJLA/edit). Then, choose proceed to the [Optional Lab 2](optional.md) for configuration instructions and return here when done.
+Automatic sidecar injection requires that your Kubernetes api-server supports `admissionregistration.k8s.io/v1beta1` or `admissionregistration.k8s.io/v1beta2` APIs. Verify whether your Kubernetes deployment supports these APIs by executing:
 
-
-***Note to Docker for Desktop users:*** please ensure your Docker VM has atleast 4GiB of Memory, which is required for all services to run.
-
-
-On PWK:
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/istio-solarwinds-1.0.4.yaml > istio.yaml
+kubectl api-versions | grep admissionregistration
 ```
+If your environment **does NOT** supports either of these two APIs, then you may use [manual sidecar injection](./appendix-manual-injection.md) to deploy the sample app. 
 
-On Docker for Desktop:
-```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/istio-solarwinds-1.0.4-desktop.yaml > istio.yaml
-```
+As part of Istio deployment in [Lab 2](../lab-2/README.md), we have deployed the sidecar injector.
 
+<img src="/img/bonus.png"  width="80" align="left" /> Bonus! Your lab contais a custom version of the Bookinfo app that integrates with your Twitter account to send out a special message (and gift). For those without a Twitter account or who do not want to send a tweet, you can deploy the sample app without Twitter integration. 
+
+### <a name="auto"></a> Deploying Sample App with Automatic sidecar injection
+
+Istio, deployed as part of this workshop, will also deploy the sidecar injector. Let us now verify sidecar injector deployment & label namespace for automatic sidecar injection.
 
 
 ```sh
-kubectl apply -f istio.yaml
+kubectl -n istio-system get deployment -l istio=sidecar-injector
 ```
-
-If you see an error message like this:
+Output:
 ```sh
-error: unable to recognize "istio.yaml": no matches for admissionregistration.k8s.io/, Kind=MutatingWebhookConfiguration
+NAME                     DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+istio-sidecar-injector   1         1         1            1           1d
 ```
 
-You are likely running Kubernetes version 1.9 or earlier, which might NOT have support for mutating admission webhooks or might not have it enabled and is the reason for the error. You can continue with the lab without any issues.
+NamespaceSelector decides whether to run the webhook on an object based on whether the namespace for that object matches the [selector](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors).
 
-
-If you have followed the [Optional Lab 2](optional.md), please run the 2 commands below to set the AppOptics token and the Loggly token as environment variables for this session.
-```
-AOTOKEN="PLEASE PASTE YOUR APPOPTICS TOKEN HERE"
-LOGGLY_TOKEN="PLEASE PASTE YOUR LOGGLY TOKEN HERE"
-```
-
-Now let us configure the istio-policy and istio-telemetry to enable the use of the Solarwinds mixer adapter by running the following command:
-
-```
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/solarwinds-1.0.4.yaml | sed "s/<appoptics token>/$AOTOKEN/g" | sed "s/<loggly token>/$LOGGLY_TOKEN/g" > solarwinds.yaml 
-
-kubectl apply -f solarwinds.yaml
-```
-
-
-## <a name="2"></a> 2 - Verify install
-
-Istio is deployed in a separate Kubernetes namespace `istio-system`. To check if Istio is deployed, and also, to see all the pieces that are deployed, execute the following:
+Label the default namespace with istio-injection=enabled
 
 ```sh
-kubectl get all -n istio-system
-```
-
-Also on PWK you will notice several ports being exposed as shown in the image below once Istio deployment yaml is applied on the cluster:
-![](img/exposed_ports.png)
-
-## <a name="3"></a> 3 - Setting up istioctl
-On a *nix system, you can setup istioctl by doing the following: 
-
-```sh
-curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.0.4 sh -
-```
-The above command will get the Istio 1.0.4 package and untar it in the same folder.
-
-In the `PWK` environment you are most probably working as user `root` and now have the `istio-1.0.4` folder under `/root`. With this pressumption, run the following command to set the `PATH` appropriately. If not, please update the command below with the correct location of the `istio-1.0.4` folder.
-
-```sh
-export PATH="$PATH:/root/istio-1.0.4/bin"
-```
-
-To verify `istioctl` is setup lets try to print out the command help
-```sh
-istioctl version
-```
-
-## Configuring Add-ons
-
-`Istio`, as part of this workshop, is installed with several optional addons like:
-  1. [Prometheus](https://prometheus.io/)
-  2. [Grafana](https://grafana.com/)
-  3. [Zipkin](https://zipkin.io/)
-  4. [Jaeger](https://www.jaegertracing.io/)
-  5. [Service Graph](https://istio.io/docs/tasks/telemetry/servicegraph/)
-
-For students who did NOT want to use Appoptics, you will use Prometheus and Grafana for collecting and viewing metrics, while for viewing distributed traces, you can choose between [Zipkin](https://zipkin.io/) or [Jaeger](https://www.jaegertracing.io/). In this workshop we will go with Jaeger.
-
-Service graph is another add-on which can be used to generate a graph of services within an Istio mesh and is deployed as part of Istio in this lab.
-
-### Exposing services
-
-Istio add-on services are deployed by default as `ClusterIP` type services. We can expose the services outside the cluster by either changing the Kubernetes service type to `NodePort` or `LoadBalancer` or by port-forwarding or by configuring Kubernetes Ingress. In this lab, we will briefly demonstrate the `NodePort` and port-forwarding ways of exposing services.
-
-#### Option 1: Expose services with NodePort
-To expose them using NodePort service type, we can edit the services and change the service type from `ClusterIP` to `NodePort`
-
-```sh
-kubectl -n istio-system edit svc prometheus
+kubectl label namespace default istio-injection=enabled
 ```
 
 ```sh
-kubectl -n istio-system edit svc grafana
+kubectl get namespace -L istio-injection
 ```
+
+Output:
+```sh
+NAME           STATUS    AGE       ISTIO-INJECTION
+default        Active    1h        enabled
+istio-system   Active    1h        
+kube-public    Active    1h        
+kube-system    Active    1h
+```
+
+Now that we have the sidecar injector with mutating webhook in place and the namespace labelled for automatic sidecar injection, we can proceed to deploy the sample app:
 
 ```sh
-kubectl -n istio-system edit svc servicegraph
+kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml
 ```
 
-For Jaeger, either of `tracing` or `jaeger-query` can be exposed.
-```sh
-kubectl -n istio-system edit svc tracing
-```
+### <a name="verify"></a> Verify Bookinfo deployment
+
+1. Verify that previous deployments are all in a state of AVAILABLE before continuing. **Do not proceed until they are up and running.**
+
+    ```sh
+    watch kubectl get deployment
+    ```
+
+2. Inspect the details of the pods
+
+    Let us look at the details of the pods:
+    ```sh
+    watch kubectl get po
+    ```
+
+    Let us look at the details of the services:
+    ```sh
+    watch kubectl get svc
+    ```
+
+    Now let us pick a service, for instance productpage service, and view it's sidecar configuration:
+    ```sh
+    kubectl get po
+
+    kubectl describe pod productpage-v1-.....
+    ```
 
 
-Once this is done the services will be assigned dedicated ports on the hosts. 
-
-To find the assigned ports for Grafana:
-```sh
-kubectl -n istio-system get svc grafana
-```
-
-To find the assigned ports for Prometheus:
-```sh
-kubectl -n istio-system get svc prometheus
-```
-
-To find the assigned ports for Servicegraph:
-```sh
-kubectl -n istio-system get svc servicegraph
-```
-
-To find the assigned ports for Jaeger:
-```sh
-kubectl -n istio-system get svc tracing
-```
-
-#### Option 2: Expose services with port-forwarding
-To port-forward Grafana:
-```sh
-kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=grafana \
-  -o jsonpath='{.items[0].metadata.name}') 3000:3000 &
-```
-
-To port-forward Prometheus:
-```sh
-kubectl -n istio-system port-forward \
-  $(kubectl -n istio-system get pod -l app=prometheus -o jsonpath='{.items[0].metadata.name}') \
-  9090:9090 &
-```
-
-To port-forward Service Graph:
-```sh
-kubectl -n istio-system port-forward \
-  $(kubectl -n istio-system get pod -l app=servicegraph -o jsonpath='{.items[0].metadata.name}') \
-  8088:8088 &
-```
-
-To port-forward Jaeger:
-```sh
-kubectl -n istio-system port-forward \
-  $(kubectl -n istio-system get pod -l app=jaeger -o jsonpath='{.items[0].metadata.name}') \
-  16686:16686 &
-```
-
-
-Port-forwarding runs in the foreground. We have appeneded `&` to the end of the above 2 commands to run them in the background. If you donot want this behavior, please remove the `&` from the end.
-
-
-### Accessing Exposed Services
-
-In `PWK`, once a port is exposed it will appear on top of the page as shown below as clickable hyperlinks:
-
-![](img/exposed_ports.png)
-
-Click each new links now and navigate to the respective add-ons web UI, if available. 
-
-
-## [Continue to Lab 3 - Deploy Sample Bookinfo app](../lab-3/README.md)
+## [Continue to Lab 3 - Expose BookInfo via Istio Ingress Gateway](../lab-3/README.md)

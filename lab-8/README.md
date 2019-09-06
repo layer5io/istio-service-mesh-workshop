@@ -1,166 +1,153 @@
-# Lab 8 - Fault Injection and Rate-Limiting
+# Lab 8 - Mutual TLS & Identity Verification
 
-In this lab we will learn how to test the resiliency of an application by injecting systematic faults.
+Istio provides transparent mutal TLS to services inside the service mesh where both the client and the server authenticate each others certificates as part of the TLS handshake. As part of this workshop we have deployed Istio with mTLS.
 
-Before we start let us reset the route rules:
-
+## 8.1 Verify mTLS
+Citadel is Istio’s key management service. Let us first ensure citadel is up and running:
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/virtual-service-all-v1.yaml 
+kubectl get deploy -l istio=citadel -n istio-system
+```
+Output will be similar to:
+```
+NAME            DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+istio-citadel   1         1         1            1           3h25m
 ```
 
+To experiment with mTLS, let us get into the sidecar proxy of productpage page by running the command below:
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/virtual-service-reviews-test-v2.yaml > user-v2.yaml
+kubectl exec -it $(kubectl get pod | grep productpage | awk '{ print $1 }') -c istio-proxy -- /bin/bash
 ```
 
-Update the `USER_NAME` placeholder with your user name:
+We are now in the sidecar of the productpage pod. Let us check all the ceritificates loaded in the sidecar:
 ```sh
-vi user-v2.yaml
+ls /etc/certs/
 ```
 
-Apply the change:
+You should see 3 entries:
 ```sh
-kubectl apply -f user-v2.yaml
+cert-chain.pem  key.pem  root-cert.pem
 ```
 
-## 8.1 Inject a route rule to create a fault using HTTP delay
-
-To start, we will inject a 7s delay between the reviews v2 and ratings service for your user. reviews v2 service has a 10s hard-coded connection timeout for its calls to the ratings service.
-
-Let us first grab the yaml file and store it to disk:
+Let us try to make a curl call to the details service over HTTP
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/virtual-service-ratings-test-delay.yaml > delay-test.yaml
+curl http://details:9080/details/0
 ```
 
-Now please replace the `USER_NAME` placeholder with your user name:
+Since, we have TLS between the sidecar's, an HTTP call will not work. You will see an error like the one below:
 ```sh
-vi delay-test.yaml
+curl: (56) Recv failure: Connection reset by peer
 ```
 
-Lets apply the change to the cluster:
+Let us try to make a curl call to the details service over HTTPS but **WITHOUT** certs:
 ```sh
-kubectl apply -f delay-test.yaml
+curl https://details:9080/details/0 -k
+```
+
+The request will be denied and you will see an error like the one below:
+```sh
+curl: (35) gnutls_handshake() failed: Handshake failed
+```
+
+Now, let us use curl over HTTPS with certificates to the details service:
+```sh
+curl https://details:9080/details/0 -v --key /etc/certs/key.pem --cert /etc/certs/cert-chain.pem --cacert /etc/certs/root-cert.pem -k
+```
+
+Output will be similar to this:
+```sh
+*   Trying 10.107.35.26...
+* Connected to details (10.107.35.26) port 9080 (#0)
+* found 1 certificates in /etc/certs/root-cert.pem
+* found 0 certificates in /etc/ssl/certs
+* ALPN, offering http/1.1
+* SSL connection using TLS1.2 / ECDHE_RSA_AES_128_GCM_SHA256
+*        server certificate verification SKIPPED
+*        server certificate status verification SKIPPED
+* error fetching CN from cert:The requested data were not available.
+*        common name:  (does not match 'details')
+*        server certificate expiration date OK
+*        server certificate activation date OK
+*        certificate public key: RSA
+*        certificate version: #3
+*        subject: O=#1300
+*        start date: Thu, 26 Oct 2018 14:36:56 GMT
+*        expire date: Wed, 05 Jan 2019 14:36:56 GMT
+*        issuer: O=k8s.cluster.local
+*        compression: NULL
+* ALPN, server accepted to use http/1.1
+> GET /details/0 HTTP/1.1
+> Host: details:9080
+> User-Agent: curl/7.47.0
+> Accept: */*
+>
+< HTTP/1.1 200 OK
+< content-type: application/json
+< server: envoy
+< date: Thu, 07 Jun 2018 15:19:46 GMT
+< content-length: 178
+< x-envoy-upstream-service-time: 1
+< x-envoy-decorator-operation: default-route
+<
+* Connection #0 to host details left intact
+{"id":0,"author":"William Shakespeare","year":1595,"type":"paperback","pages":200,"publisher":"PublisherA","language":"English","ISBN-10":"1234567890","ISBN-13":"123-1234567890"}
+```
+
+This proves the existence of mTLS between the services on the Istio mesh.
+
+Now lets come out of the container before we go to the next section:
+
+```sh
+exit
 ```
 
 
-To confirm the rule is in place:
+## 8.2 [Secure Production Identity Framework for Everyone (SPIFFE)](https://spiffe.io/)
+
+Istio uses [SPIFFE](https://spiffe.io/) to assert the identify of workloads on the cluster. SPIFFE consists of a notion of identity and a method of proving it. A SPIFFE identity consists of an authority part and a path. The meaning of the path in spiffe land is implementation defined. In k8s it takes the form `/ns/$namespace/sa/$service-account` with the expected meaning. A SPIFFE identify is embedded in a document. This document in principle can take many forms but currently the only defined format is x509.
+
+
+To start our investigation, let us check if the certs are in place in the productpage sidecar:
 ```sh
-kubectl get virtualservice ratings -o yaml
+kubectl exec $(kubectl get pod -l app=productpage -o jsonpath={.items..metadata.name}) -c istio-proxy -- ls /etc/certs
+```
+Output will be similar to:
+```sh
+cert-chain.pem
+key.pem
+root-cert.pem
+```
+
+MacOS should have openssl available. If your machine does not have openssl install, install it:
+```sh
+yum install -y openssl
+```
+
+Now that we have found the certs, let us verify the certificate of productpage sidecar by running this command:
+```sh
+kubectl exec $(kubectl get pod -l app=productpage -o jsonpath={.items..metadata.name}) -c istio-proxy -- cat /etc/certs/cert-chain.pem | openssl x509 -text -noout  | grep Validity -A 2
 ```
 
 Output will be similar to:
-```yaml
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  annotations:
-    kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"networking.istio.io/v1alpha3","kind":"VirtualService","metadata":{"annotations":{},"name":"ratings","namespace":"default"},"spec":{"hosts":["ratings"],"http":[{"fault":{"delay":{"fixedDelay":"7s","percent":100}},"match":[{"headers":{"end-user":{"exact":"USER_NAME"}}}],"route":[{"destination":{"host":"ratings","subset":"v1"}}]},{"route":[{"destination":{"host":"ratings","subset":"v1"}}]}]}}
-  creationTimestamp: 2018-10-26T15:21:42Z
-  generation: 1
-  name: ratings
-  namespace: default
-  resourceVersion: "14790"
-  selfLink: /apis/networking.istio.io/v1alpha3/namespaces/default/virtualservices/ratings
-  uid: d7d7347f-d932-11e8-88c5-0242f983c5dd
-spec:
-  hosts:
-  - ratings
-  http:
-  - fault:
-      delay:
-        fixedDelay: 7s
-        percent: 100
-    match:
-    - headers:
-        end-user:
-          exact: USER_NAME
-    route:
-    - destination:
-        host: ratings
-        subset: v1
-  - route:
-    - destination:
-        host: ratings
-        subset: v1
+```sh
+            Not Before: Oct 26 13:25:14 2018 GMT
+            Not After : Jan 24 13:25:14 2019 GMT
 ```
 
-Now we login to `/productpage` as your user and observe that the page loads but because of the induced delay between services the reviews section will show :
-
-<pre>
-        <b>Error fetching product reviews!</b>
-
-Sorry, product reviews are currently unavailable for this book.
-</pre>
-
-If you logout or login as a different user, the page should load normally without any errors.
-
-## 8.2 Inject a route rule to create a fault using HTTP abort
-
-In this section, , we will introduce an HTTP abort to the ratings microservices for your user.
-
-Let us first grab the yaml file:
+Lets also verify the URI SAN:
 ```sh
-curl https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/istio-1.0.4/virtual-service-ratings-test-abort.yaml > abort.yaml
-```
-
-Replace the `USER_NAME` placeholder with your user name:
-```sh
-vi abort.yaml
-```
-
-Now apply the change to the cluster:
-```sh
-kubectl apply -f abort.yaml
-```
-
-
-To confirm the rule is in place:
-```sh
-kubectl get virtualservice ratings -o yaml
+kubectl exec $(kubectl get pod -l app=productpage -o jsonpath={.items..metadata.name}) -c istio-proxy -- cat /etc/certs/cert-chain.pem | openssl x509 -text -noout  | grep 'Subject Alternative Name' -A 1
 ```
 
 Output will be similar to:
-```yaml
-kind: VirtualService
-metadata:
-  annotations:
-    kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"networking.istio.io/v1alpha3","kind":"VirtualService","metadata":{"annotations":{},"name":"ratings","namespace":"default"},"spec":{"hosts":["ratings"],"http":[{"fault":{"abort":{"httpStatus":500,"percent":100}},"match":[{"headers":{"end-user":{"exact":"USER_NAME"}}}],"route":[{"destination":{"host":"ratings","subset":"v1"}}]},{"route":[{"destination":{"host":"ratings","subset":"v1"}}]}]}}
-  creationTimestamp: 2018-10-26T15:21:42Z
-  generation: 1
-  name: ratings
-  namespace: default
-  resourceVersion: "22405"
-  selfLink: /apis/networking.istio.io/v1alpha3/namespaces/default/virtualservices/ratings
-  uid: d7d7347f-d932-11e8-88c5-0242f983c5dd
-spec:
-  hosts:
-  - ratings
-  http:
-  - fault:
-      abort:
-        httpStatus: 500
-        percent: 100
-    match:
-    - headers:
-        end-user:
-          exact: USER_NAME
-    route:
-    - destination:
-        host: ratings
-        subset: v1
-  - route:
-    - destination:
-        host: ratings
-        subset: v1
+```sh
+    X509v3 Subject Alternative Name:
+        URI:spiffe://cluster.local/ns/default/sa/default
 ```
+You can see that the subject isn't what you'd normally expect, URI SAN extension has a `spiffe` URI.
 
-Now we login to `/productpage` as your user and observe that the page loads without any new delays but because of the induced fault between services the reviews section will show:
+This wraps up this lab and the training. Thank you for attending training!
 
- `Ratings service is currently unavailable`.
+---
 
-### 8.3 Verify fault injection
-Verify the fault injection rule by logging out (or logging in as a different user), the page should load normally without any errors.
-
-
-## [Continue to Lab 9 - Mutual TLS & Identity Verification](../lab-9/README.md)
+# Additional Resources
+For future updates and additional resources, check out [layer5.io](https://layer5.io).

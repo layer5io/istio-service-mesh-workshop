@@ -1,97 +1,208 @@
-# Lab 5 - Telemetry
+# Lab 5 - Request Routing and Canary Testing
 
-## 5.1 Generate Load on Bookinfo
-Let's generate HTTP traffic against the BookInfo application, so we can see interesting telemetry. Grab the ingress gateway port number and store it in a variable:
+In this lab we are going to get our hands on some of the traffic management capabilities of Istio.
 
+## 5.1 Apply default destination rules
+
+Before we start playing with Istio's traffic management capabilities we need to define the available versions of the deployed services. They are called subsets, in destination rules.
+
+Run the following command to create default destination rules for the Bookinfo services:
 ```sh
-export INGRESS_PORT=$(kubectl get service istio-ingressgateway -n istio-system --template='{{(index .spec.ports 0).nodePort}}')
+kubectl apply -f samples/bookinfo/networking/destination-rule-all-mtls.yaml
 ```
 
-Once we have the port, we can append the IP of one of the nodes to get the host. In `PWK` we can get the IP from the top section of the page.
-![](img/ip.png)
+In a few seconds we should be able to verify the destination rules created by using the command below:
 
 ```sh
-export INGRESS_HOST="<IP>:$INGRESS_PORT"
+kubectl get destinationrules
+
+
+kubectl get destinationrules -o yaml
 ```
 
-Now, let us generate a small load on the sample app by using [fortio](https://github.com/istio/fortio) which is a load testing library created by the `Istio` team:
+## 5.2 Configure the default route for all services to V1
 
-The command below will run load test by making 5 calls per second for 5 minutes:
+As part of the bookinfo sample app, there are multiple versions of reviews service. When we load the `/productpage` in the browser multiple times we have seen the reviews service round robin between v1, v2 or v3. As the first exercise, let us first restrict traffic to just V1 of all the services.
+
+Set the default version for all requests to v1 of all service using :
+
 ```sh
-docker run istio/fortio load -t 5m -qps 5 http://$INGRESS_HOST/productpage
+kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml 
 ```
 
-Let's now checkout the generated metrics.
+This creates a bunch of `virtualservice` and `destinationrule` entries which route calls to v1 of the services.
 
-## Appoptics
-If you had followed [optional lab-2](../lab-2/optional.md) and created or have an Appoptics account, we should now be able to create a dashboard to view the metrics from Istio.
+To view the applied rule:
+```sh
+kubectl get virtualservice reviews -o yaml
+```
 
-
-### Setup Appoptics Dashboard
-
-Login to [AppOptics](https://my.appoptics.com).
-
-Now from the left menu select `Dashboard & Metrics`.
-![](img/ao_dashboard_menu.png)
-
-It will take you to a Dashboards page
-![](img/ao_dashboard.png)
-
-Once you are in the `Dashboards` screen you can create a new dashboard by using `Create a New Dashboard` button. It will take you right to a new dashboard.
-![](img/ao_new_dashboard.png)
-
-You can now give your dashboard a temporary name. Next click on the button shown in the previous image. It will open up a menu with an option to import a dashboard.
-
-![](img/ao_import_menu.png)
-
-Clicking the `Import Dashboard` menu item will open a popup where we can enter the contents of `https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/master/deployment_files/appoptics_dashboard.yaml` file
-![](img/ao_import.png)
-
-After pasting the contents, we can validate it by using the `Validate` button
-
-![](img/ao_validate.png)
-
-Once validated, we can import the dashboard by using the `Import` button. You will be presented with a warning popup as shown here. Proceed by clicking `OK` here.
-
-![](img/ao_import_warning.png)
-
-You will be taken to a pre-constructed dashboard.
-![](img/ao_istio_dashboard.png)
+*Please note:* In the place of the above command, we can either use kubectl or istioctl.
 
 
-## Loggly
-If you had followed [optional lab-2](../lab-2/optional.md), created or have an Loggly account, obtained a valid Loggly API token and deployed Istio with [solarwinds mixer adapter](https://github.com/solarwinds/istio-adapter), you will be able to view the access logs from Istio in Loggly.
+Output:
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"networking.istio.io/v1alpha3","kind":"VirtualService","metadata":{"annotations":{},"name":"reviews","namespace":"default"},"spec":{"hosts":["reviews"],"http":[{"route":[{"destination":{"host":"reviews","subset":"v1"}}]}]}}
+  creationTimestamp: null
+  name: reviews
+  namespace: default
+  resourceVersion: "11595"
+spec:
+  hosts:
+  - reviews
+  http:
+  - route:
+    - destination:
+        host: reviews
+        subset: v1
+---
+```
 
-![](img/Loggly.png)
-
-
-## Grafana
-
-If you have not already exposed grafana, please follow [Lab 2](../lab-2/README.md). 
-In `PWK`, once you have exposed grafana on a port by using any of the specified methods, it will appear at the top of the page as a hyperlink. You can click on the link at the top of the page which maps to the right port and it will open grafana in new tab. You can then navigate to the `Istio Dashboard`.
-
-![](img/Grafana_Istio_Dashboard.png)
-
-## Prometheus
-If you have not already exposed prometheus, please follow [Lab 2](../lab-2/README.md). 
-In `PWK`, once you have exposed prometheus on a port by using any of the specified methods, it will appear at the top of the page as a hyperlink. You can click on the link at the top of the page which maps to the right port and it will open prometheus in new tab. 
-Browse to `/graph` and in the `Expression` input box enter: `istio_request_count`. Click the Execute button.
-![](img/Prometheus.png)
-
-## Service Graph
-
-If you have not already exposed servicegraph, please follow [Lab 2](../lab-2/README.md). 
-In `PWK`, once you have exposed servicegraph on a port by using any of the specified methods, it will appear at the top of the page as a hyperlink. You can click on the link at the top of the page which maps to the right port and it will open a new tab but will show an error page with `404 not found`. 
-Update the URI to `/dotviz` and you will see the generated service graph.
-![](img/servicegraph.png)
-
-For a more interactive graph, navigate to `force/forcegraph.html`.
-
-![](https://istio.io/docs/tasks/telemetry/img/servicegraph-example.png)
+Now when we reload the `/productpage` several times, we will ONLY be viewing the data from v1 of all the services, which means we will not see any ratings (any stars).
 
 
-## [Continue to Lab 6 - Distributed Tracing](../lab-6/README.md)
+## 5.3 Content-based routing
+
+Let's replace our first rules with a new set. Enable the `ratings` service for a user `jason` by routing `productpage` traffic to `reviews` v2:
+
+```sh
+kubectl apply -f samples/bookinfo/networking/virtual-service-reviews-test-v2.yaml
+```
 
 
-#### Appendix 5.A Docker for Desktop
-***Please note:*** In step 5.1, if you are using Docker for Mac or Windows, INGRESS_HOST should be set to `localhost`.
+To view the applied rule:
+```sh
+kubectl get virtualservice reviews -o yaml
+```
+
+Output will be similar to the one below:
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"networking.istio.io/v1alpha3","kind":"VirtualService","metadata":{"annotations":{},"name":"reviews","namespace":"default"},"spec":{"hosts":["reviews"],"http":[{"match":[{"headers":{"end-user":{"exact":"USER_NAME"}}}],"route":[{"destination":{"host":"reviews","subset":"v2"}}]},{"route":[{"destination":{"host":"reviews","subset":"v1"}}]}]}}
+  creationTimestamp: null
+  name: reviews
+  namespace: default
+  resourceVersion: "10366"
+spec:
+  hosts:
+  - reviews
+  http:
+  - match:
+    - headers:
+        end-user:
+          exact: jason
+    route:
+    - destination:
+        host: reviews
+        subset: v2
+  - route:
+    - destination:
+        host: reviews
+        subset: v1
+---
+```
+
+Now if we login as your user, you will be able to see data from reviews v2. While if you NOT logged in or logged in as a different user, you will see data from `reviews` v1.
+
+
+## 5.4 Canary Testing - Traffic Shifting
+
+### 5.4.1 Reset rules
+Before we start the next exercise, lets first reset the routing rules back to our 5.1 rules:
+
+```sh
+kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml 
+```
+
+Once again, all traffic will be routed to `v1` of all the services. 
+
+### 5.4.2 Canary testing w/50% load
+To start canary testing, let's begin by transferring 50% of the traffic from reviews:v1 to reviews:v3 with the following command:
+
+```sh
+kubectl apply -f  samples/bookinfo/networking/virtual-service-reviews-50-v3.yaml
+```
+
+To confirm the rule was applied:
+```sh
+kubectl get virtualservice reviews -o yaml
+```
+
+Output will be similar to:
+```yaml
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"networking.istio.io/v1alpha3","kind":"VirtualService","metadata":{"annotations":{},"name":"reviews","namespace":"default"},"spec":{"hosts":["r
+eviews"],"http":[{"route":[{"destination":{"host":"reviews","subset":"v1"},"weight":50},{"destination":{"host":"reviews","subset":"v3"},"weight":50}]}]}}
+  creationTimestamp: null
+  name: reviews
+  namespace: default
+  resourceVersion: "11904"
+spec:
+  hosts:
+  - reviews
+  http:
+  - route:
+    - destination:
+        host: reviews
+        subset: v1
+      weight: 50
+    - destination:
+        host: reviews
+        subset: v3
+      weight: 50
+---
+```
+
+Now, if we reload the `/productpage` in your browser several times, you should now see red-colored star ratings approximately 50% of the time.
+
+
+### 5.4.3 Shift 100% to v3
+When version v3 of the reviews microservice is considered stable, we can route 100% of the traffic to reviews:v3:
+
+```sh
+kubectl apply -f samples/bookinfo/networking/virtual-service-reviews-v3.yaml
+```
+
+To confirm the rule was applied:
+```sh
+kubectl get virtualservice reviews -o yaml
+```
+Output:
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"networking.istio.io/v1alpha3","kind":"VirtualService","metadata":{"annotations":{},"name":"reviews","namespace":"default"},"spec":{"hosts":["r
+eviews"],"http":[{"route":[{"destination":{"host":"reviews","subset":"v3"}}]}]}}
+  creationTimestamp: null
+  name: reviews
+  namespace: default
+  resourceVersion: "12157"
+spec:
+  hosts:
+  - reviews
+  http:
+  - route:
+    - destination:
+        host: reviews
+        subset: v3
+---
+```
+
+Now, if we reload the `/productpage` in your browser several times, you should now see red-colored star ratings 100% of the time.
+
+## [Continue to lab 6 - Fault Injection and Rate Limiting](../lab-6/README.md)

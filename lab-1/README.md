@@ -1,256 +1,82 @@
-# Lab 1 - Create a Kubernetes Cluster
+# Lab 1 - Download and deploy Istio resources
 
-Throughout this workshop, we will use Play with Kubernetes (PWK) as our hosted lab environment. For this workshop only, a temporarily-provisioned space has been provided at [pwk.layer5.io](http://pwk.layer5.io). If you would like to use a different Kubernetes cluster (like your lab cluster or Docker for Desktop or Minikube), you can skip lab-1 (this lab).
+Now that we have a Kubernetes cluster, we are ready to download and deploy Istio resources.
 
-## Setup Steps
+## Steps
 
-1. [Set up your Kubernetes master node](#1)
-1. [Install overlay networking](#2)
-1. [Add more nodes to the cluster](#3)
+* [1. Download Istio resources](#1)
+* [2. Setup `istioctl`](#2)
+* [3. Install Istio](#3)
+* [4. Verify install](#4)
+* [5. Confirm Add-ons](#5)
 
-## <a name="1"></a> 1 - Set up your Kubernetes master node
+## <a name="1"></a> 1 - Download Istio
+You will download and deploy Istio 1.2.2 resources on your Kubernetes cluster. 
 
-<h3> 1.1 Visit <a href="http://pwk.layer5.io" target="_new_">pwk.layer5.io</a>.</h2>
+***Note to Docker Desktop users:*** please ensure your Docker VM has atleast 4GiB of Memory, which is required for all services to run.
 
-Please visit [pwk.layer5.io](http://pwk.layer5.io) to get your own kubernetes environment for this workshop.
+On your local machine:
+```sh
+curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.2.2 sh -
+```
 
-If the page takes too long to load, please update your machine's DNS settings to use any public DNS server like Google's DNS server at IP: 8.8.8.8 and try again.
+Move into the Istio package directory and add the `istioctl` client to your PATH environment variable.
+```sh
+cd istio-1.2.2
+export PATH=$PWD/bin:$PATH
+```
 
-Credentials for [pwk.layer5.io](http://pwk.layer5.io) - username: `student` and password: `istio2018`. 
+Deploy Istio custom resources:
+```sh
+for i in install/kubernetes/helm/istio-init/files/crd*yaml; do kubectl apply -f $i; done
+```
 
-***Please note:*** Once you are presented with a Basic Auth login popup, you have a maximum of 2 minutes to enter the credentials and get a session. If you take longer than 2 minutes, please go go back to [pwk.layer5.io](http://pwk.layer5.io) and start over.
+If you see an error message like this:
+```sh
+error: unable to recognize "istio.yaml": no matches for admissionregistration.k8s.io/, Kind=MutatingWebhookConfiguration
+```
 
-Once you start the session, you will have your own lab environment.<p>
-<img src="img/pwk_main.png" width="85%" /></p>
+You are likely running Kubernetes version 1.9 or earlier, which might NOT have support for mutating admission webhooks or might not have it enabled and is the reason for the error. You can continue with the lab without any issues.
 
-If you are having issues with getting a session in this environment, you can try all the workshop labs on your local machines.
+## <a name="2"></a> 2 - Setting up istioctl
+On a *nix system, you can setup istioctl by doing the following: 
 
-- Mac users should be able to continue with Kubernetes on Docker for Mac.
+The above command will get the Istio 1.2.2 package and untar it in the same folder.
 
-- Windows users should be able to continue with Kubernetes on Docker for Desktop.
-
-- Linux users should be able to install kubeadm and kubelet version 1.12.3 with your respective package managers on your machines and continue with the labs. [Here](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) is a link which might be helpful in this regard.
-
-If you are using Docker for Desktop/Mac for the labs, please [continue to Lab 2 - Deploy Istio](../lab-2/README.md) 
-
-### 1.2 Add first node
-Now add one instance by clicking the `ADD NEW INSTANCE` button on the left. When you create your first instance, it will have the name `node1`. Each instance has [Docker Community Edition (CE)](https://www.docker.com/community-edition) and [kubeadm](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) preinstalled. <br />
-<br />
-<img src="img/pwk_instance1.png" width="85%" />
-
-We will use `node1` as the master node for our cluster. While we will create a _multi-node_ cluster in this lab, creating a _multi-master_ cluster is out of the scope of this workshop.
-
-### 1.2 Bootstrap cluster
-Next, let us bootstrap the Kubernetes cluster by initializing the master (`node1`) node using the command below. On our PWK environment we are restricting the version of kubernetes that will be installed to version 1.12.3.
+In the Docker Desktop environment you are most probably working as user `root` and now have the `istio-1.2.2` folder under `/root`. With this pressumption, run the following command to set the `PATH` appropriately. If not, please update the command below with the correct location of the `istio-1.2.2` folder.
 
 ```sh
-kubeadm init --apiserver-advertise-address $(hostname -i) --kubernetes-version v1.12.3
+export PATH="$PATH:/root/istio-1.2.2/bin"
 ```
 
-If you are using a different environment, running the below command will mostly suffice.
+To verify `istioctl` is setup lets try to print out the command help
+```sh
+istioctl version
+```
+## <a name="3"></a> 3 - Install Istio
 
 ```sh
-kubeadm init --apiserver-advertise-address $(hostname -i) 
+kubectl apply -f install/kubernetes/istio-demo-auth.yaml
 ```
 
+## <a name="4"></a> 4 - Verify install
 
-Sample output from initialization:
-```sh
-Your Kubernetes master has initialized successfully!
-
-To start using your cluster, you need to run (as a regular user):
-
-  mkdir -p $HOME/.kube
-  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-  sudo chown $(id -u):$(id -g) $HOME/.kube/config
-
-You should now deploy a pod network to the cluster.
-Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
-  http://kubernetes.io/docs/admin/addons/
-
-You can now join any number of machines by running the following on each node
-as root:
-
-  kubeadm join --token 0c6e9e.607906dbdcacbf64 192.168.0.8:6443 --discovery-token-ca-cert-hash sha256:b8116ec1b224d82983b10353498d222f6f2e8fcbdf5d1075b4eece0f37df5896
-
-Waiting for api server to startup.........
-Warning: kubectl apply should be used on resource created by either kubectl create --save-config or kubectl apply
-daemonset "kube-proxy" configured
-No resources found
-```
-### 1.3 What happened?
-As part of the initialization `kubeadm` has written config files needed, setup RBAC and deployed Kubernetes control plane components (like `kube-apiserver`, `kube-dns`, `kube-proxy`, `etcd`, etc.). Control plane components are deployed as Docker containers. `kubectl` is also configured for the `root` user's account.
-
-<img src="/img/info.png" width="48" align="left" /> Please copy and save the `kubeadm join` command from the previous output for later use. This command will be used to join other nodes to your cluster. The command should look like the one below (**please do not use this example output**):
+Istio is deployed in a separate Kubernetes namespace `istio-system`. To check if Istio is deployed, and also, to see all the pieces that are deployed, execute the following:
 
 ```sh
-kubeadm join --token <your-token-here> 192.168.0.8:6443 --discovery-token-ca-cert-hash <your-hash-here>
+kubectl get all -n istio-system
 ```
-### 1.4 Check cluster status
-Check the status of the nodes and then the pods. To check the status of the nodes:
-```sh
-kubectl get nodes
-```
-
-Output of the previous command:
-```sh
-[node1 ~]$ kubectl get nodes
-NAME      STATUS     ROLES     AGE       VERSION
-node1     NotReady   master    1h        v1.10.2
-```
-
-To check the status of the pods:
-```sh
-kubectl get pods --all-namespaces
-```
-
-Output from the previous command:
-```sh
-[node1 ~]$ kubectl get pods --all-namespaces
-NAMESPACE     NAME                            READY     STATUS    RESTARTS   AGE
-kube-system   etcd-node1                      1/1       Running   0          1h
-kube-system   kube-apiserver-node1            1/1       Running   0          59m
-kube-system   kube-controller-manager-node1   1/1       Running   0          1h
-kube-system   kube-dns-545bc4bfd4-nnbwn       0/3       Pending   0          1h
-kube-system   kube-proxy-pxq27                1/1       Running   0          1h
-kube-system   kube-scheduler-node1            1/1       Running   0          1h
-```
-
-We can see that the master node is `NotReady` state. Next, we need to install a network plugin, so that our pods and nodes can communicate with each other.
-
-<img src="/img/info.png" width="48" align="left" /> Also, `kube-dns` will not start up before a network is installed. The general recommendation is to install a Container Network Interface (CNI)-based network driver. For this workshop, we will use [Weave Net](https://www.weave.works/oss/net/).
-
-## <a name="2"></a> 2 - Install overlay networking
-
-### 2.1 To install weave net, execute:
-```sh
-kubectl apply -n kube-system -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 |tr -d '\n')"
-```
-
-Output from previous command:
-```sh
-[node1 ~]$ kubectl apply -n kube-system -f \
->     "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 |tr -d '\n')"
-serviceaccount "weave-net" created
-clusterrole "weave-net" created
-clusterrolebinding "weave-net" created
-role "weave-net" created
-rolebinding "weave-net" created
-daemonset "weave-net" created
-```
-
-Re-check the status of the nodes, we will see it is now in `Ready` state.
-```sh
-[node1 ~]$ kubectl get nodes
-NAME      STATUS    ROLES     AGE       VERSION
-node1     Ready     master    1h        v1.10.2
-```
-
-Check the status of the pods next:
-```sh
-[node1 ~]$ kubectl get pods --all-namespaces
-NAMESPACE     NAME                            READY     STATUS    RESTARTS   AGE
-kube-system   etcd-node1                      1/1       Running   0          1h
-kube-system   kube-apiserver-node1            1/1       Running   0          1h
-kube-system   kube-controller-manager-node1   1/1       Running   0          1h
-kube-system   kube-dns-545bc4bfd4-nnbwn       3/3       Running   0          1h
-kube-system   kube-proxy-pxq27                1/1       Running   0          1h
-kube-system   kube-scheduler-node1            1/1       Running   0          1h
-kube-system   weave-net-wq5t5                 2/2       Running   0          2m
-```
-
-We can see all the pods are in `Running` state.
-
-## <a name="3"></a> 3 - Adding more nodes to the cluster
-
-We will build a 3-node cluster. 
-
-### 3.1 Add two more instances
-Click the `ADD NEW INSTANCE` button on the left twice.
-
-### 3.2 Join new nodes to the cluster
-Now, we can make the new nodes join the Kubernetes cluster by executing the `kubeadm join` **you previously copied and saved**. Run that command on each of the two new nodes:
-<img src="/img/warning.png" width="48" align="left" />**Warning:** use your token, not the one below.
-```sh
-kubeadm join --token <your-token-here> 192.168.0.8:6443 --discovery-token-ca-cert-hash <your-hash-here>
-```
-
-Output from previous command:
-```sh
-[node2 ~]$ kubeadm join --token 0c6e9e.607906dbdcacbf64 192.168.0.8:6443 --discovery-token-ca-cert-hash sha256:b8116ec1b224d82983b10353498d222f6f2e8fcbdf5d1075b4eece0f37df5896
-Initializing machine ID from random generator.
-[kubeadm] WARNING: kubeadm is in beta, please do not use it for production clusters.
-[preflight] Skipping pre-flight checks
-[discovery] Trying to connect to API Server "192.168.0.8:6443"
-[discovery] Created cluster-info discovery client, requesting info from "https://192.168.0.8:6443"
-[discovery] Requesting info from "https://192.168.0.8:6443" again to validate TLS against the pinned public key
-[discovery] Cluster info signature and contents are valid and TLS certificate validates against pinned roots, will use API Server "192.168.0.8:6443"
-[discovery] Successfully established connection with API Server "192.168.0.8:6443"
-[bootstrap] Detected server version: v1.8.13
-[bootstrap] The server supports the Certificates API (certificates.k8s.io/v1beta1)
-
-Node join complete:
-* Certificate signing request sent to master and response
-  received.
-* Kubelet informed of new secure connection details.
-
-Run 'kubectl get nodes' on the master to see this machine join.
-```
-#### What happened?
-Go back to the master node `node1` terminal and check the status of the nodes:
-```sh
-watch kubectl get nodes
-```
-
-Initially, the new nodes will be in `Not Ready` state and will eventually become `Ready`
-
-Output from previous command:
-```sh
-Every 2.0s: kubectl get nodes                                                                Mon May 21 03:27:34 2018
-
-NAME      STATUS    ROLES     AGE       VERSION
-node1     Ready     master    2h        v1.10.2
-node2     Ready     <none>    22m       v1.10.2
-node3     Ready     <none>    55s       v1.10.2
-```
-
-We now have a 3-node Kubernetes cluster ready for an Istio deployment.
-<!-- 
-### 3.3 Taint master
-To better utilize the resources, let us taint the master nodes to be able to provision pods there as well.
-
-```sh
-kubectl taint nodes --all node-role.kubernetes.io/master-
-``` -->
-
-## Cheatsheet
-To sum up or catch up ;)
-
-Run this on master node:
-```sh
-kubeadm init --apiserver-advertise-address $(hostname -i) --kubernetes-version v1.12.3
-```
-Deploy network:
-```sh
-kubectl apply -n kube-system -f \
-    "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 |tr -d '\n')"
-```
-
-Add slave nodes (please use your own join command output by `kubeadm init` on your master node):
-```
-kubeadm join --token 0c6e9e.607906dbdcacbf64 192.168.0.8:6443 --discovery-token-ca-cert-hash sha256:b8116ec1b224d82983b10353498d222f6f2e8fcbdf5d1075b4eece0f37df5896
-```
-<!-- 
-Taint master:
-```
-kubectl taint nodes --all node-role.kubernetes.io/master-
-``` -->
-
-Check node status:
-```sh
-watch kubectl get nodes
-```
-
-# [Continue to Lab 2 - Deploy Istio](../lab-2/README.md)
-
-**Bonus**: What version of Kubernetes are you running?
+## <a name="5"></a> 5 - Confirming Add-ons
+	
+Istio, as part of this workshop, is installed with several optional addons like:
+1. [Prometheus](https://prometheus.io/)
+2. [Grafana](https://grafana.com/)
+3. [Zipkin](https://zipkin.io/)
+4. [Jaeger](https://www.jaegertracing.io/)
+5. [Kiali](https://www.kiali.io/)
+	
+You will use Prometheus and Grafana for collecting and viewing metrics, while for viewing distributed traces, you can choose between [Zipkin](https://zipkin.io/) or [Jaeger](https://www.jaegertracing.io/). In this training, we will use Jaeger.
+	
+Kiali is another add-on which can be used to generate a graph of services within an Istio mesh and is deployed as part of Istio in this lab.
+  
+## [Continue to Lab 2 - Deploy Sample Bookinfo app](../lab-2/README.md)
