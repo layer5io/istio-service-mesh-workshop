@@ -117,9 +117,16 @@ key.pem
 root-cert.pem
 ```
 
-MacOS should have openssl available. If your machine does not have openssl install, install it:
+Mac users, MacOS should have openssl available. If your machine does not have openssl install, install it using your preferred method.
+
+Here is one way to install it on RHEL or CentOS or its derivatives:
 ```sh
-yum install -y openssl
+sudo yum install -y openssl-devel
+```
+
+Here is one way to install it on Ubuntu or Debian or its derivatives:
+```sh
+sudo apt install -y libssl-dev
 ```
 
 Now that we have found the certs, let us verify the certificate of productpage sidecar by running this command:
@@ -129,8 +136,8 @@ kubectl exec $(kubectl get pod -l app=productpage -o jsonpath={.items..metadata.
 
 Output will be similar to:
 ```sh
-            Not Before: Oct 26 13:25:14 2018 GMT
-            Not After : Jan 24 13:25:14 2019 GMT
+    Not Before: Sep 23 17:32:28 2019 GMT
+    Not After : Dec 22 17:32:28 2019 GMT
 ```
 
 Lets also verify the URI SAN:
@@ -140,14 +147,16 @@ kubectl exec $(kubectl get pod -l app=productpage -o jsonpath={.items..metadata.
 
 Output will be similar to:
 ```sh
-    X509v3 Subject Alternative Name:
-        URI:spiffe://cluster.local/ns/default/sa/default
+X509v3 Subject Alternative Name: critical
+    URI:spiffe://cluster.local/ns/default/sa/bookinfo-productpage
 ```
 You can see that the subject isn't what you'd normally expect, URI SAN extension has a `spiffe` URI.
 
-This wraps up this lab and the training. Thank you for attending training!
+This wraps up this lab and training. Thank you for attending!
 
 ---
 
 # Additional Resources
 For future updates and additional resources, check out [layer5.io](https://layer5.io).
+
+Join the Layer5 service mesh community on [Slack](http://slack.layer5.io) or point questions to [@Layer5](https://twitter.com/layer5) on Twitter.
