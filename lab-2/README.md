@@ -11,16 +11,14 @@ It’s worth noting that these services have no dependencies on Istio, but make 
 
 Sidecars proxy can be either manually or automatically injected into your pods.
 
-Automatic sidecar injection requires that your Kubernetes api-server supports `admissionregistration.k8s.io/v1beta1` or `admissionregistration.k8s.io/v1beta2` APIs. Verify whether your Kubernetes deployment supports these APIs by executing:
+Automatic sidecar injection requires that your Kubernetes api-server supports `admissionregistration.k8s.io/v1` or `admissionregistration.k8s.io/v1beta1` or `admissionregistration.k8s.io/v1beta2` APIs. Verify whether your Kubernetes deployment supports these APIs by executing:
 
 ```sh
 kubectl api-versions | grep admissionregistration
 ```
 If your environment **does NOT** supports either of these two APIs, then you may use [manual sidecar injection](./appendix-manual-injection.md) to deploy the sample app. 
 
-As part of Istio deployment in [Lab 2](../lab-2/README.md), we have deployed the sidecar injector.
-
-<img src="/img/bonus.png"  width="80" align="left" /> Bonus! Your lab contais a custom version of the Bookinfo app that integrates with your Twitter account to send out a special message (and gift). For those without a Twitter account or who do not want to send a tweet, you can deploy the sample app without Twitter integration. 
+As part of Istio deployment in [Lab 1](../lab-1/README.md), we have deployed the sidecar injector.
 
 ### <a name="auto"></a> Deploying Sample App with Automatic sidecar injection
 

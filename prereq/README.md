@@ -32,6 +32,6 @@ kube-system   kube-scheduler-node1            1/1       Running   0          1h
 kube-system   weave-net-wq5t5                 2/2       Running   0          2m
 ```
 
-We can see all the pods are in `Running` state. If you have a running Kubernetes clsuter, please [continue to Lab 2 - Deploy Istio](../lab-2/README.md) 
+We can see all the pods are in `Running` state. If you have a running Kubernetes clsuter, please [continue to Lab 1 - Deploy Istio](../lab-1/README.md) 
 
 # [Continue to Lab 1 - Deploy Istio](../lab-1/README.md)
