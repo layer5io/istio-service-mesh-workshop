@@ -4,21 +4,36 @@
 Let's generate HTTP traffic against the BookInfo application, so we can see interesting telemetry. Grab the ingress gateway port number and store it in a variable:
 
 ```sh
-export INGRESS_PORT=$(kubectl get service istio-ingressgateway -n istio-system --template='{{(index .spec.ports 1).nodePort}}')
+kubectl get service istio-ingressgateway -n istio-system --template='{{(index .spec.ports 1).nodePort}}'
 ```
 
-Once we have the port, we can append the IP of one of the nodes to get the host. If you are using Docker Desktop, INGRESS_HOST should be set to `localhost`.
+Once we have the port, we can append the IP of one of the nodes to get the host. 
+
+The URL to run a load test against will be `http://<IP/hostname of any of the nodes in the cluster>:<ingress port>/productpage`
+
+If you are using Docker Desktop, please use `localhost` for the hostname.
+
+Now, let us generate a small load on the sample app by using [Meshery](https://layer5.io/meshery), a service mesh management plane.
+
+To run Meshery on your local:
 
 ```sh
-export INGRESS_HOST="<IP>:$INGRESS_PORT"
+sudo curl -L https://git.io/meshery -o /usr/local/bin/meshery;
+sudo chmod a+x /usr/local/bin/meshery; 
+meshery start
 ```
 
-Now, let us generate a small load on the sample app by using [Meshery](https://layer5.io/meshery), which service mesh management plane.
+After Meshery is up access it in your browser at http://localhost:9081.
 
-View the generated metrics.
+You can now use the computed URL above in Meshery to run a load test and see the results.
+
+![](img/meshery_initial_load_test.png)
+
+
+Now that we have run the load test, lets view the generated metrics in the cluster.
 
 ### Exposing services
-In this training, two methods may be used depending on your preference. One is to use a `NodePort` and the other is to use `kubectl proxy`. Istio add-on services are deployed by default as `ClusterIP` type services. We can expose the services outside the cluster by either changing the Kubernetes service type to `NodePort` or `LoadBalancer` or by port-forwarding or by configuring Kubernetes Ingress. 
+Istio add-on services are deployed by default as `ClusterIP` type services. We can expose the services outside the cluster by either changing the Kubernetes service type to `NodePort` or `LoadBalancer` or by port-forwarding or by configuring Kubernetes Ingress. 
 
 **Option 1: Expose services with NodePort**
 To expose them using NodePort service type, we can edit the services and change the service type from `ClusterIP` to `NodePort`
@@ -74,6 +89,7 @@ kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=gr
 
 ![](img/Grafana_Istio_Dashboard.png)
 
+<!--
 ## 4.4 Kiali
 
 **Option 1: Expose services with NodePort**
@@ -99,7 +115,9 @@ Update the URI to `/kiali` and you will be presented with a login screen. Please
 ![](https://istio.io/docs/tasks/telemetry/kiali/kiali-graph.png)
 
 ## 4.5 - Distributed Tracing
+-->
 
+## 4.4 - Distributed Tracing
 The sample Bookinfo application is configured to collect trace spans using Zipkin or Jaeger. Although Istio proxies are able to automatically send spans, it needs help from the application to tie together the entire trace. To do this applications need to propagate the appropriate HTTP headers so that when the proxies send span information to Zipkin or Jaeger, the spans can be correlated correctly into a single trace.
 
 To do this the application collects and propagates the following headers from the incoming request to any outgoing requests:
@@ -139,7 +157,8 @@ kubectl -n istio-system port-forward \
   $(kubectl -n istio-system get pod -l app=jaeger -o jsonpath='{.items[0].metadata.name}') \
   16686:16686 &
 ```
-### 4.5.1 View Traces
+<!-- ### 4.5.1 View Traces -->
+### 4.4.1 View Traces
 
 If you have not set `INGRESS_HOST` environment variable, please do so by following [Lab 5](../lab-5/README.md).
 

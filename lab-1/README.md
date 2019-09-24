@@ -11,20 +11,45 @@ Now that we have a Kubernetes cluster, we are ready to download and deploy Istio
 * [5. Confirm Add-ons](#5)
 
 ## <a name="1"></a> 1 - Download Istio
-You will download and deploy Istio 1.2.2 resources on your Kubernetes cluster. 
+You will download and deploy Istio 1.3.0 resources on your Kubernetes cluster. 
 
 ***Note to Docker Desktop users:*** please ensure your Docker VM has atleast 4GiB of Memory, which is required for all services to run.
 
 On your local machine:
 ```sh
-curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.2.2 sh -
+curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.3.0 sh -
 ```
 
-Move into the Istio package directory and add the `istioctl` client to your PATH environment variable.
+
+
+## <a name="2"></a> 2 - Setting up istioctl
+On a *nix system, you can setup istioctl by doing the following: 
+
+The above command will get the Istio 1.3.0 package and untar it in the same folder.
+
+Change into the Istio package directory and add the `istioctl` client to your PATH environment variable.
 ```sh
-cd istio-1.2.2
+cd istio-1.3.0
 export PATH=$PWD/bin:$PATH
 ```
+
+To verify `istioctl` is setup lets try to print out the command help
+```sh
+istioctl version
+```
+
+To verify `istioctl` is setup lets try to print out the command help
+```sh
+istioctl version
+```
+
+We can use a new feature in istioctl to check if the cluster is ready for install:
+
+```sh
+istioctl verify-install
+```
+
+## <a name="3"></a> 3 - Install Istio
 
 Deploy Istio custom resources:
 ```sh
@@ -37,23 +62,6 @@ error: unable to recognize "istio.yaml": no matches for admissionregistration.k8
 ```
 
 You are likely running Kubernetes version 1.9 or earlier, which might NOT have support for mutating admission webhooks or might not have it enabled and is the reason for the error. You can continue with the lab without any issues.
-
-## <a name="2"></a> 2 - Setting up istioctl
-On a *nix system, you can setup istioctl by doing the following: 
-
-The above command will get the Istio 1.2.2 package and untar it in the same folder.
-
-In the Docker Desktop environment you are most probably working as user `root` and now have the `istio-1.2.2` folder under `/root`. With this pressumption, run the following command to set the `PATH` appropriately. If not, please update the command below with the correct location of the `istio-1.2.2` folder.
-
-```sh
-export PATH="$PATH:/root/istio-1.2.2/bin"
-```
-
-To verify `istioctl` is setup lets try to print out the command help
-```sh
-istioctl version
-```
-## <a name="3"></a> 3 - Install Istio
 
 ```sh
 kubectl apply -f install/kubernetes/istio-demo-auth.yaml
