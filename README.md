@@ -2,7 +2,7 @@
 Curriculum for [O'Reilly Live Online Training](https://www.oreilly.com/live-training/courses/introduction-to-istio/0636920282938/). All training resources (slides, labs, accounts, books, mailing list, landscape) can found at [Layer5.io](https://layer5.io). Join the Layer5 service mesh community on [Slack](http://slack.layer5.io) or point questions to [@Layer5](https://twitter.com/layer5) on Twitter.
 
 ## Prerequisites
-- [Prereq - Setup Kubernetes](prereq/README.md)
+- [Prereq - Setup Docker, Kubernetes, and Meshery](prereq/README.md)
 
 ## Segment 2
 ### Setup Istio
