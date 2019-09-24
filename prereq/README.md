@@ -56,7 +56,7 @@ Using Docker, install Meshery on your local machine by running the following:
 
 ### Sign into Meshery
 
-![img/Sign into Meshery.png]
+![](img/Sign into Meshery.png)
 
 ### <span style="color:gray">Run Meshery In-Cluster</span>
  
