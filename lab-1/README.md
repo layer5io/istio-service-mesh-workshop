@@ -1,6 +1,6 @@
 # Lab 1 - Download and deploy Istio resources
 
-Now that we have a Kubernetes cluster, we are ready to download and deploy Istio resources.
+Now that we have a Kubernetes cluster and Meshery, we are ready to download and deploy Istio resources.
 
 ## Steps
 
