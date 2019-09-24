@@ -56,8 +56,8 @@ Using Docker, install Meshery on your local machine by running the following:
 
 ### <span style="color:gray">Run Meshery In-Cluster</span>
  
-<span style="color:gray">
-Or to install on Kubernetes by cloning the Meshery repo:</span>
+<p style="color:gray">
+Or to install on Kubernetes by cloning the Meshery repo:</p>
 
  ```
  $ git clone https://github.com/layer5io/meshery.git; cd meshery        
