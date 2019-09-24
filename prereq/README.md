@@ -1,8 +1,10 @@
-# Prereq - Create a Kubernetes Cluster
+# Prerequisites
+
+## Create a Kubernetes Cluster
 
 Access to a Kubernetes cluster is required. You may use any Kubernetes platform of your choice. The "Introduction to Istio" training uses Docker Desktop the example Kubernetes platform. If you would like to use a different Kubernetes cluster (like your lab cluster or Minikube), you can skip lab-1 (this lab).
 
-## Docker Desktop Setup
+### Docker Desktop Setup
 
 1. Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop).
 1. Ensure 4GB is allocated to your Docker Desktop VM in Docker Desktop preferences ([see screenshot](img/docker-desktop-memory.png)).
@@ -11,7 +13,7 @@ Access to a Kubernetes cluster is required. You may use any Kubernetes platform 
 - Mac and Windows users should be able to continue with Kubernetes on Docker Desktop.
 - Linux users should be able to install kubeadm and kubelet version 1.15.2 with your respective package managers on your machines and continue with the labs. [Here](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) is a link which might be helpful in this regard.
 
-### Check Cluster Status
+#### Check Cluster Status
 Check the status of the nodes. Ensure `Ready` state.
 ```sh
 [node1 ~]$ kubectl get nodes
@@ -33,5 +35,26 @@ kube-system   weave-net-wq5t5                 2/2       Running   0          2m
 ```
 
 We can see all the pods are in `Running` state. If you have a running Kubernetes clsuter, please [continue to Lab 1 - Deploy Istio](../lab-1/README.md) 
+
+
+## Download and run Meshery
+
+### Run Meshery off cluster
+
+Using Docker, install Meshery on your local machine by running the following:
+
+```
+ sudo curl -L https://git.io/meshery -o /usr/local/bin/meshery
+ sudo chmod a+x /usr/local/bin/meshery
+ meshery start        
+```
+
+### Run Meshery in cluster
+Or to install on Kubernetes by cloning the Meshery repo:
+ ```
+ $ git clone https://github.com/layer5io/meshery.git; cd meshery        
+ $ kubectl create ns meshery
+ $ kubectl -n meshery apply -f deployment_yamls/k8s
+```
 
 # [Continue to Lab 1 - Deploy Istio](../lab-1/README.md)
