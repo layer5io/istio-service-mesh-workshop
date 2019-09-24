@@ -2,11 +2,11 @@
 
 The components deployed on the service mesh by default are not exposed outside the cluster. External access to individual services so far has been provided by creating an external load balancer on each service.
 
-An ingress gateway service is deployed as a LoadBalancer service. For making Bookinfo accessible from outside, we have to create an `Istio Gateway` for the service and also define an `Istio VirtualService` for Bookinfo with the routes we need.
+An ingress gateway service is deployed as a Kubernetes service of type LoadBalancer. For making Bookinfo accessible from outside, we have to create an `Istio Gateway` for the service and also define an `Istio VirtualService` for Bookinfo with the routes we need.
 
 ## 3.1 Inspecting the Istio Ingress gateway
 
-The ingress gateway gets expossed as a normal kubernetes service load balancer:
+The ingress gateway gets expossed as a normal kubernetes service of type load balancer:
 ```sh
 kubectl get svc istio-ingressgateway -n istio-system -o yaml
 ```
@@ -33,7 +33,7 @@ curl localhost:15000/server_info
 
 See the [admin docs](https://www.envoyproxy.io/docs/envoy/latest/operations/admin) for more details.
 
-Also it can be helpful to look at the log files of the Istio ingress controller to see what request is being routed. We should also be able to view the `curl` calls we just made from inside the ingressgateway. 
+Also it can be helpful to look at the log files of the Istio ingress controller to see what request is being routed. 
 
 Before we check the logs, let us get out of the container back on the host:
 ```sh
@@ -130,8 +130,12 @@ ls -l /etc/istio/proxy
 cat /etc/istio/proxy/envoy-rev0.json
 ```
 
-For more details on envoy proxy please check out their [admin docs](https://www.envoyproxy.io/docs/envoy/v1.5.0/operations/admin) for more details.
+For more details on envoy proxy please check out their [admin docs](https://www.envoyproxy.io/docs/envoy/v1.5.0/operations/admin).
 
+As a last step, lets exit the container:
 
+```sh
+exit
+```
 
 ## [Continue to lab 4 - Telemetry](../lab-4/README.md)
