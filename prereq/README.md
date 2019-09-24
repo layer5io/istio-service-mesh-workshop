@@ -1,4 +1,9 @@
 # Prerequisites
+You will need each of the following in order to complete the workshop:
+
+1. Docker (installed locally)
+1. Kubernetes (installed locally or have remote access to a cluster)
+1. Meshery (installed locally)
 
 ## Create a Kubernetes Cluster
 
