@@ -53,13 +53,17 @@ Using Docker, install Meshery on your local machine by running the following:
  sudo chmod a+x /usr/local/bin/meshery
  meshery start        
 ```
-
+<span style="color:gray">
 ### Run Meshery In-Cluster
+ 
 Or to install on Kubernetes by cloning the Meshery repo:
+
  ```
  $ git clone https://github.com/layer5io/meshery.git; cd meshery        
  $ kubectl create ns meshery
  $ kubectl -n meshery apply -f deployment_yamls/k8s
 ```
+
+</span>
 
 # [Continue to Lab 1 - Deploy Istio](../lab-1/README.md)
