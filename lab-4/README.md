@@ -15,7 +15,7 @@ If you are using Docker Desktop, please use `localhost` for the hostname.
 
 Now, let us generate a small load on the sample app by using [Meshery](https://layer5.io/meshery), a service mesh management plane.
 
-To run Meshery on your local:
+To run Meshery on your local machine:
 
 ```sh
 sudo curl -L https://git.io/meshery -o /usr/local/bin/meshery;
