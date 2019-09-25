@@ -20,8 +20,6 @@ On your local machine:
 curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.3.0 sh -
 ```
 
-
-
 ## <a name="2"></a> 2 - Setting up istioctl
 On a *nix system, you can setup istioctl by doing the following: 
 
@@ -51,21 +49,10 @@ istioctl verify-install
 
 ## <a name="3"></a> 3 - Install Istio
 
-Deploy Istio custom resources:
-```sh
-for i in install/kubernetes/helm/istio-init/files/crd*yaml; do kubectl apply -f $i; done
-```
+In Meshery, select the deployed Istio adapter in the left nav menu under the `Management` section ([see screenshot](img/meshery_management_istio.png)).
 
-If you see an error message like this:
-```sh
-error: unable to recognize "istio.yaml": no matches for admissionregistration.k8s.io/, Kind=MutatingWebhookConfiguration
-```
+On the Istio adapter's management page, on the `Install` card, you can click on the (+) icon and select `Latest Istio with mTLS` to install the latest version of Istio with mTLS ([see screenshot](img/meshery_management_istio-install.png)).
 
-You are likely running Kubernetes version 1.9 or earlier, which might NOT have support for mutating admission webhooks or might not have it enabled and is the reason for the error. You can continue with the lab without any issues.
-
-```sh
-kubectl apply -f install/kubernetes/istio-demo-auth.yaml
-```
 
 ## <a name="4"></a> 4 - Verify install
 

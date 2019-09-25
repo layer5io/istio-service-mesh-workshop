@@ -13,21 +13,21 @@ The URL to run a load test against will be `http://<IP/hostname of any of the no
 
 If you are using Docker Desktop, please use `localhost` for the hostname.
 
-Now, let us generate a small load on the sample app by using [Meshery](https://layer5.io/meshery), a service mesh management plane.
+You can now use the computed URL above in Meshery, in the browser, to run a load test and see the results.
 
-To run Meshery on your local machine:
+In Meshery navigate to the Performance page from the left nav menu.
 
-```sh
-sudo curl -L https://git.io/meshery -o /usr/local/bin/meshery;
-sudo chmod a+x /usr/local/bin/meshery; 
-meshery start
-```
+On the Performance page, please do the following:
+1. give this load test a memorable name
+1. enter the URL to the Book info productpage you derived above
+1. select `Istio` in the `Service Mesh` dropdown
+1. enter a valid number for `Concurrent requests`
+1. enter a valid number for `Queries per second`
+1. enter a valid `Duration` (a number followed by `s` for seconds (OR) `m` for minutes (OR) `h` for hour)
 
-After Meshery is up access it in your browser at http://localhost:9081.
+Once you have entered values for all the fields, you now click on `Run Test`.
 
-You can now use the computed URL above in Meshery to run a load test and see the results.
-
-![](img/meshery_initial_load_test.png)
+This will run the load test and show the results in a chart ([see screenshot](img/meshery_initial_load_test.png)).
 
 
 Now that we have run the load test, lets view the generated metrics in the cluster.

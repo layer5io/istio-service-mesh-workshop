@@ -46,9 +46,9 @@ Now let us find the ingress pod and output the log:
 kubectl logs istio-ingressgateway-... -n istio-system
 ```
 
-## 3.2 Configure Istio Ingress Gateway for Bookinfo
+## 3.2 View Istio Ingress Gateway for Bookinfo
 
-### 3.2.1 - Configure the Bookinfo route with the Istio Ingress gateway:
+<!-- ### 3.2.1 - Configure the Bookinfo route with the Istio Ingress gateway:
 
 We can create a virtualservice & gateway for bookinfo app in the ingress gateway by running the following:
 
@@ -56,7 +56,8 @@ We can create a virtualservice & gateway for bookinfo app in the ingress gateway
 kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml
 ```
 
-### 3.2.2 - View the Gateway and VirtualServices
+### 3.2.2 - View the Gateway and VirtualServices -->
+### 3.2.1 - View the Gateway and VirtualServices
 
 Check the created `Istio Gateway` and `Istio VirtualService` to see the changes deployed:
 ```sh
@@ -67,7 +68,8 @@ kubectl get virtualservices
 kubectl get virtualservices -o yaml
 ```
 
-### 3.2.3 - Find the external port of the Istio Ingress Gateway by running:
+<!-- ### 3.2.3 - Find the external port of the Istio Ingress Gateway by running: -->
+### 3.2.2 - Find the external port of the Istio Ingress Gateway by running:
 
 ```sh
 kubectl get service istio-ingressgateway -n istio-system -o wide
@@ -92,10 +94,15 @@ Docker Desktop users please use `http://localhost/productpage`.
 
 Before we start playing with Istio's traffic management capabilities we need to define the available versions of the deployed services. They are called subsets, in destination rules.
 
-Run the following command to create default destination rules for the Bookinfo services:
+<!-- Run the following command to create default destination rules for the Bookinfo services:
 ```sh
 kubectl apply -f samples/bookinfo/networking/destination-rule-all-mtls.yaml
-```
+``` -->
+
+Now in Meshery, in the browser, navigate to the Istio adapter's management page from the left nav menu again.
+
+On the Istio adapter's management page, please enter `default` in the `Namespace` field.
+Then, click the (+) icon on the `Configure` card and select `Default Book info destination rules (defines subsets)` from the list. This will deploy the destination rules for all the Book info services defining their subsets.
 
 In a few seconds we should be able to verify the destination rules created by using the command below:
 

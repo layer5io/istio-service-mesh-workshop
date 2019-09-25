@@ -2,26 +2,40 @@
 
 In this lab we will learn how to test the resiliency of an application by injecting systematic faults.
 
-Before we start let us reset the route rules:
+<!-- Before we start let us reset the route rules: -->
 
-```sh
+<!-- ```sh
 kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml 
-```
+``` -->
+Before we start let us reset the virtual services.
 
+In Meshery in the browser, navigate to the Istio adapter's management page from the left nav menu again.
+
+On the Istio adapter's management page, please enter `default` in the `Namespace` field.
+Then, click the (+) icon on the `Configure` card and select `Route traffic to V1 of all Book info services` from the list. 
+
+Once this is done, please ensure we have `default` in the `Namespace` field and then, click the (+) icon on the `Configure` card and select `Route traffic to V2 of Book info reviews service for user Jason` from the list. 
+
+
+<!-- 
 ```sh
 kubectl apply -f samples/bookinfo/networking/virtual-service-reviews-test-v2.yaml
-```
+``` -->
 
 ## 6.1 Inject a route rule to create a fault using HTTP delay
 
-To start, we will inject a 7s delay between the reviews v2 and ratings service for a user `jason`. reviews v2 service has a 10s hard-coded connection timeout for its calls to the ratings service configured globally.
+To start, we will inject a 7s delay for accessing the ratings service for a user `jason`. reviews v2 service has a 10s hard-coded connection timeout for its calls to the ratings service configured globally.
 
-```sh
+<!-- ```sh
 kubectl apply -f samples/bookinfo/networking/virtual-service-ratings-test-delay.yaml
-```
+``` -->
 
+On the Istio adapter's management page in Meshery, please enter `default` in the `Namespace` field.
+Then, click the (+) icon on the `Configure` card and select `Inject a 7s delay in the traffic to Book info ratings service for user Jason` from the list. 
 
-To confirm the rule is in place:
+This will update the existing virtual service definition for ratings to inject a delay for user `jason` to access the ratings V1.
+
+In a few, we should be able to verify the virtual service by using the command below:
 ```sh
 kubectl get virtualservice ratings -o yaml
 ```
@@ -63,7 +77,7 @@ spec:
         subset: v1
 ```
 
-Now we login to `/productpage` as your user and observe that the page loads but because of the induced delay between services the reviews section will show :
+Now we login to `/productpage` as user `jason` and observe that the page loads but because of the induced delay between services the reviews section will show :
 
 <pre>
         <b>Error fetching product reviews!</b>
@@ -75,15 +89,21 @@ If you logout or login as a different user, the page should load normally withou
 
 ## 6.2 Inject a route rule to create a fault using HTTP abort
 
-In this section, , we will introduce an HTTP abort to the ratings microservices for your user.
+In this section, , we will introduce an HTTP abort to the ratings microservices for user `jason`.
 
-Now apply the change to the cluster:
+<!-- Now apply the change to the cluster:
 ```sh
 kubectl apply -f samples/bookinfo/networking/virtual-service-ratings-test-abort.yaml
-```
+``` -->
 
 
-To confirm the rule is in place:
+On the Istio adapter's management page in Meshery, please enter `default` in the `Namespace` field.
+Then, click the (+) icon on the `Configure` card and select `Inject HTTP abort to Book info ratings service for user Jason` from the list. 
+
+This will update the existing virtual service definition for ratings to inject a HTTP abort for user `jason` to access the ratings V1.
+
+In a few, we should be able to verify the virtual service by using the command below:
+
 ```sh
 kubectl get virtualservice ratings -o yaml
 ```
@@ -124,12 +144,12 @@ spec:
         subset: v1
 ```
 
-Now we login to `/productpage` as your user and observe that the page loads without any new delays but because of the induced fault between services the reviews section will show:
+Now we login to `/productpage` as user `jason` and observe that the page loads without any new delays but because of the induced fault between services the reviews section will show:
 
  `Ratings service is currently unavailable`.
 
 ### 6.3 Verify fault injection
-Verify the fault injection rule by logging out (or logging in as a different user), the page should load normally without any errors.
+Verify the fault injection by logging out (or logging in as a different user), the page should load normally without any errors.
 
 
 ## [Continue to Lab 7 - Circuit Breaking](../lab-7/README.md)
