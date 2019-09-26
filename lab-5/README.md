@@ -16,6 +16,8 @@ Now in Meshery in the browser, navigate to the Istio adapter's management page f
 On the Istio adapter's management page, please enter `default` in the `Namespace` field.
 Then, click the (+) icon on the `Configure` card and select `Default Book info destination rules (defines subsets)` from the list. 
 
+<small>Manual step for can be found [here](#appendix)</small>
+
 This will deploy the destination rules for all the Book info services defining their subsets.
 
 In a few seconds we should be able to verify the destination rules created by using the command below:
@@ -33,6 +35,8 @@ As part of the bookinfo sample app, there are multiple versions of reviews servi
 
 In Meshery on the Istio adapter's management page, please enter `default` in the `Namespace` field.
 Then, click the (+) icon on the `Configure` card and select `Route traffic to V1 of all Book info services` from the list. 
+
+<small>Manual step for can be found [here](#appendix)</small>
 
 <!-- 
 ```sh
@@ -90,6 +94,8 @@ kubectl apply -f samples/bookinfo/networking/virtual-service-reviews-test-v2.yam
 In Meshery on the Istio adapter's management page, please enter `default` in the `Namespace` field.
 Then, click the (+) icon on the `Configure` card and select `Route traffic to V2 of Book info reviews service for user Jason` from the list. 
 
+<small>Manual step for can be found [here](#appendix)</small>
+
 This will update the existing virtual service definition for reviews to route all traffic for user `jason` to review V2.
 
 In a few, we should be able to verify the virtual service by using the command below:
@@ -143,6 +149,8 @@ kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml
 In Meshery on the Istio adapter's management page, please enter `default` in the `Namespace` field.
 Then, click the (+) icon on the `Configure` card and select `Route traffic to V1 of all Book info services` from the list. 
 
+<small>Manual step for can be found [here](#appendix)</small>
+
 Once again, all traffic will be routed to `v1` of all the services. 
 
 ### 5.4.2 Canary testing w/50% load
@@ -154,6 +162,8 @@ kubectl apply -f  samples/bookinfo/networking/virtual-service-reviews-50-v3.yaml
 
 In Meshery on the Istio adapter's management page, please enter `default` in the `Namespace` field.
 Then, click the (+) icon on the `Configure` card and select `Route 50% of the traffic to Book info reviews V3` from the list. 
+
+<small>Manual step for can be found [here](#appendix)</small>
 
 This will update the existing virtual service definition for reviews to route 50% of all traffic to review V3.
 
@@ -203,6 +213,8 @@ kubectl apply -f samples/bookinfo/networking/virtual-service-reviews-v3.yaml
 In Meshery on the Istio adapter's management page, please enter `default` in the `Namespace` field.
 Then, click the (+) icon on the `Configure` card and select `Route 100% of the traffic to Book info reviews V3` from the list. 
 
+<small>Manual step for can be found [here](#appendix)</small>
+
 This will update the existing virtual service definition for reviews to route 100% of all traffic to review V3.
 
 In a few, we should be able to verify the virtual service by using the command below:
@@ -235,5 +247,38 @@ spec:
 ```
 
 Now, if we reload the `/productpage` in your browser several times, you should now see red-colored star ratings 100% of the time.
+
+## <a name="appendix"></a> Appendix
+
+### Default destination rules
+Run the following command to create default destination rules for the Bookinfo services:
+```sh
+kubectl apply -f samples/bookinfo/networking/destination-rule-all-mtls.yaml
+```
+
+### Route all traffic to version V1 of all services
+
+```sh
+kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml 
+```
+
+### Route all traffic to version V2 of reviews for user Jason
+
+```sh
+kubectl apply -f samples/bookinfo/networking/virtual-service-reviews-test-v2.yaml
+```
+
+### Route 50% of traffic to version V3 of reviews service
+
+```sh
+kubectl apply -f  samples/bookinfo/networking/virtual-service-reviews-50-v3.yaml
+```
+
+### Route 100% of traffic to version V3 of reviews service
+
+```sh
+kubectl apply -f samples/bookinfo/networking/virtual-service-reviews-v3.yaml
+```
+
 
 ## [Continue to lab 6 - Fault Injection and Rate Limiting](../lab-6/README.md)

@@ -11,7 +11,7 @@ Once we have the port, we can append the IP of one of the nodes to get the host.
 
 The URL to run a load test against will be `http://<IP/hostname of any of the nodes in the cluster>:<ingress port>/productpage`
 
-If you are using Docker Desktop, please use `localhost` for the hostname.
+__Please note:__ If you are using Docker Desktop, please use the IP address of your host. You can leave the port blank. For example: `http://1.2.3.4/productpage`
 
 You can now use the computed URL above in Meshery, in the browser, to run a load test and see the results.
 
@@ -159,10 +159,6 @@ kubectl -n istio-system port-forward \
 ```
 <!-- ### 4.5.1 View Traces -->
 ### 4.4.1 View Traces
-
-If you have not set `INGRESS_HOST` environment variable, please do so by following [Lab 3](../lab-3/README.md).
-
-Now, let us generate a small load on the sample app by using [Meshery].
 
 Let us find the port Jaeger is exposed on by running the following command:
 ```sh

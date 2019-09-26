@@ -1,4 +1,4 @@
-# Lab 3 - Expose Bookinfo site through Istio Ingress Gateway
+# Lab 3 - Access Bookinfo site through Istio Ingress Gateway
 
 The components deployed on the service mesh by default are not exposed outside the cluster. External access to individual services so far has been provided by creating an external load balancer on each service.
 
@@ -88,7 +88,7 @@ Or run these commands to retrieve the full URL:
 echo "http://$(kubectl get nodes --selector=kubernetes.io/role!=master -o jsonpath={.items[0].status.addresses[?\(@.type==\"InternalIP\"\)].address}):$(kubectl get svc istio-ingressgateway -n istio-system -o jsonpath='{.spec.ports[1].nodePort}')/productpage"
 ```
 
-Docker Desktop users please use `http://localhost/productpage`.
+Docker Desktop users please use `http://localhost/productpage` to access product page in your browser.
 
 ## 3.3 Apply default destination rules
 
@@ -103,6 +103,8 @@ Now in Meshery, in the browser, navigate to the Istio adapter's management page 
 
 On the Istio adapter's management page, please enter `default` in the `Namespace` field.
 Then, click the (+) icon on the `Configure` card and select `Default Book info destination rules (defines subsets)` from the list. This will deploy the destination rules for all the Book info services defining their subsets.
+
+<small>Manual step for can be found [here](#appendix)</small>
 
 In a few seconds we should be able to verify the destination rules created by using the command below:
 
@@ -144,5 +146,16 @@ As a last step, lets exit the container:
 ```sh
 exit
 ```
+
+
+## <a name="appendix"></a> Appendix
+
+### Default destination rules
+Run the following command to create default destination rules for the Bookinfo services:
+```sh
+kubectl apply -f samples/bookinfo/networking/destination-rule-all-mtls.yaml
+``` 
+
+
 
 ## [Continue to lab 4 - Telemetry](../lab-4/README.md)

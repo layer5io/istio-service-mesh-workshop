@@ -45,7 +45,7 @@ Output:
 ```sh
 NAME           STATUS    AGE       ISTIO-INJECTION
 default        Active    1h        
-istio-system   Active    1h        
+istio-system   Active    1h        disabled
 kube-public    Active    1h        
 kube-system    Active    1h
 ```
@@ -59,6 +59,9 @@ This will do 3 things:
 1. Label `default` namespace for sidecar injection
 1. Deploys all the Book info services in the `default` namespace
 1. Deploys the virtual service and gateway needed to expose the Book info's productpage in the `default` namespace.
+
+<small>Manual step for can be found [here](#appendix)</small>
+
 
 ### Verify the namespace is labelled
 
@@ -103,4 +106,39 @@ kube-system    Active    1h
     ```
 
 
-## [Continue to Lab 3 - Expose BookInfo via Istio Ingress Gateway](../lab-3/README.md)
+
+## <a name="appendix"></a> Appendix
+
+### Label namespace for injection
+Label the default namespace with istio-injection=enabled
+
+ ```sh		
+kubectl label namespace default istio-injection=enabled
+```
+
+```sh
+kubectl get namespace -L istio-injection
+```
+
+Output:
+```sh
+NAME           STATUS    AGE       ISTIO-INJECTION
+default        Active    1h        enabled
+istio-system   Active    1h        disabled
+kube-public    Active    1h        
+kube-system    Active    1h
+```
+
+### Deploy Book info
+
+```sh
+kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml
+```
+
+### Deploy Gateway and Virtual Service for Book info app
+
+```sh
+kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml
+```
+
+## [Continue to Lab 3 - Access BookInfo via Istio Ingress Gateway](../lab-3/README.md)

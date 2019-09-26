@@ -16,6 +16,7 @@ Then, click the (+) icon on the `Configure` card and select `Route traffic to V1
 
 Once this is done, please ensure we have `default` in the `Namespace` field and then, click the (+) icon on the `Configure` card and select `Route traffic to V2 of Book info reviews service for user Jason` from the list. 
 
+<small>Manual step for can be found [here](#appendix)</small>
 
 <!-- 
 ```sh
@@ -32,6 +33,8 @@ kubectl apply -f samples/bookinfo/networking/virtual-service-ratings-test-delay.
 
 On the Istio adapter's management page in Meshery, please enter `default` in the `Namespace` field.
 Then, click the (+) icon on the `Configure` card and select `Inject a 7s delay in the traffic to Book info ratings service for user Jason` from the list. 
+
+<small>Manual step for can be found [here](#appendix)</small>
 
 This will update the existing virtual service definition for ratings to inject a delay for user `jason` to access the ratings V1.
 
@@ -100,6 +103,8 @@ kubectl apply -f samples/bookinfo/networking/virtual-service-ratings-test-abort.
 On the Istio adapter's management page in Meshery, please enter `default` in the `Namespace` field.
 Then, click the (+) icon on the `Configure` card and select `Inject HTTP abort to Book info ratings service for user Jason` from the list. 
 
+<small>Manual step for can be found [here](#appendix)</small>
+
 This will update the existing virtual service definition for ratings to inject a HTTP abort for user `jason` to access the ratings V1.
 
 In a few, we should be able to verify the virtual service by using the command below:
@@ -150,6 +155,32 @@ Now we login to `/productpage` as user `jason` and observe that the page loads w
 
 ### 6.3 Verify fault injection
 Verify the fault injection by logging out (or logging in as a different user), the page should load normally without any errors.
+
+
+## <a name="appendix"></a> Appendix
+
+### Route all traffic to version V1 of all services
+
+```sh
+kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml 
+```
+
+### Route all traffic to version V2 of reviews for user Jason
+
+```sh
+kubectl apply -f samples/bookinfo/networking/virtual-service-reviews-test-v2.yaml
+```
+
+### Inject 7s delay for ratings service
+
+```sh
+kubectl apply -f samples/bookinfo/networking/virtual-service-ratings-test-delay.yaml
+```
+
+### Inject HTTP abort for ratings service
+```sh
+kubectl apply -f samples/bookinfo/networking/virtual-service-ratings-test-abort.yaml
+```
 
 
 ## [Continue to Lab 7 - Circuit Breaking](../lab-7/README.md)

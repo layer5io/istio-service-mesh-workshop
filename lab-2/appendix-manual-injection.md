@@ -21,8 +21,6 @@ kubectl apply -f newBookInfo.yaml
 
 To do both in a single command:
 
-
-Without twitter auth:
 ```sh
 kubectl apply -f <(curl https://raw.githubusercontent.com/istio/istio/master/samples/bookinfo/platform/kube/bookinfo.yaml | istioctl kube-inject -f -)
 ```
