@@ -11,23 +11,23 @@ Now that we have a Kubernetes cluster and Meshery, we are ready to download and 
 * [5. Confirm Add-ons](#5)
 
 ## <a name="1"></a> 1 - Download Istio
-You will download and deploy Istio 1.3.0 resources on your Kubernetes cluster. 
+You will download and deploy the latest Istio resources on your Kubernetes cluster. 
 
 ***Note to Docker Desktop users:*** please ensure your Docker VM has atleast 4GiB of Memory, which is required for all services to run.
 
 On your local machine:
 ```sh
-curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.3.0 sh -
+curl -L https://git.io/getLatestIstio | sh -
 ```
 
 ## <a name="2"></a> 2 - Setting up istioctl
 On a *nix system, you can setup istioctl by doing the following: 
 
-The above command will get the Istio 1.3.0 package and untar it in the same folder.
+The above command will get the latest Istio package and untar it in the same folder.
 
 Change into the Istio package directory and add the `istioctl` client to your PATH environment variable.
 ```sh
-cd istio-1.3.0
+cd istio-*
 export PATH=$PWD/bin:$PATH
 ```
 
