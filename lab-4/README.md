@@ -27,7 +27,7 @@ On the Performance page, please do the following:
 
 Once you have entered values for all the fields, you now click on `Run Test`.
 
-This will run the load test and show the results in a chart ([see screenshot](img/meshery_initial_load_test.png)).
+This will run the load test and show the results in a chart ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/lab-4/img/meshery_initial_load_test.png)).
 
 
 Now that we have run the load test, lets view the generated metrics in the cluster.
