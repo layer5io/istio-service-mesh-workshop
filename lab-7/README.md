@@ -3,7 +3,7 @@
 In this lab we will configure circuit breaking using Istio. Circuit breaking allows developers to write applications that limit the impact of failures, latency spikes, and other undesirable effects of network peculiarities. This task will show how to configure circuit breaking for connections, requests, and outlier detection.
 
 ## 7.1 Preparing for circuit breaking
-Before we can configure circuit breaking, please try to access the `product page` app from within `Meshery` to ensure all the calls are making it through **without** errors as we did in [Lab 4 - Telemetry - Section 4.1](../lab-4/README.md) ([see screenshot](img/meshery_initial_load_test.png)).
+Before we can configure circuit breaking, please try to access the `product page` app from within `Meshery` to ensure all the calls are making it through **without** errors as we did in [Lab 4 - Telemetry - Section 4.1](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/lab-7/img/meshery_initial_load_test.png) ([see screenshot](img/meshery_initial_load_test.png)).
 
 
 ## 7.2 Configure circuit breaking
