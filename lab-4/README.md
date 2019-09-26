@@ -160,7 +160,7 @@ kubectl -n istio-system port-forward \
 <!-- ### 4.5.1 View Traces -->
 ### 4.4.1 View Traces
 
-If you have not set `INGRESS_HOST` environment variable, please do so by following [Lab 5](../lab-5/README.md).
+If you have not set `INGRESS_HOST` environment variable, please do so by following [Lab 3](../lab-3/README.md).
 
 Now, let us generate a small load on the sample app by using [Meshery].
 
