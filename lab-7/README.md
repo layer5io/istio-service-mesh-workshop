@@ -94,7 +94,7 @@ Let us now use Meshery to make several calls to `product page` app by changing t
 
 Once you have updated the fields, you now click on `Run Test`.
 
-This will run the load test and show the results in a chart. ([see screenshot](img/meshery_cb_load_test.png)).
+This will run the load test and show the results in a chart. ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/lab-7/img/meshery_cb_load_test.png)).
 
 You should only see a percentage of the requests succeed and the rest trapped by the configured circuit breaker.
 
