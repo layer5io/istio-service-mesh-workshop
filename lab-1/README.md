@@ -49,9 +49,9 @@ istioctl verify-install
 
 ## <a name="3"></a> 3 - Install Istio
 
-In Meshery, select the deployed Istio adapter in the left nav menu under the `Management` section ([see screenshot](img/meshery_management_istio.png)).
+In Meshery, select the deployed Istio adapter in the left nav menu under the `Management` section ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/lab-1/img/meshery_management_istio.png)).
 
-On the Istio adapter's management page, on the `Install` card, you can click on the (+) icon and select `Latest Istio with mTLS` to install the latest version of Istio with mTLS ([see screenshot](img/meshery_management_istio-install.png)).
+On the Istio adapter's management page, on the `Install` card, you can click on the (+) icon and select `Latest Istio with mTLS` to install the latest version of Istio with mTLS ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/lab-1/img/meshery_management_istio-install.png)).
 
 
 ## <a name="4"></a> 4 - Verify install
