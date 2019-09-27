@@ -22,7 +22,7 @@ As part of Istio deployment in [Lab 1](../lab-1/README.md), we have deployed the
 
 ### <a name="auto"></a> Deploying Sample App with Automatic sidecar injection
 
-Istio, deployed as part of this workshop, will also deploy the sidecar injector. Let us now verify sidecar injector deployment & label namespace for automatic sidecar injection.
+Istio, deployed as part of this workshop, will also deploy the sidecar injector. Let us now verify sidecar injector deployment.
 
 
 ```sh
@@ -36,11 +36,34 @@ istio-sidecar-injector   1         1         1            1           1d
 
 NamespaceSelector decides whether to run the webhook on an object based on whether the namespace for that object matches the [selector](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors).
 
-Label the default namespace with istio-injection=enabled
 
 ```sh
-kubectl label namespace default istio-injection=enabled
+kubectl get namespace -L istio-injection
 ```
+
+Output:
+```sh
+NAME           STATUS    AGE       ISTIO-INJECTION
+default        Active    1h        
+istio-system   Active    1h        disabled
+kube-public    Active    1h        
+kube-system    Active    1h
+```
+
+Now in Meshery in the browser, navigate to the Istio adapter's management page from the left nav menu.
+
+On the Istio adapter's management page, please enter `default` in the `Namespace` field.
+Then, click the (+) icon on the `Sample Application` card and select `Book Info Application` from the list.
+
+This will do 3 things: 
+1. Label `default` namespace for sidecar injection
+1. Deploys all the Book info services in the `default` namespace
+1. Deploys the virtual service and gateway needed to expose the Book info's productpage in the `default` namespace.
+
+<small>Manual step for can be found [here](#appendix)</small>
+
+
+### Verify the namespace is labelled
 
 ```sh
 kubectl get namespace -L istio-injection
@@ -53,12 +76,6 @@ default        Active    1h        enabled
 istio-system   Active    1h        
 kube-public    Active    1h        
 kube-system    Active    1h
-```
-
-Now that we have the sidecar injector with mutating webhook in place and the namespace labelled for automatic sidecar injection, we can proceed to deploy the sample app:
-
-```sh
-kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml
 ```
 
 ### <a name="verify"></a> Verify Bookinfo deployment
@@ -89,4 +106,39 @@ kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml
     ```
 
 
-## [Continue to Lab 3 - Expose BookInfo via Istio Ingress Gateway](../lab-3/README.md)
+
+## <a name="appendix"></a> Appendix
+
+### Label namespace for injection
+Label the default namespace with istio-injection=enabled
+
+ ```sh		
+kubectl label namespace default istio-injection=enabled
+```
+
+```sh
+kubectl get namespace -L istio-injection
+```
+
+Output:
+```sh
+NAME           STATUS    AGE       ISTIO-INJECTION
+default        Active    1h        enabled
+istio-system   Active    1h        disabled
+kube-public    Active    1h        
+kube-system    Active    1h
+```
+
+### Deploy Book info
+
+```sh
+kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml
+```
+
+### Deploy Gateway and Virtual Service for Book info app
+
+```sh
+kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml
+```
+
+## [Continue to Lab 3 - Access BookInfo via Istio Ingress Gateway](../lab-3/README.md)

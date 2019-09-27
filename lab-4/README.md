@@ -11,23 +11,23 @@ Once we have the port, we can append the IP of one of the nodes to get the host.
 
 The URL to run a load test against will be `http://<IP/hostname of any of the nodes in the cluster>:<ingress port>/productpage`
 
-If you are using Docker Desktop, please use `localhost` for the hostname.
+__Please note:__ If you are using Docker Desktop, please use the IP address of your host. You can leave the port blank. For example: `http://1.2.3.4/productpage`
 
-Now, let us generate a small load on the sample app by using [Meshery](https://layer5.io/meshery), a service mesh management plane.
+You can now use the computed URL above in Meshery, in the browser, to run a load test and see the results.
 
-To run Meshery on your local machine:
+In Meshery navigate to the Performance page from the left nav menu.
 
-```sh
-sudo curl -L https://git.io/meshery -o /usr/local/bin/meshery;
-sudo chmod a+x /usr/local/bin/meshery; 
-meshery start
-```
+On the Performance page, please do the following:
+1. give this load test a memorable name
+1. enter the URL to the Book info productpage you derived above
+1. select `Istio` in the `Service Mesh` dropdown
+1. enter a valid number for `Concurrent requests`
+1. enter a valid number for `Queries per second`
+1. enter a valid `Duration` (a number followed by `s` for seconds (OR) `m` for minutes (OR) `h` for hour)
 
-After Meshery is up access it in your browser at http://localhost:9081.
+Once you have entered values for all the fields, you now click on `Run Test`.
 
-You can now use the computed URL above in Meshery to run a load test and see the results.
-
-![](img/meshery_initial_load_test.png)
+This will run the load test and show the results in a chart ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/lab-4/img/meshery_initial_load_test.png)).
 
 
 Now that we have run the load test, lets view the generated metrics in the cluster.
@@ -159,10 +159,6 @@ kubectl -n istio-system port-forward \
 ```
 <!-- ### 4.5.1 View Traces -->
 ### 4.4.1 View Traces
-
-If you have not set `INGRESS_HOST` environment variable, please do so by following [Lab 5](../lab-5/README.md).
-
-Now, let us generate a small load on the sample app by using [Meshery].
 
 Let us find the port Jaeger is exposed on by running the following command:
 ```sh
