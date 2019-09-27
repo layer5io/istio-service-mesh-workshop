@@ -1,6 +1,6 @@
 # Lab 1 - Download and deploy Istio resources
 
-Now that we have a Kubernetes cluster, we are ready to download and deploy Istio resources.
+Now that we have a Kubernetes cluster and Meshery, we are ready to download and deploy Istio resources.
 
 ## Steps
 
@@ -11,25 +11,23 @@ Now that we have a Kubernetes cluster, we are ready to download and deploy Istio
 * [5. Confirm Add-ons](#5)
 
 ## <a name="1"></a> 1 - Download Istio
-You will download and deploy Istio 1.3.0 resources on your Kubernetes cluster. 
+You will download and deploy the latest Istio resources on your Kubernetes cluster. 
 
 ***Note to Docker Desktop users:*** please ensure your Docker VM has atleast 4GiB of Memory, which is required for all services to run.
 
 On your local machine:
 ```sh
-curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.3.0 sh -
+curl -L https://git.io/getLatestIstio | sh -
 ```
-
-
 
 ## <a name="2"></a> 2 - Setting up istioctl
 On a *nix system, you can setup istioctl by doing the following: 
 
-The above command will get the Istio 1.3.0 package and untar it in the same folder.
+The above command will get the latest Istio package and untar it in the same folder.
 
 Change into the Istio package directory and add the `istioctl` client to your PATH environment variable.
 ```sh
-cd istio-1.3.0
+cd istio-*
 export PATH=$PWD/bin:$PATH
 ```
 
@@ -51,21 +49,11 @@ istioctl verify-install
 
 ## <a name="3"></a> 3 - Install Istio
 
-Deploy Istio custom resources:
-```sh
-for i in install/kubernetes/helm/istio-init/files/crd*yaml; do kubectl apply -f $i; done
-```
+In Meshery, select the deployed Istio adapter in the left nav menu under the `Management` section ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/lab-1/img/meshery_management_istio.png)).
 
-If you see an error message like this:
-```sh
-error: unable to recognize "istio.yaml": no matches for admissionregistration.k8s.io/, Kind=MutatingWebhookConfiguration
-```
+On the Istio adapter's management page, on the `Install` card, you can click on the (+) icon and select `Latest Istio with mTLS` to install the latest version of Istio with mTLS ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/lab-1/img/meshery_management_istio-install.png)).
 
-You are likely running Kubernetes version 1.9 or earlier, which might NOT have support for mutating admission webhooks or might not have it enabled and is the reason for the error. You can continue with the lab without any issues.
-
-```sh
-kubectl apply -f install/kubernetes/istio-demo-auth.yaml
-```
+<small>For manual steps go [here](#appendix)</small>
 
 ## <a name="4"></a> 4 - Verify install
 
@@ -86,5 +74,26 @@ Istio, as part of this workshop, is installed with several optional addons like:
 You will use Prometheus and Grafana for collecting and viewing metrics, while for viewing distributed traces, you can choose between [Zipkin](https://zipkin.io/) or [Jaeger](https://www.jaegertracing.io/). In this training, we will use Jaeger.
 	
 Kiali is another add-on which can be used to generate a graph of services within an Istio mesh and is deployed as part of Istio in this lab.
-  
+
+
+## <a name="appendix"></a> Appendix
+
+### Install istio:
+
+Deploy Istio custom resources:
+```sh
+for i in install/kubernetes/helm/istio-init/files/crd*yaml; do kubectl apply -f $i; done
+```
+
+If you see an error message like this:
+```sh
+error: unable to recognize "istio.yaml": no matches for admissionregistration.k8s.io/, Kind=MutatingWebhookConfiguration
+```
+
+You are likely running Kubernetes version 1.9 or earlier, which might NOT have support for mutating admission webhooks or might not have it enabled and is the reason for the error. You can continue with the lab without any issues.
+
+```sh
+kubectl apply -f install/kubernetes/istio-demo-auth.yaml
+```
+
 ## [Continue to Lab 2 - Deploy Sample Bookinfo app](../lab-2/README.md)
