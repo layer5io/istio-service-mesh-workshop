@@ -12,9 +12,7 @@ Before we start let us reset the virtual services.
 In Meshery in the browser, navigate to the Istio adapter's management page from the left nav menu again.
 
 On the Istio adapter's management page, please enter `default` in the `Namespace` field.
-Then, click the (+) icon on the `Configure` card and select `Route traffic to V1 of all Book info services` from the list. 
-
-Once this is done, please ensure we have `default` in the `Namespace` field and then, click the (+) icon on the `Configure` card and select `Route traffic to V2 of Book info reviews service for user Jason` from the list. 
+Then, click the (+) icon on the `Configure` card and select `Route traffic to V2 of Book info reviews service for user Jason` from the list. 
 
 <small>Manual step for can be found [here](#appendix)</small>
 
