@@ -10,42 +10,6 @@ Now that we have a Kubernetes cluster and Meshery, we are ready to download and 
 * [4. Verify install](#4)
 * [5. Confirm Add-ons](#5)
 
-## <a name="1"></a> 1 - Download Istio
-You will download and deploy the latest Istio resources on your Kubernetes cluster. 
-
-***Note to Docker Desktop users:*** please ensure your Docker VM has atleast 4GiB of Memory, which is required for all services to run.
-
-On your local machine:
-```sh
-curl -L https://git.io/getLatestIstio | sh -
-```
-
-## <a name="2"></a> 2 - Setting up istioctl
-On a *nix system, you can setup istioctl by doing the following: 
-
-The above command will get the latest Istio package and untar it in the same folder.
-
-Change into the Istio package directory and add the `istioctl` client to your PATH environment variable.
-```sh
-cd istio-*
-export PATH=$PWD/bin:$PATH
-```
-
-To verify `istioctl` is setup lets try to print out the command help
-```sh
-istioctl version
-```
-
-To verify `istioctl` is setup lets try to print out the command help
-```sh
-istioctl version
-```
-
-We can use a new feature in istioctl to check if the cluster is ready for install:
-
-```sh
-istioctl verify-install
-```
 
 ## <a name="3"></a> 3 - Install Istio
 
@@ -76,7 +40,44 @@ You will use Prometheus and Grafana for collecting and viewing metrics, while fo
 Kiali is another add-on which can be used to generate a graph of services within an Istio mesh and is deployed as part of Istio in this lab.
 
 
-## <a name="appendix"></a> Appendix
+## <a name="appendix"></a> Appendix - Manual Install
+
+### <a name="1"></a> 1 - Download Istio
+You will download and deploy the latest Istio resources on your Kubernetes cluster. 
+
+***Note to Docker Desktop users:*** please ensure your Docker VM has atleast 4GiB of Memory, which is required for all services to run.
+
+On your local machine:
+```sh
+curl -L https://git.io/getLatestIstio | sh -
+```
+
+### <a name="2"></a> 2 - Setting up istioctl
+On a *nix system, you can setup istioctl by doing the following: 
+
+The above command will get the latest Istio package and untar it in the same folder.
+
+Change into the Istio package directory and add the `istioctl` client to your PATH environment variable.
+```sh
+cd istio-*
+export PATH=$PWD/bin:$PATH
+```
+
+To verify `istioctl` is setup lets try to print out the command help
+```sh
+istioctl version
+```
+
+To verify `istioctl` is setup lets try to print out the command help
+```sh
+istioctl version
+```
+
+We can use a new feature in istioctl to check if the cluster is ready for install:
+
+```sh
+istioctl verify-install
+```
 
 ### Install istio:
 
