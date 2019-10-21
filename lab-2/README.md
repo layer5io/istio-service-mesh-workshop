@@ -130,6 +130,8 @@ kube-system    Active    1h
 ```
 
 ### Deploy Book info
+Applying this yaml file included in the Istio package you collected in https://github.com/layer5io/istio-service-mesh-workshop/tree/master/lab-1#1 will deploy the Book info app in you cluster.
+
 
 ```sh
 kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml
