@@ -68,11 +68,6 @@ To verify `istioctl` is setup lets try to print out the command help
 istioctl version
 ```
 
-To verify `istioctl` is setup lets try to print out the command help
-```sh
-istioctl version
-```
-
 We can use a new feature in istioctl to check if the cluster is ready for install:
 
 ```sh
