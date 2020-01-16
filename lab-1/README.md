@@ -7,9 +7,9 @@ Now that we have a Kubernetes cluster and Meshery, we are ready to download and 
 
 * [1. Install Istio](#1)
 * [2. Verify install](#2)
-* [3. Confirm Add-ons](#3)
+* [3. Confirm add-ons](#3)
 
-Optional (manual):
+Optional (manual install):
 * [1. Download Istio resources](#1.1)
 * [2. Setup `istioctl`](#1.2)
 
@@ -42,9 +42,10 @@ You will use Prometheus and Grafana for collecting and viewing metrics, while fo
 Kiali is another add-on which can be used to generate a graph of services within an Istio mesh and is deployed as part of Istio in this lab.
 
 <hr />
+Alternative, manual installation steps below. No need to execute, if you have performed the steps above.
 <hr />
 
-## <a name="appendix"></a> Appendix - Manual Install
+## <a name="appendix"></a> Appendix - Alternative Manual Install
 
 ### <a name="1.1"></a> 1.1 - Download Istio
 You will download and deploy the latest Istio resources on your Kubernetes cluster. 
