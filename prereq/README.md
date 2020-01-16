@@ -25,7 +25,8 @@ This training requires access to a Kubernetes cluster and uses Docker Desktop an
 ### Or... Setup Minikube (MacOS, Windows, Linux)
 1. [Install minikube](https://minikube.sigs.k8s.io).
 1. Create Kubernetes cluster: `minikube start`.
-1. [Export kubeconfig](https://meshery.layer5.io/docs/installation/minikube).
+1. Export kubeconfig (to be used with Meshery):
+```kubectl config view --minify --flatten > config_minikube.yaml```
 
 ### Check Cluster Status
 Check the status of the nodes. Ensure `Ready` state.
