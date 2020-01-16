@@ -2,6 +2,7 @@
 Curriculum for Introduction to Istio service mesh workshop. All training resources (slides, labs, accounts, books, mailing list, landscape) can found at [Layer5.io](https://layer5.io). Join the Layer5 service mesh community on [Slack](http://slack.layer5.io) or point questions to [@Layer5](https://twitter.com/layer5) on Twitter.
 
 ## Prerequisites
+- [Join the Layer5 service mesh community on Slack](http://slack.layer5.io)
 - [Prereq - Setup Docker, Kubernetes, and Meshery](prereq/README.md)
 
 ## Segment 2
