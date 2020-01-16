@@ -51,7 +51,7 @@ kube-system   weave-net-wq5t5                 2/2       Running   0          2m
 
 If all pods are in a `Running` state, you have an operational Kubernetes cluster. Please continue to download and run Meshery. 
 
-## 3a) Download `mesheryctl`<a name="3"></a>
+## Download `mesheryctl`<a name="3"></a>
 
 ### Run Meshery Off-Cluster
 Install Meshery on your local machine (running Docker) by executing the following:
@@ -71,9 +71,17 @@ curl -L https://git.io/meshery | bash -
 
 #### Or.... Install on Windows with `mesheryctl` binary
 
-Instructions for [Windows](https://meshery.layer5.io/docs/installation#using-docker-on-windows).
+### [Windows](https://meshery.layer5.io/docs/installation#using-docker-on-windows).
+1. Download and unzip `mesheryctl` from the [Meshery releases](https://github.com/layer5io/meshery/releases/latest) page.
+1. Add `mesheryctl` to your PATH for ease of use. Then, execute:
 
-## 3b) Run Meshery
+```
+./mesheryctl start
+```
+
+Upon starting Meshery successfully, instructions to access Meshery will be printed on the sceen.
+
+## Run Meshery
 
 Meshery will automatically launch in your browser.
 
@@ -88,7 +96,6 @@ This will take the user to the `Settings` page and here you can load up your new
 In a similar fashion, if you don't see the Istio adapter loaded, you should be able to switch to the `Service Meshes` tab in the `Settings` page and connect to existing adapters from the drop down ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/meshery_settings_page-service-meshes.png)).
 
 Once an adapter is connected, you will also see it added to the nav menu on the left ([see screenshot](https://github.com/leecalcote/istio-service-mesh-workshop/raw/feature/blend-in-meshery/prereq/img/meshery_settings_page-service_meshes_with_menu.png)).
-
 
 In the labs, you will use a combination of Meshery's UI and your terminal. We suggest splitting the view on your display between your terminal and your web browser, so that you don't have to switch between apps frequently.
 
