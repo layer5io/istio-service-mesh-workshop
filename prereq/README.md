@@ -5,7 +5,7 @@ You will need each of the following in order to complete the workshop:
 1. Kubernetes (installed locally or have remote access to a cluster)
 1. Meshery (installed locally)
 
-## Install Docker and Create a Kubernetes Cluster
+## Install Docker and Create a Kubernetes Cluster<a name="1"></a>
 
 This training requires access to a Kubernetes cluster and uses Docker Desktop and Minikube as the example Kubernetes platforms. Alternatively, you may choose to use any of the other [supported Kubernetes platform](https://meshery.layer5.io/docs/installation/platforms).
 
@@ -50,12 +50,12 @@ kube-system   weave-net-wq5t5                 2/2       Running   0          2m
 
 If all pods are in a `Running` state, you have an operational Kubernetes cluster. Please continue to download and run Meshery. 
 
-## Download `mesheryctl`
+## 3a) Download `mesheryctl`<a name="3"></a>
 
 ### Run Meshery Off-Cluster
 Install Meshery on your local machine (running Docker) by executing the following:
 
-#### Install on MacOS with Homebrew**
+#### Install on MacOS with Homebrew
 ```
 brew tap layer5io/tap
 brew install mesheryctl
@@ -72,7 +72,7 @@ curl -L https://git.io/meshery | bash -
 
 Instructions for [Windows](https://meshery.layer5.io/docs/installation#using-docker-on-windows).
 
-## Run Meshery
+## 3b) Run Meshery
 
 Meshery will automatically launch in your browser.
 
