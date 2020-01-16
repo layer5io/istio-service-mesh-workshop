@@ -7,25 +7,27 @@ You will need each of the following in order to complete the workshop:
 
 ## Install Docker and Create a Kubernetes Cluster
 
-Access to a Kubernetes cluster is required. You may use any Kubernetes platform of your choice. The "Introduction to Istio" training uses Docker Desktop the example Kubernetes platform. If you would like to use a different Kubernetes cluster (like your lab cluster or Minikube), you can skip lab-1 (this lab).
+This training uses Docker Desktop as the example Kubernetes platform. Access to a Kubernetes cluster is required. Alternatively, you may choose to use any of the other [supported Kubernetes platform](https://meshery.layer5.io/docs/installation/platforms).
 
-### Docker Desktop Setup
+### Setup Docker Desktop (MacOS and Windows)
 
 1. Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop).
-1. Ensure 4GB is allocated to your Docker Desktop VM in Docker Desktop preferences ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/docker-desktop-memory.png)).
-1. Enable Kubernetes in Docker Desktop preferences ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/docker-desktop-kube.png)).
+  1. Ensure 4GB is allocated to your Docker Desktop VM in Docker Desktop preferences ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/docker-desktop-memory.png).
+1. Create Kubernetes cluster:Enable Kubernetes in Docker Desktop preferences ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/docker-desktop-kube.png)).
 1. Please open `~/.kube/config` and check the `docker-desktop` cluster under `clusters` section and ensure you see something like the image below:
   ![](img/docker-desktop-config.png)
 
     __Note__: If you see `https://localhost:6443` as the value for server, please get the IP address of your host and replace `localhost` with the the IP address. The end result should look like this `https://1.2.3.4:6443`.
 
-- Mac and Windows users should be able to continue with Kubernetes on Docker Desktop.
-- Linux users should be able to install kubeadm and kubelet with your respective package managers on your machines and continue with the labs. [Here](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) is a link which might be helpful in this regard.
+- Mac and Windows users may continue this workshop with Kubernetes on Docker Desktop.
 
-### Minikube setup
-Please go [here](https://meshery.layer5.io/docs/installation/minikube) for instructions
 
-#### Check Cluster Status
+#### Or... Setup Minikube (MacOS, Windows, Linux)
+1. [Install minikube](https://minikube.sigs.k8s.io).
+1. Create Kubernetes cluster: `minikube start`.
+1. [Export kubeconfig](https://meshery.layer5.io/docs/installation/minikube).
+
+### Check Cluster Status
 Check the status of the nodes. Ensure `Ready` state.
 ```sh
 [node1 ~]$ kubectl get nodes
