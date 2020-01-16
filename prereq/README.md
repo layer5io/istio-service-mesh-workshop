@@ -71,7 +71,7 @@ curl -L https://git.io/meshery | bash -
 
 #### Or.... Install on Windows with `mesheryctl` binary
 
-### [Windows](https://meshery.layer5.io/docs/installation#using-docker-on-windows).
+### [Windows](https://meshery.layer5.io/docs/installation#using-docker-on-windows)
 1. Download and unzip `mesheryctl` from the [Meshery releases](https://github.com/layer5io/meshery/releases/latest) page.
 1. Add `mesheryctl` to your PATH for ease of use. Then, execute:
 
