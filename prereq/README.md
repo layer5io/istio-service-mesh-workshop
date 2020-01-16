@@ -48,20 +48,33 @@ kube-system   kube-scheduler-node1            1/1       Running   0          1h
 kube-system   weave-net-wq5t5                 2/2       Running   0          2m
 ```
 
-We can see all the pods are in `Running` state. If you have a running Kubernetes clsuter, please [continue to Lab 1 - Deploy Istio](../lab-1/README.md) 
-
+If all pods are in a `Running` state, you have an operational Kubernetes cluster. Please continue to download and run Meshery. 
 
 ## Download and Run Meshery
 
 ### Run Meshery Off-Cluster
+Install Meshery on your local machine (running Docker) by executing the following:
 
-Using Docker, install Meshery on your local machine by running the following:
+**MacOS with Homebrew**
+```
+brew tap layer5io/tap
+brew install mesheryctl
+mesheryctl start
+```
+
+- or -
+
+**MacOS and Linux with bash script**: 
 
 ```
- sudo curl -L https://git.io/meshery -o /usr/local/bin/meshery
- sudo chmod a+x /usr/local/bin/meshery
- meshery start        
+curl -L https://git.io/meshery | bash -  
 ```
+
+- or -
+
+**Windows**
+
+Or see instructions for [Windows](https://meshery.layer5.io/docs/installation#using-docker-on-windows).
 
 Sign into Meshery ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/sign-into-meshery.png)) using one of Twitter, Linkedin, GitHub or Google authentication.
 
