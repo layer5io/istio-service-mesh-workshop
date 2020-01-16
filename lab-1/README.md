@@ -11,7 +11,7 @@ Now that we have a Kubernetes cluster and Meshery, we are ready to download and 
 * [5. Confirm Add-ons](#5)
 
 
-## <a name="3"></a> 3 - Install Istio
+## <a name="1"></a> 1 - Install Istio
 
 In Meshery, select the deployed Istio adapter in the left nav menu under the `Management` section ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/lab-1/img/meshery_management_istio.png)).
 
@@ -19,14 +19,14 @@ On the Istio adapter's management page, on the `Install` card, you can click on 
 
 <small>For manual steps go [here](#appendix)</small>
 
-## <a name="4"></a> 4 - Verify install
+## <a name="2"></a> 2 - Verify install
 
 Istio is deployed in a separate Kubernetes namespace `istio-system`. To check if Istio is deployed, and also, to see all the pieces that are deployed, execute the following:
 
 ```sh
 kubectl get all -n istio-system
 ```
-## <a name="5"></a> 5 - Confirming Add-ons
+## <a name="3"></a> 3 - Confirming Add-ons
 	
 Istio, as part of this workshop, is installed with several optional addons like:
 1. [Prometheus](https://prometheus.io/)
@@ -39,7 +39,7 @@ You will use Prometheus and Grafana for collecting and viewing metrics, while fo
 	
 Kiali is another add-on which can be used to generate a graph of services within an Istio mesh and is deployed as part of Istio in this lab.
 
-
+<hr />
 ## <a name="appendix"></a> Appendix - Manual Install
 
 ### <a name="1"></a> 1 - Download Istio
