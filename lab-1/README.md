@@ -4,12 +4,14 @@ Now that we have a Kubernetes cluster and Meshery, we are ready to download and 
 
 ## Steps
 
-* [1. Download Istio resources](#1)
-* [2. Setup `istioctl`](#2)
-* [3. Install Istio](#3)
-* [4. Verify install](#4)
-* [5. Confirm Add-ons](#5)
 
+* [1. Install Istio](#1)
+* [2. Verify install](#2)
+* [3. Confirm Add-ons](#3)
+
+Optional (manual):
+* [1. Download Istio resources](#1.1)
+* [2. Setup `istioctl`](#1.2)
 
 ## <a name="1"></a> 1 - Install Istio
 
@@ -40,9 +42,11 @@ You will use Prometheus and Grafana for collecting and viewing metrics, while fo
 Kiali is another add-on which can be used to generate a graph of services within an Istio mesh and is deployed as part of Istio in this lab.
 
 <hr />
+<hr />
+
 ## <a name="appendix"></a> Appendix - Manual Install
 
-### <a name="1"></a> 1 - Download Istio
+### <a name="1.1"></a> 1.1 - Download Istio
 You will download and deploy the latest Istio resources on your Kubernetes cluster. 
 
 ***Note to Docker Desktop users:*** please ensure your Docker VM has atleast 4GiB of Memory, which is required for all services to run.
@@ -52,7 +56,7 @@ On your local machine:
 curl -L https://git.io/getLatestIstio | sh -
 ```
 
-### <a name="2"></a> 2 - Setting up istioctl
+### <a name="1.2"></a> 1.2 - Setting up istioctl
 On a *nix system, you can setup istioctl by doing the following: 
 
 The above command will get the latest Istio package and untar it in the same folder.
