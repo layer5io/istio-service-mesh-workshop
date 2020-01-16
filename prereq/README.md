@@ -7,12 +7,12 @@ You will need each of the following in order to complete the workshop:
 
 ## Install Docker and Create a Kubernetes Cluster
 
-This training uses Docker Desktop as the example Kubernetes platform. Access to a Kubernetes cluster is required. Alternatively, you may choose to use any of the other [supported Kubernetes platform](https://meshery.layer5.io/docs/installation/platforms).
+This training requires access to a Kubernetes cluster and uses Docker Desktop and Minikube as the example Kubernetes platforms. Alternatively, you may choose to use any of the other [supported Kubernetes platform](https://meshery.layer5.io/docs/installation/platforms).
 
 ### Setup Docker Desktop (MacOS and Windows)
 
 1. Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop).
-  1. Ensure 4GB is allocated to your Docker Desktop VM in Docker Desktop preferences ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/docker-desktop-memory.png).
+   1. Ensure 4GB is allocated to your Docker Desktop VM in Docker Desktop preferences ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/docker-desktop-memory.png)).
 1. Create Kubernetes cluster:Enable Kubernetes in Docker Desktop preferences ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/docker-desktop-kube.png)).
 1. Please open `~/.kube/config` and check the `docker-desktop` cluster under `clusters` section and ensure you see something like the image below:
   ![](img/docker-desktop-config.png)
@@ -22,7 +22,7 @@ This training uses Docker Desktop as the example Kubernetes platform. Access to 
 - Mac and Windows users may continue this workshop with Kubernetes on Docker Desktop.
 
 
-#### Or... Setup Minikube (MacOS, Windows, Linux)
+### Or... Setup Minikube (MacOS, Windows, Linux)
 1. [Install minikube](https://minikube.sigs.k8s.io).
 1. Create Kubernetes cluster: `minikube start`.
 1. [Export kubeconfig](https://meshery.layer5.io/docs/installation/minikube).
@@ -50,38 +50,37 @@ kube-system   weave-net-wq5t5                 2/2       Running   0          2m
 
 If all pods are in a `Running` state, you have an operational Kubernetes cluster. Please continue to download and run Meshery. 
 
-## Download and Run Meshery
+## Download `mesheryctl`
 
 ### Run Meshery Off-Cluster
 Install Meshery on your local machine (running Docker) by executing the following:
 
-**MacOS with Homebrew**
+#### Install on MacOS with Homebrew**
 ```
 brew tap layer5io/tap
 brew install mesheryctl
 mesheryctl start
 ```
 
-- or -
-
-**MacOS and Linux with bash script**: 
+#### Or... Install onMacOS and Linux with bash script: 
 
 ```
 curl -L https://git.io/meshery | bash -  
 ```
 
-- or -
+#### Or.... Install on Windows with `mesheryctl` binary
 
-**Windows**
+Instructions for [Windows](https://meshery.layer5.io/docs/installation#using-docker-on-windows).
 
-Or see instructions for [Windows](https://meshery.layer5.io/docs/installation#using-docker-on-windows).
+## Run Meshery
 
-Sign into Meshery ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/sign-into-meshery.png)) using one of Twitter, Linkedin, GitHub or Google authentication.
+Meshery will automatically launch in your browser.
 
-Meshery will try to recognize and preload Kubernetes config from under $HOME/.kube folder and preconnect existing service mesh adapters ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/meshery_landing_page.png)).
+Sign into Meshery ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/sign-into-meshery.png)) using either Twitter, Linkedin, GitHub or Google authentication.
 
+Meshery attempt to automatically connect with your Kubernetes cluster by preloading your kubeconfig in your `$HOME/.kube` folder and preconnect existing service mesh adapters ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/meshery_landing_page.png)).
 
-If you want to change the Kubernetes config to use a custom one, you can do so by clicking the gear icon on the right top of the screen ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/meshery_landing_page_settings_icon.png)). 
+If your kubeconfig is in a different location, point Meshery to it navigating to the Settings page. Navigate to Settings by clicking the gear icon on the right top of the screen ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/meshery_landing_page_settings_icon.png)). 
 
 This will take the user to the `Settings` page and here you can load up your new config file and select the context to use ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/meshery_settings_page.png)).
 
@@ -90,7 +89,7 @@ In a similar fashion, if you don't see the Istio adapter loaded, you should be a
 Once an adapter is connected, you will also see it added to the nav menu on the left ([see screenshot](https://github.com/leecalcote/istio-service-mesh-workshop/raw/feature/blend-in-meshery/prereq/img/meshery_settings_page-service_meshes_with_menu.png)).
 
 
-For the labs, it will be good to have your terminal and your browser, with Meshery, share your screen so that you don't have to switch between apps frequently.
+In the labs, you will use a combination of Meshery's UI and your terminal. We suggest splitting the view on your display between your terminal and your web browser, so that you don't have to switch between apps frequently.
 
 <!-- ### <span style="color:gray">Alternatively - Run Meshery In-Cluster</span>
  
