@@ -55,11 +55,7 @@ If all pods are in a `Running` state, you have an operational Kubernetes cluster
 
 ### Run Meshery Off-Cluster
 
-<img src="img/meshery-architecture.svg"
-     alt="Meshery Architecture"
-     style="float: left; margin-right: 10px; width="50%" />
-     
-[!Meshery Architecture](img/meshery-architecture.svg)
+<img src="img/meshery-architecture.svg" alt="Meshery Architecture" style="float: left; margin-right: 10px;" width="60%" />
 
 Install Meshery on your local machine (running Docker) by executing the following:
 
