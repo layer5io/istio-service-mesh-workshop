@@ -93,7 +93,7 @@ Sign into Meshery ([see screenshot](https://raw.githubusercontent.com/layer5io/i
 
 Meshery attempts to automatically connect with your Kubernetes cluster by loading the kubeconfig found in your `$HOME/.kube` folder and connecting existing service mesh adapters ([see screenshot](https://raw.githubusercontent.com/layer5io/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/meshery_landing_page.png)).
 
-If your kubeconfig is in a different location, point Meshery to it navigating to the Settings page. Navigate to Settings by clicking the gear icon on the right top of the screen ([see screenshot](https://raw.githubusercontent.com/layer5io/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/meshery_landing_page_settings_icon.png)). 
+If your kubeconfig is in a different location (i.e. if you're using minikube, not Docker Desktop), point Meshery to your kubeconfig location by navigating to the Settings page. Navigate to Settings by clicking the gear icon on the right top of the screen ([see screenshot](https://raw.githubusercontent.com/layer5io/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/meshery_landing_page_settings_icon.png)). 
 
 This will take the user to the `Settings` page and here you can load up your new config file and select the context to use ([see screenshot](https://raw.githubusercontent.com/layer5io/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/meshery_settings_page.png)).
 
