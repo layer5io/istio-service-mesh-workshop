@@ -55,7 +55,7 @@ You will download and deploy the latest Istio resources on your Kubernetes clust
 
 On your local machine:
 ```sh
-curl -L https://git.io/getLatestIstio | sh -
+curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.3.0 sh -
 ```
 
 ### <a name="1.2"></a> 1.2 - Setting up istioctl
