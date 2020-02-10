@@ -248,7 +248,14 @@ spec:
 
 Now, if we reload the `/productpage` in your browser several times, you should now see red-colored star ratings 100% of the time.
 
-## <a name="appendix"></a> Appendix
+
+## [Continue to lab 6 - Fault Injection and Rate Limiting](../lab-6/README.md)
+
+<hr />
+Alternative, manual installation steps below. No need to execute, if you have performed the steps above.
+<hr />
+
+## <a name="appendix"></a> Appendix - Manual Instructions
 
 ### Default destination rules
 Run the following command to create default destination rules for the Bookinfo services:
@@ -279,6 +286,3 @@ kubectl apply -f  samples/bookinfo/networking/virtual-service-reviews-50-v3.yaml
 ```sh
 kubectl apply -f samples/bookinfo/networking/virtual-service-reviews-v3.yaml
 ```
-
-
-## [Continue to lab 6 - Fault Injection and Rate Limiting](../lab-6/README.md)
