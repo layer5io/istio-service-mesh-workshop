@@ -101,6 +101,8 @@ This will run the load test and show the results in a chart. ([see screenshot](h
 You should only see a percentage of the requests succeed and the rest trapped by the configured circuit breaker.
 
 
+## [Continue to Lab 8 - Mutual TLS & Identity Verification](../lab-8/README.md)
+
 ## <a name="appendix"></a> Appendix
 
 ### Configure circuit breaking
@@ -133,5 +135,3 @@ spec:
       maxEjectionPercent: 100
 EOF
 ```
-
-## [Continue to Lab 8 - Mutual TLS & Identity Verification](../lab-8/README.md)
