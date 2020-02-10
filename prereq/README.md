@@ -67,7 +67,7 @@ brew install mesheryctl
 mesheryctl start
 ```
 
-#### Or... Install onMacOS and Linux with bash script: 
+#### Or... Install on MacOS and Linux with bash script: 
 
 ```
 curl -L https://git.io/meshery | bash -  
@@ -89,17 +89,17 @@ Upon starting Meshery successfully, instructions to access Meshery will be print
 
 Meshery will automatically launch in your browser.
 
-Sign into Meshery ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/sign-into-meshery.png)) using either Twitter, Linkedin, GitHub or Google authentication.
+Sign into Meshery ([see screenshot](https://raw.githubusercontent.com/layer5io/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/sign-into-meshery.png)) using either Twitter, Linkedin, GitHub or Google authentication.
 
-Meshery attempt to automatically connect with your Kubernetes cluster by preloading your kubeconfig in your `$HOME/.kube` folder and preconnect existing service mesh adapters ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/meshery_landing_page.png)).
+Meshery attempts to automatically connect with your Kubernetes cluster by loading the kubeconfig found in your `$HOME/.kube` folder and connecting existing service mesh adapters ([see screenshot](https://raw.githubusercontent.com/layer5io/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/meshery_landing_page.png)).
 
-If your kubeconfig is in a different location, point Meshery to it navigating to the Settings page. Navigate to Settings by clicking the gear icon on the right top of the screen ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/meshery_landing_page_settings_icon.png)). 
+If your kubeconfig is in a different location, point Meshery to it navigating to the Settings page. Navigate to Settings by clicking the gear icon on the right top of the screen ([see screenshot](https://raw.githubusercontent.com/layer5io/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/meshery_landing_page_settings_icon.png)). 
 
-This will take the user to the `Settings` page and here you can load up your new config file and select the context to use ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/meshery_settings_page.png)).
+This will take the user to the `Settings` page and here you can load up your new config file and select the context to use ([see screenshot](https://raw.githubusercontent.com/layer5io/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/meshery_settings_page.png)).
 
-In a similar fashion, if you don't see the Istio adapter loaded, you should be able to switch to the `Service Meshes` tab in the `Settings` page and connect to existing adapters from the drop down ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/meshery_settings_page-service-meshes.png)).
+In a similar fashion, if you don't see the Istio adapter loaded, you should be able to switch to the `Service Meshes` tab in the `Settings` page and connect to existing adapters from the drop down ([see screenshot](https://raw.githubusercontent.com/layer5io/istio-service-mesh-workshop/feature/blend-in-meshery/prereq/img/meshery_settings_page-service-meshes.png)).
 
-Once an adapter is connected, you will also see it added to the nav menu on the left ([see screenshot](https://github.com/leecalcote/istio-service-mesh-workshop/raw/feature/blend-in-meshery/prereq/img/meshery_settings_page-service_meshes_with_menu.png)).
+Once an adapter is connected, you will also see it added to the nav menu on the left ([see screenshot](https://github.com/layer5io/istio-service-mesh-workshop/raw/feature/blend-in-meshery/prereq/img/meshery_settings_page-service_meshes_with_menu.png)).
 
 In the labs, you will use a combination of Meshery's UI and your terminal. We suggest splitting the view on your display between your terminal and your web browser, so that you don't have to switch between apps frequently.
 
