@@ -107,8 +107,11 @@ kube-system    Active    1h
 
 ## [Continue to Lab 3 - Access BookInfo via Istio Ingress Gateway](../lab-3/README.md)
 
+<hr />
+Alternative, manual installation steps below. No need to execute, if you have performed the steps above.
+<hr />
 
-## <a name="appendix"></a> Appendix
+## <a name="appendix"></a> Appendix - Alternative Manual Steps
 
 ### Label namespace for injection
 Label the default namespace with istio-injection=enabled
