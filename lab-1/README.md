@@ -4,7 +4,6 @@ Now that we have a Kubernetes cluster and Meshery, we are ready to download and 
 
 ## Steps
 
-
 * [1. Install Istio](#1)
 * [2. Verify install](#2)
 * [3. Confirm add-ons](#3)
@@ -40,6 +39,8 @@ Istio, as part of this workshop, is installed with several optional addons like:
 You will use Prometheus and Grafana for collecting and viewing metrics, while for viewing distributed traces, you can choose between [Zipkin](https://zipkin.io/) or [Jaeger](https://www.jaegertracing.io/). In this training, we will use Jaeger.
 	
 Kiali is another add-on which can be used to generate a graph of services within an Istio mesh and is deployed as part of Istio in this lab.
+
+## [Continue to Lab 2 - Deploy Sample Bookinfo app](../lab-2/README.md)
 
 <hr />
 Alternative, manual installation steps below. No need to execute, if you have performed the steps above.
@@ -96,5 +97,3 @@ You are likely running Kubernetes version 1.9 or earlier, which might NOT have s
 ```sh
 kubectl apply -f install/kubernetes/istio-demo-auth.yaml
 ```
-
-## [Continue to Lab 2 - Deploy Sample Bookinfo app](../lab-2/README.md)
