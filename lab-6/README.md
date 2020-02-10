@@ -7,7 +7,7 @@ In this lab we will learn how to test the resiliency of an application by inject
 <!-- ```sh
 kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml 
 ``` -->
-Before we start let us reset the virtual services.
+Before we start, we will need to reset the virtual services.
 
 In Meshery in the browser, navigate to the Istio adapter's management page from the left nav menu again.
 
@@ -154,6 +154,11 @@ Now we login to `/productpage` as user `jason` and observe that the page loads w
 ### 6.3 Verify fault injection
 Verify the fault injection by logging out (or logging in as a different user), the page should load normally without any errors.
 
+## [Continue to Lab 7 - Circuit Breaking](../lab-7/README.md)
+
+<hr />
+Alternative, manual installation steps below. No need to execute, if you have performed the steps above.
+<hr />
 
 ## <a name="appendix"></a> Appendix
 
@@ -181,4 +186,3 @@ kubectl apply -f samples/bookinfo/networking/virtual-service-ratings-test-abort.
 ```
 
 
-## [Continue to Lab 7 - Circuit Breaking](../lab-7/README.md)
