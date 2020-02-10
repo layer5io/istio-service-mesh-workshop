@@ -105,6 +105,7 @@ kube-system    Active    1h
     kubectl describe pod productpage-v1-.....
     ```
 
+## [Continue to Lab 3 - Access BookInfo via Istio Ingress Gateway](../lab-3/README.md)
 
 
 ## <a name="appendix"></a> Appendix
@@ -143,4 +144,3 @@ kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml
 kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml
 ```
 
-## [Continue to Lab 3 - Access BookInfo via Istio Ingress Gateway](../lab-3/README.md)
