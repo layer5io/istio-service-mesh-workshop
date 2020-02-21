@@ -95,5 +95,5 @@ error: unable to recognize "istio.yaml": no matches for admissionregistration.k8
 You are likely running Kubernetes version 1.9 or earlier, which might NOT have support for mutating admission webhooks or might not have it enabled and is the reason for the error. You can continue with the lab without any issues.
 
 ```sh
-kubectl apply -f install/kubernetes/istio-demo-auth.yaml
+kubectl apply -f install/kubernetes/istio-demo.yaml
 ```
