@@ -73,7 +73,7 @@ Output:
 ```sh
 NAME           STATUS    AGE       ISTIO-INJECTION
 default        Active    1h        enabled
-istio-system   Active    1h        
+istio-system   Active    1h        disabled
 kube-public    Active    1h        
 kube-system    Active    1h
 ```
