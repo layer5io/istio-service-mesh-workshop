@@ -63,7 +63,8 @@ spec:
   - fault:
       delay:
         fixedDelay: 7s
-        percent: 100
+        percentage:
+          value: 100
     match:
     - headers:
         end-user:
@@ -132,7 +133,8 @@ spec:
   - fault:
       abort:
         httpStatus: 500
-        percent: 100
+        percentage:
+          value: 100
     match:
     - headers:
         end-user:
