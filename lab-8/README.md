@@ -1,24 +1,24 @@
 # Lab 8 - Mutual TLS & Identity Verification
 
-Istio provides transparent mutal TLS to services inside the service mesh where both the client and the server authenticate each others certificates as part of the TLS handshake. As part of this workshop we have deployed Istio with mTLS.
+Istio provides transparent mutual TLS to services inside the service mesh where both the client and the server authenticate each others' certificates as part of the TLS handshake. As part of this workshop, we have deployed Istio with mTLS.
 
 ## 8.1 Verify mTLS
-Citadel is Istio’s key management service. Let us first ensure citadel is up and running:
+Citadel is Istio’s key management service. As a first step, confirm that Citadel is up and running:
 ```sh
 kubectl get deploy -l istio=citadel -n istio-system
 ```
 Output will be similar to:
 ```
-NAME            DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-istio-citadel   1         1         1            1           3h25m
+NAME            READY   UP-TO-DATE   AVAILABLE   AGE
+istio-citadel   1/1     1            1           3m23s
 ```
 
-To experiment with mTLS, let us get into the sidecar proxy of productpage page by running the command below:
+To experiment with mTLS, let's do so by logging into the sidecar proxy of the `productpage` pod by executing this command:
 ```sh
 kubectl exec -it $(kubectl get pod | grep productpage | awk '{ print $1 }') -c istio-proxy -- /bin/bash
 ```
 
-We are now in the sidecar of the productpage pod. Let us check all the ceritificates loaded in the sidecar:
+We are now in the proxy of the `productpage` pod. Check that all the ceritificates are loaded in this proxy:
 ```sh
 ls /etc/certs/
 ```
@@ -28,7 +28,7 @@ You should see 3 entries:
 cert-chain.pem  key.pem  root-cert.pem
 ```
 
-Let us try to make a curl call to the details service over HTTP
+Now, try to make a curl call to the `details` service over HTTP:
 ```sh
 curl http://details:9080/details/0
 ```
