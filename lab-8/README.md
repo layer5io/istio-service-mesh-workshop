@@ -2,6 +2,27 @@
 
 Istio provides transparent mutual TLS to services inside the service mesh where both the client and the server authenticate each others' certificates as part of the TLS handshake. As part of this workshop, we have deployed Istio with mTLS.
 
+By default istio sets mTLS in `PERMISSIVE` mode which allows plain text traffic to be sent and accepted by a mesh. We first disallow plain text traffic using `PeerAuthentication` and setting mTLS mode to STRICT.
+
+## Set mTLS to strict mode
+This can be easily done by executing a simple command:-
+```sh
+kubectl apply -f - <<EOF
+apiVersion: "security.istio.io/v1beta1"
+kind: "PeerAuthentication"
+metadata:
+  name: "default"
+spec:
+  mtls:
+    mode: STRICT
+EOF
+```
+Output will be similar to:
+```sh
+peerauthentication.security.istio.io/default created
+```
+
+
 ## 8.1 Verify mTLS
 Citadel is Istio’s key management service. As a first step, confirm that Citadel is up and running:
 ```sh
@@ -33,9 +54,9 @@ Now, try to make a curl call to the `details` service over HTTP:
 curl http://details:9080/details/0
 ```
 
-Since, we have TLS between the sidecar's, an HTTP call will not work. You will see an error like the one below:
+Since, we have TLS between the sidecar's, an HTTP call will not work. The request will timeout. You will see an error like the one below:
 ```sh
-curl: (56) Recv failure: Connection reset by peer
+curl: (7) Failed to connect to details port 9080: Connection timed out
 ```
 
 Let us try to make a curl call to the details service over HTTPS but **WITHOUT** certs:
@@ -45,7 +66,7 @@ curl https://details:9080/details/0 -k
 
 The request will be denied and you will see an error like the one below:
 ```sh
-curl: (35) gnutls_handshake() failed: Handshake failed
+curl: (16) SSL_write() returned SYSCALL, errno = 104
 ```
 
 Now, let us use curl over HTTPS with certificates to the details service:
