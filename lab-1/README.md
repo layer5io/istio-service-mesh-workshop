@@ -27,7 +27,26 @@ Istio is deployed in a separate Kubernetes namespace `istio-system`. To check if
 ```sh
 kubectl get all -n istio-system
 ```
-## <a name="3"></a> 3 - Confirming Add-ons
+
+## <a name="3"></a> 3 - Enforce mTLS strict mode
+Require that service-to-service traffic be encrypted:
+```sh
+kubectl apply -f - <<EOF
+apiVersion: "security.istio.io/v1beta1"
+kind: "PeerAuthentication"
+metadata:
+  name: "default"
+spec:
+  mtls:
+    mode: STRICT
+EOF
+```
+Output will be similar to:
+```sh
+peerauthentication.security.istio.io/default created
+```
+
+## <a name="4"></a> 4 - Confirming Add-ons
 	
 Istio, as part of this workshop, is installed with several optional addons like:
 1. [Prometheus](https://prometheus.io/)
