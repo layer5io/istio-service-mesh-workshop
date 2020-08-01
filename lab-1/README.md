@@ -16,7 +16,7 @@ Optional (manual install of Istio):
 
 In Meshery, select the deployed Istio adapter in the left nav menu under the `Management` section ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/lab-1/img/meshery_management_istio.png)).
 
-On the Istio adapter's management page, on the `Install` card, you can click on the (+) icon and select `Latest Istio with mTLS` to install the latest version of Istio with mTLS ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/lab-1/img/meshery_management_istio-install.png)).
+On the Istio adapter's management page, on the `Manage Service Mesh Lifecycle` card, you can click on the (+) icon and select `Latest Istio with mTLS` to install the latest version of Istio with mTLS ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/lab-1/img/meshery_management_istio-install.png)).
 
 <small>For manual steps go [here](#appendix)</small>
 
