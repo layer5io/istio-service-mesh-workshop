@@ -8,17 +8,21 @@ A workshop on advanced aspects of service mesh through the lens of Istio. Questi
 ## Setup Istio
 - [Lab 1 - Setup Istio](lab-1/README.md)
 
+## Deploying an App onto the Mesh
+- [Lab 2 - Deploy the sample application BookInfo](lab-2/README.md)
+
 <p>
 <img src="img/break.png" height="25px" style="text-align:left; padding:8px" />
 Break (5 minutes)
 </p>
 
-## Deploying an app onto the mesh
-- [Lab 2 - Deploy Sample App - BookInfo](lab-2/README.md)
-- [Lab 3 - Istio Ingress Controller/Gateway](lab-3/README.md)
+## Exposing Workloads with Ingress Gateway
+
+- [Lab 3 - Istio Ingress Gateway](lab-3/README.md)
 
 ## Observability
-- [Lab 4 - Telemetry](lab-4/README.md)
+
+- [Lab 4 - Telemetry Add-ons](lab-4/README.md)
 
 <p>
 <img src="img/break.png" height="25px" style="text-align:left; padding:8px" />

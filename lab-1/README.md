@@ -1,118 +1,154 @@
-# Lab 1 - Deploy Istio
+# Lab 2 - Deploy the sample application BookInfo
 
-Now that we have a Kubernetes cluster and Meshery, we are ready to download and deploy Istio resources.
+To play with Istio and demonstrate some of it's capabilities, you will deploy the example BookInfo application, which is included the Istio package.
 
-## Steps
+## What is the BookInfo Application?
 
-* [1. Install Istio](#1)
-* [2. Verify install](#2)
-* [3. Confirm add-ons](#3)
+This application is a polyglot composition of microservices are written in different languages and sample BookInfo application displays information about a book, similar to a single catalog entry of an online book store. Displayed on the page is a description of the book, book details (ISBN, number of pages, and so on), and a few book reviews.
 
-Optional (manual install of Istio):
-* [1. Download Istio resources](#1.1)
-* [2. Setup `istioctl`](#1.2)
+The end-to-end architecture of the application is shown in the figure.
 
-## <a name="1"></a> 1 - Install Istio
+<a href="img/bookinfo-off-mesh.png">
+<img src="img/bookinfo-off-mesh.png" width="50%" align="center" />
+</a>
 
-In Meshery, select the deployed Istio adapter in the left nav menu under the `Management` section ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/lab-1/img/meshery_management_istio.png)).
+_Figure: BookInfo deployed off the mesh_
 
-On the Istio adapter's management page, on the `Manage Service Mesh Lifecycle` card, you can click on the (+) icon and select `Latest Istio with mTLS` to install the latest version of Istio with mTLS ([see screenshot](https://raw.githubusercontent.com/leecalcote/istio-service-mesh-workshop/feature/blend-in-meshery/lab-1/img/meshery_management_istio-install.png)).
+It’s worth noting that these services have no dependencies on Istio, but make an interesting service mesh example, particularly because of the multitude of services, languages and versions for the reviews service.
 
-<small>For manual steps go [here](#appendix)</small>
+As shown in the figure below, proxies are sidecarred to each of the application containers.
 
-## <a name="2"></a> 2 - Verify install
+<a href="img/bookinfo-on-mesh.png">
+<img src="img/bookinfo-on-mesh.png" width="50%" align="center" />
+</a>
 
-Istio is deployed in a separate Kubernetes namespace `istio-system`. To check if Istio is deployed, and also, to see all the pieces that are deployed, execute the following:
+_Figure: BookInfo deployed on the mesh_
+
+Sidecars proxy can be either manually or automatically injected into the pods. Automatic sidecar injection requires that your Kubernetes api-server supports `admissionregistration.k8s.io/v1` or `admissionregistration.k8s.io/v1beta1` or `admissionregistration.k8s.io/v1beta2` APIs. Verify whether your Kubernetes deployment supports these APIs by executing:
 
 ```sh
-kubectl get all -n istio-system
+kubectl api-versions | grep admissionregistration
 ```
 
-## <a name="3"></a> 3 - Enforce mTLS strict mode
-Require that service-to-service traffic be encrypted:
+If your environment **does NOT** supports either of these two APIs, then you may use [manual sidecar injection](./appendix-manual-injection.md) to deploy the sample app.
+
+As part of Istio deployment in [Lab 1](../lab-1/README.md), you have deployed the sidecar injector.
+
+### <a name="auto"></a> Deploying Sample App with Automatic sidecar injection
+
+Istio, deployed as part of this workshop, will also deploy the sidecar injector. Let us now verify sidecar injector deployment.
+
 ```sh
-kubectl apply -f - <<EOF
-apiVersion: "security.istio.io/v1beta1"
-kind: "PeerAuthentication"
-metadata:
-  name: "default"
-spec:
-  mtls:
-    mode: STRICT
-EOF
+kubectl -n istio-system get deployment -l istio=sidecar-injector
 ```
-Output will be similar to:
+
+Output:
+
 ```sh
-peerauthentication.security.istio.io/default created
+NAME                     DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+istio-sidecar-injector   1         1         1            1           1d
 ```
 
-## <a name="4"></a> 4 - Confirming Add-ons
-	
-Istio, as part of this workshop, is installed with several optional addons like:
-1. [Prometheus](https://prometheus.io/)
-2. [Grafana](https://grafana.com/)
-3. [Zipkin](https://zipkin.io/)
-4. [Jaeger](https://www.jaegertracing.io/)
-5. [Kiali](https://www.kiali.io/)
-	
-You will use Prometheus and Grafana for collecting and viewing metrics, while for viewing distributed traces, you can choose between [Zipkin](https://zipkin.io/) or [Jaeger](https://www.jaegertracing.io/). In this training, we will use Jaeger.
-	
-Kiali is another add-on which can be used to generate a graph of services within an Istio mesh and is deployed as part of Istio in this lab.
+NamespaceSelector decides whether to run the webhook on an object based on whether the namespace for that object matches the [selector](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors).
 
-## [Continue to Lab 2 - Deploy Sample Bookinfo app](../lab-2/README.md)
+```sh
+kubectl get namespace -L istio-injection
+```
+
+Output:
+
+```sh
+NAME           STATUS    AGE       ISTIO-INJECTION
+default        Active    1h        enabled
+istio-system   Active    1h        disabled
+kube-public    Active    1h
+kube-system    Active    1h
+```
+
+Using Meshery, navigate to the Istio management page.
+
+1. Enter `default` in the `Namespace` field.
+1. Click the (+) icon on the `Sample Application` card and select `BookInfo Application` from the list.
+
+This will do 3 things:
+
+1. Label `default` namespace for sidecar injection.
+1. Deploys all the BookInfo services in the `default` namespace.
+1. Deploys the virtual service and gateway needed to expose the BookInfo's productpage application in the `default` namespace.
+
+<small>Manual step for can be found [here](#appendix)</small>
+
+### <a name="verify"></a> Verify Bookinfo deployment
+
+1. Verify that the deployments are all in a state of AVAILABLE before continuing.
+
+   ```sh
+   watch kubectl get deployment
+   ```
+
+2. Choose a service, for instance `productpage`, and view it's container configuration:
+
+```sh
+kubectl get po
+
+kubectl describe pod productpage-v1-.....
+```
+
+3. Examine details of the services:
+
+   ```sh
+   kubectl describe svc productpage
+   ```
+
+Next, you will expose the BookInfo application to be accessed external from the cluster.
+
+<h2>
+  <a href="../lab-3/README.md">
+  <img src="../img/go.svg" width="32" height="32" align="left" />
+  Continue to Lab 3</a>: Access BookInfo via Istio Ingress Gateway
+</h2>
+
+<br />
+<hr />
+
+Alternative, manual installation steps are provided for reference below. No need to execute these if you have performed the steps above.
 
 <hr />
-Alternative, manual installation steps below. No need to execute, if you have performed the steps above.
-<hr />
 
-## <a name="appendix"></a> Appendix - Alternative Manual Install
+## <a name="appendix"></a> Appendix - Alternative Manual Steps
 
-### <a name="1.1"></a> 1.1 - Download Istio
-You will download and deploy the latest Istio resources on your Kubernetes cluster. 
+### Label namespace for injection
 
-***Note to Docker Desktop users:*** please ensure your Docker VM has atleast 4GiB of Memory, which is required for all services to run.
+Label the default namespace with istio-injection=enabled
 
-On your local machine:
 ```sh
-curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.3.0 sh -
+kubectl label namespace default istio-injection=enabled
 ```
 
-### <a name="1.2"></a> 1.2 - Setting up istioctl
-On a *nix system, you can setup istioctl by doing the following: 
-
-The above command will get the latest Istio package and untar it in the same folder.
-
-Change into the Istio package directory and add the `istioctl` client to your PATH environment variable.
 ```sh
-cd istio-*
-export PATH=$PWD/bin:$PATH
+kubectl get namespace -L istio-injection
 ```
 
-To verify `istioctl` is setup lets try to print out the command help
+Output:
+
 ```sh
-istioctl version
+NAME           STATUS    AGE       ISTIO-INJECTION
+default        Active    1h        enabled
+istio-system   Active    1h        disabled
+kube-public    Active    1h
+kube-system    Active    1h
 ```
 
-We can use a new feature in istioctl to check if the cluster is ready for install:
+### Deploy BookInfo
+
+Applying this yaml file included in the Istio package you collected in https://github.com/layer5io/istio-service-mesh-workshop/tree/master/lab-1#1 will deploy the BookInfo app in you cluster.
 
 ```sh
-istioctl verify-install
+kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml
 ```
 
-### Install istio:
-
-Deploy Istio custom resources:
-```sh
-for i in install/kubernetes/helm/istio-init/files/crd*yaml; do kubectl apply -f $i; done
-```
-
-If you see an error message like this:
-```sh
-error: unable to recognize "istio.yaml": no matches for admissionregistration.k8s.io/, Kind=MutatingWebhookConfiguration
-```
-
-You are likely running Kubernetes version 1.9 or earlier, which might NOT have support for mutating admission webhooks or might not have it enabled and is the reason for the error. You can continue with the lab without any issues.
+### Deploy Gateway and Virtual Service for BookInfo app
 
 ```sh
-kubectl apply -f install/kubernetes/istio-demo.yaml
+kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml
 ```
