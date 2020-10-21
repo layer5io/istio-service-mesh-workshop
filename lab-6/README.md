@@ -9,11 +9,27 @@ kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml
 ``` -->
 Before we start, we will need to reset the virtual services.
 
-In Meshery in the browser, navigate to the Istio adapter's management page from the left nav menu again.
+Using Meshery, navigate to the Istio management page:
 
-On the Istio adapter's management page, please enter `default` in the `Namespace` field.
-Then, click the (+) icon on the `Configure` card and select `Route traffic to V2 of Book info reviews service for user Jason` from the list. 
+1. Enter `default` in the `Namespace` field.
+2. Click the (+) icon on the `Apply Custom Configuration` card and paste the configuration below.
 
+Config:
+```
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: reviews
+spec:
+  hosts:
+    - reviews
+  http:
+    - route:
+        - destination:
+            host: reviews
+            subset: v2
+```
+ 
 <small>Manual step for can be found [here](#appendix)</small>
 
 <!-- 
@@ -29,8 +45,10 @@ To start, we will inject a 7s delay for accessing the ratings service for a user
 kubectl apply -f samples/bookinfo/networking/virtual-service-ratings-test-delay.yaml
 ``` -->
 
-On the Istio adapter's management page in Meshery, please enter `default` in the `Namespace` field.
-Then, click the (+) icon on the `Configure` card and select `Inject a 7s delay in the traffic to Book info ratings service for user Jason` from the list. 
+Using Meshery, navigate to the Istio management page:
+
+1. Enter `default` in the `Namespace` field.
+2. Click the (+) icon on the `Apply Custom Configuration` card and paste the configuration below.
 
 <small>Manual step for can be found [here](#appendix)</small>
 
@@ -41,21 +59,12 @@ In a few, we should be able to verify the virtual service by using the command b
 kubectl get virtualservice ratings -o yaml
 ```
 
-Output will be similar to:
+Config:
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  annotations:
-    kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"networking.istio.io/v1alpha3","kind":"VirtualService","metadata":{"annotations":{},"name":"ratings","namespace":"default"},"spec":{"hosts":["ratings"],"http":[{"fault":{"delay":{"fixedDelay":"7s","percent":100}},"match":[{"headers":{"end-user":{"exact":"USER_NAME"}}}],"route":[{"destination":{"host":"ratings","subset":"v1"}}]},{"route":[{"destination":{"host":"ratings","subset":"v1"}}]}]}}
-  creationTimestamp: 2018-10-26T15:21:42Z
-  generation: 1
   name: ratings
-  namespace: default
-  resourceVersion: "14790"
-  selfLink: /apis/networking.istio.io/v1alpha3/namespaces/default/virtualservices/ratings
-  uid: d7d7347f-d932-11e8-88c5-0242f983c5dd
 spec:
   hosts:
   - ratings
@@ -98,9 +107,10 @@ In this section, , we will introduce an HTTP abort to the ratings microservices 
 kubectl apply -f samples/bookinfo/networking/virtual-service-ratings-test-abort.yaml
 ``` -->
 
+Using Meshery, navigate to the Istio management page:
 
-On the Istio adapter's management page in Meshery, please enter `default` in the `Namespace` field.
-Then, click the (+) icon on the `Configure` card and select `Inject HTTP abort to Book info ratings service for user Jason` from the list. 
+1. Enter `default` in the `Namespace` field.
+2. Click the (+) icon on the `Apply Custom Configuration` card and paste the configuration below.
 
 <small>Manual step for can be found [here](#appendix)</small>
 
@@ -112,20 +122,11 @@ In a few, we should be able to verify the virtual service by using the command b
 kubectl get virtualservice ratings -o yaml
 ```
 
-Output will be similar to:
+Config:
 ```yaml
 kind: VirtualService
 metadata:
-  annotations:
-    kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"networking.istio.io/v1alpha3","kind":"VirtualService","metadata":{"annotations":{},"name":"ratings","namespace":"default"},"spec":{"hosts":["ratings"],"http":[{"fault":{"abort":{"httpStatus":500,"percent":100}},"match":[{"headers":{"end-user":{"exact":"USER_NAME"}}}],"route":[{"destination":{"host":"ratings","subset":"v1"}}]},{"route":[{"destination":{"host":"ratings","subset":"v1"}}]}]}}
-  creationTimestamp: 2018-10-26T15:21:42Z
-  generation: 1
   name: ratings
-  namespace: default
-  resourceVersion: "22405"
-  selfLink: /apis/networking.istio.io/v1alpha3/namespaces/default/virtualservices/ratings
-  uid: d7d7347f-d932-11e8-88c5-0242f983c5dd
 spec:
   hosts:
   - ratings
