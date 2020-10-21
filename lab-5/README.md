@@ -1,26 +1,22 @@
 # Lab 5 - Request Routing and Canary Testing
 
-In this lab we are going to get our hands on some of the traffic management capabilities of Istio.
+In this lab, we are going to get our hands on some of the traffic management capabilities of Istio.
 
 ## 5.1 Apply default destination rules
 
-Before we start playing with Istio's traffic management capabilities we need to define the available versions of the deployed services. They are called subsets, in destination rules.
+Before we start playing with Istio's traffic management capabilities, we need to define the available versions of the deployed services. In Istio parlance, versions are called subsets. Subsets are defined in destination rules.
 
 <!-- Run the following command to create default destination rules for the Bookinfo services:
 ```sh
 kubectl apply -f samples/bookinfo/networking/destination-rule-all-mtls.yaml
 ``` -->
 
-Now in Meshery in the browser, navigate to the Istio adapter's management page from the left nav menu again.
+Using Meshery, navigate to the Istio management page:
 
-On the Istio adapter's management page, please enter `default` in the `Namespace` field.
-Then, click the (+) icon on the `Configure` card and select `Default Book info destination rules (defines subsets)` from the list. 
+1. Enter `default` in the `Namespace` field.
+1. Click the (+) icon on the `Apply Service Mesh Configuration` card and select `Bookinfo subsets` from the list. 
 
-<small>Manual step for can be found [here](#appendix)</small>
-
-This will deploy the destination rules for all the Book info services defining their subsets.
-
-In a few seconds we should be able to verify the destination rules created by using the command below:
+This will deploy the destination rules for all the Book info services defining their subsets. Verify the destination rules created by using the command below:
 
 ```sh
 kubectl get destinationrules
@@ -33,17 +29,15 @@ kubectl get destinationrules -o yaml
 
 As part of the bookinfo sample app, there are multiple versions of reviews service. When we load the `/productpage` in the browser multiple times we have seen the reviews service round robin between v1, v2 or v3. As the first exercise, let us first restrict traffic to just V1 of all the services.
 
-In Meshery on the Istio adapter's management page, please enter `default` in the `Namespace` field.
-Then, click the (+) icon on the `Configure` card and select `Route traffic to V1 of all Book info services` from the list. 
+Using Meshery, navigate to the Istio management page:
 
-<small>Manual step for can be found [here](#appendix)</small>
+1. Enter `default` in the `Namespace` field.
+1. Click the (+) icon on the `Apply Custom Configuration` card and paste the configuration below.
 
 <!-- 
 ```sh
 kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml 
 ``` -->
-
-In a few, this will creates a bunch of `virtualservice` entries which will route all requests to ONLY V1 of the services.
 
 To view the applied rule:
 ```sh
@@ -57,27 +51,20 @@ kubectl get virtualservice reviews -o yaml
 
 *Please note:* In the place of the above command, we can either use kubectl or istioctl.
 
-
 Output:
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  annotations:
-    kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"networking.istio.io/v1alpha3","kind":"VirtualService","metadata":{"annotations":{},"name":"reviews","namespace":"default"},"spec":{"hosts":["reviews"],"http":[{"route":[{"destination":{"host":"reviews","subset":"v1"}}]}]}}
-  creationTimestamp: null
   name: reviews
-  namespace: default
-  resourceVersion: "11595"
 spec:
   hosts:
-  - reviews
+    - reviews
   http:
-  - route:
-    - destination:
-        host: reviews
-        subset: v1
+    - route:
+        - destination:
+            host: reviews
+            subset: v1
 ---
 ```
 
