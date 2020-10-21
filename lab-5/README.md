@@ -32,7 +32,7 @@ As part of the bookinfo sample app, there are multiple versions of reviews servi
 Using Meshery, navigate to the Istio management page:
 
 1. Enter `default` in the `Namespace` field.
-1. Click the (+) icon on the `Apply Custom Configuration` card and paste the configuration below.
+2. Click the (+) icon on the `Apply Custom Configuration` card and paste the configuration below.
 
 <!-- 
 ```sh
@@ -51,7 +51,7 @@ kubectl get virtualservice reviews -o yaml
 
 *Please note:* In the place of the above command, we can either use kubectl or istioctl.
 
-Output:
+Config:
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -78,8 +78,10 @@ Let's replace our first rules with a new set. Enable the `ratings` service for a
 <!-- ```sh
 kubectl apply -f samples/bookinfo/networking/virtual-service-reviews-test-v2.yaml
 ``` -->
-In Meshery on the Istio adapter's management page, please enter `default` in the `Namespace` field.
-Then, click the (+) icon on the `Configure` card and select `Route traffic to V2 of Book info reviews service for user Jason` from the list. 
+Using Meshery, navigate to the Istio management page:
+
+1. Enter `default` in the `Namespace` field.
+2. Click the (+) icon on the `Apply Custom Configuration` card and paste the configuration below.
 
 <small>Manual step for can be found [here](#appendix)</small>
 
@@ -90,18 +92,12 @@ In a few, we should be able to verify the virtual service by using the command b
 kubectl get virtualservice reviews -o yaml
 ```
 
-Output will be similar to the one below:
+Config:
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  annotations:
-    kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"networking.istio.io/v1alpha3","kind":"VirtualService","metadata":{"annotations":{},"name":"reviews","namespace":"default"},"spec":{"hosts":["reviews"],"http":[{"match":[{"headers":{"end-user":{"exact":"USER_NAME"}}}],"route":[{"destination":{"host":"reviews","subset":"v2"}}]},{"route":[{"destination":{"host":"reviews","subset":"v1"}}]}]}}
-  creationTimestamp: null
   name: reviews
-  namespace: default
-  resourceVersion: "10366"
 spec:
   hosts:
   - reviews
@@ -126,29 +122,17 @@ Now if we login as your `jason`, you will be able to see data from `reviews` v2.
 
 ## 5.4 Canary Testing - Traffic Shifting
 
-### 5.4.1 Reset rules
-Before we start the next exercise, lets first reset the routing rules back to our 5.1 rules:
-
-<!-- ```sh
-kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml 
-``` -->
-
-In Meshery on the Istio adapter's management page, please enter `default` in the `Namespace` field.
-Then, click the (+) icon on the `Configure` card and select `Route traffic to V1 of all Book info services` from the list. 
-
-<small>Manual step for can be found [here](#appendix)</small>
-
-Once again, all traffic will be routed to `v1` of all the services. 
-
-### 5.4.2 Canary testing w/50% load
+### 5.4.1 Canary testing w/50% load
 To start canary testing, let's begin by transferring 50% of the traffic from reviews:v1 to reviews:v3 with the following command:
 
 <!-- ```sh
 kubectl apply -f  samples/bookinfo/networking/virtual-service-reviews-50-v3.yaml
 ``` -->
 
-In Meshery on the Istio adapter's management page, please enter `default` in the `Namespace` field.
-Then, click the (+) icon on the `Configure` card and select `Route 50% of the traffic to Book info reviews V3` from the list. 
+Using Meshery, navigate to the Istio management page:
+
+1. Enter `default` in the `Namespace` field.
+2. Click the (+) icon on the `Apply Custom Configuration` card and paste the configuration below.
 
 <small>Manual step for can be found [here](#appendix)</small>
 
@@ -159,18 +143,11 @@ In a few, we should be able to verify the virtual service by using the command b
 kubectl get virtualservice reviews -o yaml
 ```
 
-Output will be similar to:
+Config:
 ```yaml
 kind: VirtualService
 metadata:
-  annotations:
-    kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"networking.istio.io/v1alpha3","kind":"VirtualService","metadata":{"annotations":{},"name":"reviews","namespace":"default"},"spec":{"hosts":["r
-eviews"],"http":[{"route":[{"destination":{"host":"reviews","subset":"v1"},"weight":50},{"destination":{"host":"reviews","subset":"v3"},"weight":50}]}]}}
-  creationTimestamp: null
   name: reviews
-  namespace: default
-  resourceVersion: "11904"
 spec:
   hosts:
   - reviews
@@ -190,15 +167,17 @@ spec:
 Now, if we reload the `/productpage` in your browser several times, you should now see red-colored star ratings approximately 50% of the time.
 
 
-### 5.4.3 Shift 100% to v3
+### 5.4.2 Shift 100% to v3
 When version v3 of the reviews microservice is considered stable, we can route 100% of the traffic to reviews:v3:
 
 <!-- ```sh
 kubectl apply -f samples/bookinfo/networking/virtual-service-reviews-v3.yaml
 ``` -->
 
-In Meshery on the Istio adapter's management page, please enter `default` in the `Namespace` field.
-Then, click the (+) icon on the `Configure` card and select `Route 100% of the traffic to Book info reviews V3` from the list. 
+Using Meshery, navigate to the Istio management page:
+
+1. Enter `default` in the `Namespace` field.
+2. Click the (+) icon on the `Apply Custom Configuration` card and paste the configuration below.
 
 <small>Manual step for can be found [here](#appendix)</small>
 
@@ -209,19 +188,12 @@ In a few, we should be able to verify the virtual service by using the command b
 ```sh
 kubectl get virtualservice reviews -o yaml
 ```
-Output:
+Config:
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  annotations:
-    kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"networking.istio.io/v1alpha3","kind":"VirtualService","metadata":{"annotations":{},"name":"reviews","namespace":"default"},"spec":{"hosts":["r
-eviews"],"http":[{"route":[{"destination":{"host":"reviews","subset":"v3"}}]}]}}
-  creationTimestamp: null
   name: reviews
-  namespace: default
-  resourceVersion: "12157"
 spec:
   hosts:
   - reviews
