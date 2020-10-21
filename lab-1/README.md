@@ -30,23 +30,6 @@ In the Istio management page:
    <img src="img/install-istio.png" width="50%" align="center" />
    </a>
 
-<small>For manual steps go [here](#appendix)</small>
-
-## <a name="2"></a> 2 - Verify install
-
-In the Istio management page:
-
-1. Click the (+) icon on the `Validate Service Mesh Configuration` card.
-1. Select `Verify Installation` to verify the installation of Istio.
-
-#### Alternatively:
-
-Istio is deployed in a separate Kubernetes namespace `istio-system`. To check if Istio is deployed, and also, to see all the pieces that are deployed, execute the following:
-
-```sh
-kubectl get all -n istio-system
-```
-
 <h2>
   <a href="../lab-2/README.md">
   <img src="../img/go.svg" width="32" height="32" align="left" />
@@ -113,4 +96,19 @@ Alternatively, with Envoy logging enabled:
 
 ```sh
 istioctl install --set profile=demo --set meshConfig.accessLogFile=/dev/stdout
+```
+
+## <a name="2"></a> 1.4 - Verify install
+
+In the Istio management page:
+
+1. Click the (+) icon on the `Validate Service Mesh Configuration` card.
+1. Select `Verify Installation` to verify the installation of Istio.
+
+#### Alternatively:
+
+Istio is deployed in a separate Kubernetes namespace `istio-system`. To check if Istio is deployed, and also, to see all the pieces that are deployed, execute the following:
+
+```sh
+kubectl get all -n istio-system
 ```
