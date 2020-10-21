@@ -140,8 +140,6 @@ As a last step, lets exit the container:
 exit
 ```
 
-## <a name="appendix"></a> Appendix
-
 ### Default destination rules
 
 Run the following command to create default destination rules for the Bookinfo services:
@@ -162,6 +160,10 @@ kubectl apply -f samples/bookinfo/networking/destination-rule-all-mtls.yaml
 Alternative, manual installation steps are provided for reference below. No need to execute these if you have performed the steps above.
 
 <hr />
+
+## <a name="appendix"></a> Appendix - Alternative Manual Steps
+
+### Default destination rules
 
 Run the following command to create default destination rules for the Bookinfo services:
 

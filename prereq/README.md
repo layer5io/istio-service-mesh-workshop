@@ -120,6 +120,19 @@ Once an adapter is connected, you will also see it added to the nav menu on the 
 
 In the labs, you will use a combination of Meshery's UI and your terminal. We suggest splitting the view on your display between your terminal and your web browser, so that you don't have to switch between apps frequently.
 
+<h2>
+  <a href="../lab-1/README.md">
+  <img src="../img/go.svg" width="32" height="32" align="left" />
+  Continue to Lab 1</a>: Deploy Istio
+</h2>
+
+<br />
+<hr />
+
+Optional, manual installation steps are provided for reference below. No need to execute these if you have performed the steps above.
+
+<hr />
+
 ## Download `istioctl`<a name="4"></a>
 
 **Bash**
@@ -142,9 +155,3 @@ To verify if the cli was successfully installed:
 ```sh
 istioctl version
 ```
-
-<h2>
-  <a href="../lab-1/README.md">
-  <img src="../img/go.svg" width="32" height="32" align="left" />
-  Continue to Lab 1</a>: Deploy Istio
-</h2>
