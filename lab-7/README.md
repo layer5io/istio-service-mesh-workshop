@@ -38,8 +38,10 @@ spec:
 EOF
 ``` -->
 
-On the Istio adapter's management page in Meshery, please enter `default` in the `Namespace` field.
-Then, click the (+) icon on the `Configure` card and select `Configure circuit breaking with max 1 request per connection and max 1 pending request to Book info productpage service` from the list. 
+Using Meshery, navigate to the Istio management page:
+
+1. Enter `default` in the `Namespace` field.
+2. Click the (+) icon on the `Apply Custom Configuration` card and paste the configuration below.
 
 <small>Manual step for can be found [here](#appendix)</small>
 
@@ -51,21 +53,12 @@ In a few, we should be able to verify the destination rule by using the command 
 kubectl get destinationrule productpage -o yaml
 ```
 
-Output will be similar to:
+Config:
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  annotations:
-    kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"networking.istio.io/v1alpha3","kind":"DestinationRule","metadata":{"annotations":{},"name":"productpage","namespace":"bookinfo"},"spec":{"host":"productpage","subsets":[{"labels":{"version":"v1"},"name":"v1"}],"trafficPolicy":{"connectionPool":{"http":{"http1MaxPendingRequests":1,"maxRequestsPerConnection":1},"tcp":{"maxConnections":1}},"outlierDetection":{"baseEjectionTime":"3m","consecutiveErrors":1,"interval":"1s","maxEjectionPercent":100},"tls":{"mode":"ISTIO_MUTUAL"}}}}
-  creationTimestamp: "2019-06-05T13:44:17Z"
-  generation: 4
   name: productpage
-  namespace: bookinfo
-  resourceVersion: "2094075"
-  selfLink: /apis/networking.istio.io/v1alpha3/namespaces/bookinfo/destinationrules/productpage
-  uid: 037a4fae-8798-11e9-aa76-00505698648f
 spec:
   host: productpage
   subsets:
