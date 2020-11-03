@@ -145,6 +145,7 @@ kubectl get virtualservice reviews -o yaml
 
 Config:
 ```yaml
+apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: reviews
