@@ -22,8 +22,6 @@ spec:
       version: v1
     name: v1
   trafficPolicy:
-    tls:
-      mode: ISTIO_MUTUAL
     connectionPool:
       tcp:
         maxConnections: 1
