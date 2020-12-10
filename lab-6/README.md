@@ -29,8 +29,6 @@ spec:
             host: reviews
             subset: v2
 ```
- 
-<small>Manual step for can be found [here](#appendix)</small>
 
 <!-- 
 ```sh
@@ -111,8 +109,6 @@ Using Meshery, navigate to the Istio management page:
 
 1. Enter `default` in the `Namespace` field.
 2. Click the (+) icon on the `Apply Custom Configuration` card and paste the configuration below.
-
-<small>Manual step for can be found [here](#appendix)</small>
 
 This will update the existing virtual service definition for ratings to inject a HTTP abort for user `jason` to access the ratings V1.
 
