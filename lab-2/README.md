@@ -39,14 +39,14 @@ As part of Istio deployment in [Lab 1](../lab-1/README.md), you have deployed th
 Istio, deployed as part of this workshop, will also deploy the sidecar injector. Let us now verify sidecar injector deployment.
 
 ```sh
-kubectl -n istio-system get deployment -l istio=sidecar-injector
+kubectl -n istio-system get configmaps istio-sidecar-injector
 ```
 
 Output:
 
 ```sh
-NAME                     DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-istio-sidecar-injector   1         1         1            1           1d
+NAME                     DATA   AGE
+istio-sidecar-injector   2      9h
 ```
 
 NamespaceSelector decides whether to run the webhook on an object based on whether the namespace for that object matches the [selector](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors).
