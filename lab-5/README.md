@@ -8,7 +8,7 @@ Before we start playing with Istio's traffic management capabilities, we need to
 
 Run the following in the custom yaml section to create default destination rules for the Bookinfo services:
 
-```sh
+```yaml
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
