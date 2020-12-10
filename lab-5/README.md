@@ -6,9 +6,70 @@ In this lab, we are going to get our hands on some of the traffic management cap
 
 Before we start playing with Istio's traffic management capabilities, we need to define the available versions of the deployed services. In Istio parlance, versions are called subsets. Subsets are defined in destination rules.
 
-<!-- Run the following command to create default destination rules for the Bookinfo services:
+<!-- Run the following in the custom yaml section to create default destination rules for the Bookinfo services:
 ```sh
-kubectl apply -f samples/bookinfo/networking/destination-rule-all-mtls.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: productpage
+spec:
+  host: productpage
+  subsets:
+    - name: v1
+      labels:
+        version: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: reviews
+spec:
+  host: reviews
+  subsets:
+    - name: v1
+      labels:
+        version: v1
+    - name: v2
+      labels:
+        version: v2
+    - name: v3
+      labels:
+        version: v3
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: ratings
+spec:
+  host: ratings
+  subsets:
+    - name: v1
+      labels:
+        version: v1
+    - name: v2
+      labels:
+        version: v2
+    - name: v2-mysql
+      labels:
+        version: v2-mysql
+    - name: v2-mysql-vm
+      labels:
+        version: v2-mysql-vm
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: details
+spec:
+  host: details
+  subsets:
+    - name: v1
+      labels:
+        version: v1
+    - name: v2
+      labels:
+        version: v2
+---
 ``` -->
 
 Using Meshery, navigate to the Istio management page:
