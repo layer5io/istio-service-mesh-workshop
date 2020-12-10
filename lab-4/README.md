@@ -53,6 +53,7 @@ On the [Performance page](http://localhost:9081/performance):
 1. enter a valid number for `Concurrent requests`
 1. enter a valid number for `Queries per second`
 1. enter a valid `Duration` (a number followed by `s` for seconds (OR) `m` for minutes (OR) `h` for hour)
+1. use the host IP address in the request Tab and in the advanced options, type in the header as `Host:<app-name>`
 
 Click on `Run Test`. A performance test will run and statistical analysis performed. Examine the results of the test and behavior of the service mesh.
 
