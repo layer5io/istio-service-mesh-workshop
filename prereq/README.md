@@ -65,7 +65,8 @@ In this workshop, Meshery will run "off-cluster", which is to say it will be run
 #### Install on MacOS with Homebrew
 
 ```
-brew install layer5io/mesheryctl
+brew tap layer5io/tap
+brew install mesheryctl
 mesheryctl system start
 ```
 
