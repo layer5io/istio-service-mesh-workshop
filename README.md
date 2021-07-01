@@ -65,6 +65,7 @@ This workshop and other service mesh resources have been created by the Layer5 [
 - Engage in [Slack](http://slack.layer5.io)
 - Follow on Twitter: [@layer5](https://twitter.com/layer5), [@mesheryio](https://twitter.com/mesheryio), [@smp_spec](https://twitter.com/smp_spec)
 - Watch on [YouTube](https://www.youtube.com/channel/UCFL1af7_wdnhHXL1InzaMvA?sub_confirmation=1), Follow on [LinkedIn](https://www.linkedin.com/company/layer5)
+- Discuss in the [Community Forum](https://discuss.layer5.io).
 
 ### License
 
