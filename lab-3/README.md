@@ -19,7 +19,7 @@ kubectl get pods -n istio-system
 Copy and paste your ingress gateway's pod name. Execute:
 
 ```sh
-kubectl -n istio-system exec -it <istio-ingressgateway-...> bash
+kubectl -n istio-system exec -it <istio-ingressgateway-...> -- bash
 ```
 
 You can view the statistics, listeners, routes, clusters and server info for the Envoy proxy by forwarding the local port:

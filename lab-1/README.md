@@ -24,10 +24,16 @@ Using Meshery, select Istio from the `Management` menu.
 In the Istio management page:
 
 1. Type `istio-system` into the namespace field.
-1. Click the (+) icon on the `Install` card and select `Latest Istio` to install the latest version of Istio.
+2. Click the (+) icon on the `Install` card and click on `Istio Service Mesh` to install latest version of Istio.
 
-   <a href="img/install-istio.png">
-   <img src="img/install-istio.png" width="50%" align="center" />
+   <a href="img/install-istio1.png">
+   <img src="img/install-istio1.png" width="50%" align="center" />
+   </a>
+
+3. Click the `Deploy` button on the confirmation modal.
+
+   <a href="img/install-istio2.png">
+   <img src="img/install-istio2.png" width="50%" align="center" />
    </a>
 
 <h2>

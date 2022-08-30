@@ -2,14 +2,13 @@
 
 You will need each of the following in order to complete the workshop:
 
-1. Docker (installed locally)
 1. Kubernetes (installed locally or have remote access to a cluster)
 1. Meshery (installed locally)
 1. Istioctl (installed locally)
 
-## Install Docker and Create a Kubernetes Cluster<a name="1"></a>
+## Create a Kubernetes Cluster<a name="1"></a>
 
-You will access to a Kubernetes cluster in this training. While any Kubernetes cluster _should_ work, instructions for Docker Desktop and Minikube are included in these labs as the example Kubernetes platforms. Alternatively, you may choose to use any of the other [supported Kubernetes platform](https://github.com/layer5io/meshery#run-meshery).
+You will need  access to a Kubernetes cluster in this training. While any Kubernetes cluster _should_ work, instructions for Docker Desktop and Minikube are included in these labs as the example Kubernetes platforms. Alternatively, you may choose to use any of the other [supported Kubernetes platform](https://github.com/layer5io/meshery#run-meshery).
 
 ### Setup Docker Desktop (MacOS and Windows)
 
@@ -56,24 +55,16 @@ If all pods are in a `Running` state, you have an operational Kubernetes cluster
 ## Download `mesheryctl`<a name="3"></a>
 
 ### Meshery Architecture
-In this workshop, Meshery will run "off-cluster", which is to say it will be running outside of the Kubernetes cluster. You will be running Meshery in your local Docker instance. 
+In this workshop, Meshery and Istio adapter for Meshery will be running in-cluster in the `meshery` namespace.
 
 <img src="img/meshery-architecture.svg" alt="Meshery Architecture" style="float: left; margin-right: 10px;" width="60%" />
 
- Install Meshery on your local machine (running Docker) by executing the following:
 
-#### Install on MacOS with Homebrew
 
+#### Install on MacOS and Linux with bash script:
+The below command installs Meshery and Istio adapter for Meshery in `meshery` namespace in your cluster.
 ```
-brew tap layer5io/tap
-brew install mesheryctl
-mesheryctl system start
-```
-
-#### Or... Install on MacOS and Linux with bash script:
-
-```
-curl -L https://git.io/meshery | bash -
+curl -L https://meshery.io/install | ADAPTERS=istio PLATFORM=kubernetes bash -
 ```
 
 #### Or.... Install on Windows with `mesheryctl` binary
