@@ -1,0 +1,64 @@
+name: WorkshopIstio
+services:
+  reviews:
+    name: reviews
+    type: DestinationRule.Istio
+    version: 1.12.9
+    namespace: default
+    settings:
+      host: reviews
+      subsets:
+      - labels:
+          version: v1
+        name: v1
+      - labels:
+          version: v2
+        name: v2
+      - labels:
+          version: v3
+        name: v3
+  details:
+    name: details
+    type: DestinationRule.Istio
+    namespace: default
+    version: 1.12.9
+    settings:
+      host: details
+      subsets:
+      - labels:
+          version: v1
+        name: v1
+      - labels:
+          version: v2
+        name: v2
+  ratings:
+    name: ratings
+    type: DestinationRule.Istio
+    version: 1.12.9
+    namespace: default
+    settings:
+      host: ratings
+      subsets:
+      - labels:
+          version: v1
+        name: v1
+      - labels:
+          version: v2
+        name: v2
+      - labels:
+          version: v2-mysql
+        name: v2-mysql
+      - labels:
+          version: v2-mysql-vm
+        name: v2-mysql-vm
+  productpage:
+    name: productpage
+    type: DestinationRule.Istio
+    namespace: default
+    version: 1.12.9
+    settings:
+      host: productpage
+      subsets:
+      - labels:
+          version: v1
+        name: v1
