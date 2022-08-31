@@ -1,5 +1,5 @@
 # Introduction to Istio
-A workshop on advanced aspects of service mesh through the lens of Istio. Questions? Join the [service mesh community](http://slack.layer5.io).
+A workshop teaching concepts of service mesh through the lens of Istio. Questions? See the community [discussion forum](http://discuss.layer5.io).
 
 ## Prerequisites
 
@@ -48,7 +48,7 @@ Wrap up / Q&A (10 minutes)
 
 ## Workshop Resources
 
-This workshop and other service mesh resources have been created by the Layer5 [service mesh community](https://layer5.io/community).
+This workshop and other service mesh resources have been created by the [Layer5 community](https://layer5.io/community). Visit our free [Learning Paths](https://layer5.io/learn/learning-paths) for more courses.
 
 <hr />
 
