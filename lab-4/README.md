@@ -4,14 +4,13 @@
 
 Using Meshery, install Istio telemetry add-ons. In the Istio management page:
 
-1. Click the (+) icon on the `Apply Service Mesh Configuration` card.
-1. Select each of the following add-ons:
+1. Toggle each of the following add-ons:
    1. [Prometheus](https://prometheus.io/)
    1. [Grafana](https://grafana.com/)
    1. [Jaeger](https://www.jaegertracing.io/)
 
-<a href="img/istio-add-ons.png">
-<img src="img/istio-add-ons.png" width="50%" align="center" />
+<a href="img/istio-addons.png">
+<img src="img/istio-addons.png" width="50%" align="center" />
 </a>
 
 You will use Prometheus and Grafana for collecting and viewing metrics and [Jaeger](https://www.jaegertracing.io/) collecting and viewing distributed traces. Expose each add-on external to the cluster. Each the service network typs are set to "LoadBalancer".

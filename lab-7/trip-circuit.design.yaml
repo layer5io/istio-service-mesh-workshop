@@ -1,0 +1,27 @@
+name: CircuitBreaker
+services:
+  reviews:
+    name: reviews
+    type: DestinationRule.Istio
+    version: 1.12.9
+    namespace: default
+    settings:
+      host: productpage
+      subsets:
+      - labels:
+          version: v1
+        name: v1
+      trafficPolicy:
+        connectionPool:
+          http:
+            http1MaxPendingRequests: 1
+            maxRequestsPerConnection: 1
+          tcp:
+            maxConnections: 1
+        outlierDetection:
+          baseEjectionTime: 3m
+          consecutiveErrors: 1
+          interval: 1s
+          maxEjectionPercent: 100
+        tls:
+          mode: ISTIO_MUTUAL

@@ -36,10 +36,38 @@ spec:
 EOF
 ``` -->
 
-Using Meshery, navigate to the Istio management page:
 
-1. Enter `default` in the `Namespace` field.
-2. Click the (+) icon on the `Apply Custom Configuration` card and paste the configuration below.
+Using Meshery, navigate to the designs page under configuration and import the below design. Make sure Istio adapter is running.
+**Patternfile**:
+```yaml
+name: CircuitBreaker
+services:
+  reviews:
+    name: reviews
+    type: DestinationRule.Istio
+    version: 1.12.9
+    namespace: default
+    settings:
+      host: productpage
+      subsets:
+      - labels:
+          version: v1
+        name: v1
+      trafficPolicy:
+        connectionPool:
+          http:
+            http1MaxPendingRequests: 1
+            maxRequestsPerConnection: 1
+          tcp:
+            maxConnections: 1
+        outlierDetection:
+          baseEjectionTime: 3m
+          consecutiveErrors: 1
+          interval: 1s
+          maxEjectionPercent: 100
+        tls:
+          mode: ISTIO_MUTUAL
+```
 
 <small>Manual step for can be found [here](#appendix)</small>
 
@@ -49,34 +77,6 @@ In a few, we should be able to verify the destination rule by using the command 
 
 ```sh
 kubectl get destinationrule productpage -o yaml
-```
-
-Config:
-```yaml
-apiVersion: networking.istio.io/v1alpha3
-kind: DestinationRule
-metadata:
-  name: productpage
-spec:
-  host: productpage
-  subsets:
-  - labels:
-      version: v1
-    name: v1
-  trafficPolicy:
-    connectionPool:
-      http:
-        http1MaxPendingRequests: 1
-        maxRequestsPerConnection: 1
-      tcp:
-        maxConnections: 1
-    outlierDetection:
-      baseEjectionTime: 3m
-      consecutiveErrors: 1
-      interval: 1s
-      maxEjectionPercent: 100
-    tls:
-      mode: ISTIO_MUTUAL
 ```
 
 

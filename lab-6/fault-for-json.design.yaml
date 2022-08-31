@@ -1,0 +1,27 @@
+name: FaultForJason
+services:
+  vs:
+    settings:
+      hosts:
+      - ratings
+      http:
+      - fault:
+          delay:
+            fixedDelay: 7s
+            percentage:
+              value: 100
+        match:
+        - headers:
+            end-user:
+              exact: jason
+        route:
+        - destination:
+            host: ratings
+            subset: v1
+      - route:
+        - destination:
+            host: ratings
+            subset: v1
+    type: VirtualService.Istio
+    name: vs
+    namespace: default
