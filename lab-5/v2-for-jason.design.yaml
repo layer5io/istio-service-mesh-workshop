@@ -1,0 +1,24 @@
+name: V2ForJason
+services:
+  vs:
+    settings:
+      hosts:
+        - reviews
+      http:
+        - corsPolicy: {}
+          match:
+            - headers:
+                end-user:
+                  exact: jason
+          route:
+            - destination:
+                host: reviews
+                subset: v2
+        - corsPolicy: {}
+          route:
+            - destination:
+                host: reviews
+                subset: v1
+    type: VirtualService.Istio
+    name: vs
+    namespace: default

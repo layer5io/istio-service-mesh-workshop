@@ -3,7 +3,21 @@
 Istio provides transparent mutual TLS to services inside the service mesh where both the client and the server authenticate each others' certificates as part of the TLS handshake. As part of this workshop, we have deployed Istio with mTLS.
 
 By default istio sets mTLS in `PERMISSIVE` mode which allows plain text traffic to be sent and accepted by a mesh. We first disallow plain text traffic using `PeerAuthentication` and setting mTLS mode to STRICT.
+Using Meshery, navigate to the designs page under configuration and import the below design. Make sure Istio adapter is running.
+**Patternfile**:
 
+```yaml
+name: DisablePlainHTTP
+services:
+  peerauth:
+    settings:
+      mtls:
+        mode: STRICT
+    type: PeerAuthentication.Istio
+    name: peerauth
+    namespace: default
+
+```
 ## Confirm mTLS is being enforced
 This can be easily done by executing a simple command:-
 ```sh
@@ -11,16 +25,6 @@ kubectl get peerauthentication --all-namespaces
 ```
 
 ## 8.1 Verify mTLS
-Citadel is Istio’s key management service. As a first step, confirm that Citadel is up and running:
-```sh
-kubectl get deploy -l istio=citadel -n istio-system
-```
-Output will be similar to:
-```
-NAME            READY   UP-TO-DATE   AVAILABLE   AGE
-istio-citadel   1/1     1            1           3m23s
-```
-
 To experiment with mTLS, let's do so by logging into the sidecar proxy of the `productpage` pod by executing this command:
 ```sh
 kubectl exec -it $(kubectl get pod | grep productpage | awk '{ print $1 }') -c istio-proxy -- /bin/bash

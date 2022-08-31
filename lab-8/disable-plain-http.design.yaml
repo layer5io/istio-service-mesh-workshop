@@ -1,0 +1,9 @@
+name: DisablePlainHTTP
+services:
+  bukohbknil:
+    settings:
+      mtls:
+        mode: STRICT
+    type: PeerAuthentication.Istio
+    name: peerauth
+    namespace: default

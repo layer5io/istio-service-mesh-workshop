@@ -2,100 +2,30 @@
 
 In this lab, we are going to get our hands on some of the traffic management capabilities of Istio.
 
-## 5.1 Apply default destination rules
-
-Before we start playing with Istio's traffic management capabilities, we need to define the available versions of the deployed services. In Istio parlance, versions are called subsets. Subsets are defined in destination rules.
-
-Run the following in the custom yaml section to create default destination rules for the Bookinfo services:
-
-```yaml
-apiVersion: networking.istio.io/v1alpha3
-kind: DestinationRule
-metadata:
-  name: productpage
-spec:
-  host: productpage
-  subsets:
-    - name: v1
-      labels:
-        version: v1
----
-apiVersion: networking.istio.io/v1alpha3
-kind: DestinationRule
-metadata:
-  name: reviews
-spec:
-  host: reviews
-  subsets:
-    - name: v1
-      labels:
-        version: v1
-    - name: v2
-      labels:
-        version: v2
-    - name: v3
-      labels:
-        version: v3
----
-apiVersion: networking.istio.io/v1alpha3
-kind: DestinationRule
-metadata:
-  name: ratings
-spec:
-  host: ratings
-  subsets:
-    - name: v1
-      labels:
-        version: v1
-    - name: v2
-      labels:
-        version: v2
-    - name: v2-mysql
-      labels:
-        version: v2-mysql
-    - name: v2-mysql-vm
-      labels:
-        version: v2-mysql-vm
----
-apiVersion: networking.istio.io/v1alpha3
-kind: DestinationRule
-metadata:
-  name: details
-spec:
-  host: details
-  subsets:
-    - name: v1
-      labels:
-        version: v1
-    - name: v2
-      labels:
-        version: v2
----
-```
-
-Using Meshery, navigate to the Istio management page:
-
-1. Enter `default` in the `Namespace` field.
-1. Click the (+) icon on the `Apply Service Mesh Configuration` card and select `Bookinfo subsets` from the list. 
-
-This will deploy the destination rules for all the Book info services defining their subsets. Verify the destination rules created by using the command below:
-
-```sh
-kubectl get destinationrules
-
-
-kubectl get destinationrules -o yaml
-```
-
-## 5.2 Configure the default route for all services to V1
+## 5.1 Configure the default route for all services to V1
 
 As part of the bookinfo sample app, there are multiple versions of reviews service. When we load the `/productpage` in the browser multiple times we have seen the reviews service round robin between v1, v2 or v3. As the first exercise, let us first restrict traffic to just V1 of all the services.
 
-Using Meshery, navigate to the Istio management page:
+Using Meshery, navigate to the designs page under configuration and import the below design. Make sure Istio adapter is running.
+**Patternfile**:
+```yaml
+name: Lab5
+services:
+  vs:
+    settings:
+      hosts:
+        - reviews
+      http:
+        - route:
+            - destination:
+                host: reviews
+                subset: v1
+    type: VirtualService.Istio
+    name: vs
+    namespace: default
 
-1. Enter `default` in the `Namespace` field.
-2. Click the (+) icon on the `Apply Custom Configuration` card and paste the configuration below.
-
+---
+```
 <!-- 
 ```sh
 kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml 
@@ -113,22 +43,7 @@ kubectl get virtualservice reviews -o yaml
 
 *Please note:* In the place of the above command, we can either use kubectl or istioctl.
 
-Config:
-```yaml
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: reviews
-spec:
-  hosts:
-    - reviews
-  http:
-    - route:
-        - destination:
-            host: reviews
-            subset: v1
----
-```
+
 
 Now when we reload the `/productpage` several times, we will ONLY be viewing the data from v1 of all the services, which means we will not see any ratings (any stars).
 
@@ -137,14 +52,41 @@ Now when we reload the `/productpage` several times, we will ONLY be viewing the
 
 Let's replace our first rules with a new set. Enable the `ratings` service for a user `jason` by routing `productpage` traffic to `reviews` v2:
 
-<!-- ```sh
+```sh
 kubectl apply -f samples/bookinfo/networking/virtual-service-reviews-test-v2.yaml
-``` -->
+``` 
 Using Meshery, navigate to the Istio management page:
 
-1. Enter `default` in the `Namespace` field.
-2. Click the (+) icon on the `Apply Custom Configuration` card and paste the configuration below.
 
+Using Meshery, navigate to the designs page under configuration and import the below design. Make sure Istio adapter is running.
+**Patternfile**:
+```yaml
+name: V2ForJason
+services:
+  vs:
+    settings:
+      hosts:
+        - reviews
+      http:
+        - corsPolicy: {}
+          match:
+            - headers:
+                end-user:
+                  exact: jason
+          route:
+            - destination:
+                host: reviews
+                subset: v2
+        - corsPolicy: {}
+          route:
+            - destination:
+                host: reviews
+                subset: v1
+    type: VirtualService.Istio
+    name: vs
+    namespace: default
+---
+```
 <small>Manual step for can be found [here](#appendix)</small>
 
 This will update the existing virtual service definition for reviews to route all traffic for user `jason` to review V2.
@@ -154,30 +96,7 @@ In a few, we should be able to verify the virtual service by using the command b
 kubectl get virtualservice reviews -o yaml
 ```
 
-Config:
-```yaml
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: reviews
-spec:
-  hosts:
-  - reviews
-  http:
-  - match:
-    - headers:
-        end-user:
-          exact: jason
-    route:
-    - destination:
-        host: reviews
-        subset: v2
-  - route:
-    - destination:
-        host: reviews
-        subset: v1
----
-```
+
 
 Now if we login as your `jason`, you will be able to see data from `reviews` v2. While if you NOT logged in or logged in as a different user, you will see data from `reviews` v1.
 
@@ -191,11 +110,32 @@ To start canary testing, let's begin by transferring 50% of the traffic from rev
 kubectl apply -f  samples/bookinfo/networking/virtual-service-reviews-50-v3.yaml
 ``` -->
 
-Using Meshery, navigate to the Istio management page:
 
-1. Enter `default` in the `Namespace` field.
-2. Click the (+) icon on the `Apply Custom Configuration` card and paste the configuration below.
+Using Meshery, navigate to the designs page under configuration and import the below design. Make sure Istio adapter is running.
+**Patternfile**:
+```yaml
+name: CanaryV1V3
+services:
+  vs:
+    settings:
+      hosts:
+      - reviews
+      http:
+      - route:
+        - destination:
+            host: reviews
+            subset: v1
+          weight: 50
+        - destination:
+            host: reviews
+            subset: v3
+          weight: 50
+    type: VirtualService.Istio
+    name: vs
+    namespace: default
 
+---
+```
 <small>Manual step for can be found [here](#appendix)</small>
 
 This will update the existing virtual service definition for reviews to route 50% of all traffic to review V3.
@@ -205,27 +145,6 @@ In a few, we should be able to verify the virtual service by using the command b
 kubectl get virtualservice reviews -o yaml
 ```
 
-Config:
-```yaml
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: reviews
-spec:
-  hosts:
-  - reviews
-  http:
-  - route:
-    - destination:
-        host: reviews
-        subset: v1
-      weight: 50
-    - destination:
-        host: reviews
-        subset: v3
-      weight: 50
----
-```
 
 Now, if we reload the `/productpage` in your browser several times, you should now see red-colored star ratings approximately 50% of the time.
 
@@ -237,11 +156,26 @@ When version v3 of the reviews microservice is considered stable, we can route 1
 kubectl apply -f samples/bookinfo/networking/virtual-service-reviews-v3.yaml
 ``` -->
 
-Using Meshery, navigate to the Istio management page:
 
-1. Enter `default` in the `Namespace` field.
-2. Click the (+) icon on the `Apply Custom Configuration` card and paste the configuration below.
+Using Meshery, navigate to the designs page under configuration and import the below design. Make sure Istio adapter is running.
+**Patternfile**:
+```yaml
+name: ShiftAllTrafficToV3
+services:
+  vs:
+    settings:
+      hosts:
+      - reviews
+      http:
+      - route:
+        - destination:
+            host: reviews
+            subset: v3
+    type: VirtualService.Istio
+    name: vs
+    namespace: default
 
+---
 <small>Manual step for can be found [here](#appendix)</small>
 
 This will update the existing virtual service definition for reviews to route 100% of all traffic to review V3.
@@ -251,22 +185,8 @@ In a few, we should be able to verify the virtual service by using the command b
 ```sh
 kubectl get virtualservice reviews -o yaml
 ```
-Config:
-```yaml
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: reviews
-spec:
-  hosts:
-  - reviews
-  http:
-  - route:
-    - destination:
-        host: reviews
-        subset: v3
----
-```
+
+
 
 Now, if we reload the `/productpage` in your browser several times, you should now see red-colored star ratings 100% of the time.
 

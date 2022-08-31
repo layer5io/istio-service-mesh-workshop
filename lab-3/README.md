@@ -19,7 +19,7 @@ kubectl get pods -n istio-system
 Copy and paste your ingress gateway's pod name. Execute:
 
 ```sh
-kubectl -n istio-system exec -it <istio-ingressgateway-...> bash
+kubectl -n istio-system exec -it <istio-ingressgateway-...> -- bash
 ```
 
 You can view the statistics, listeners, routes, clusters and server info for the Envoy proxy by forwarding the local port:
@@ -93,70 +93,74 @@ Docker Desktop users please use `http://localhost/productpage` to access product
 
 Before we start playing with Istio's traffic management capabilities we need to define the available versions of the deployed services. They are called subsets, in destination rules.
 
-Using Meshery, navigate to the Custom yaml page, and apply the below to create the subsets for BookInfo:
+Using Meshery, navigate to the designs page under configuration and import the below design. Make sure Istio adapter is running.
 
 ```sh
-apiVersion: networking.istio.io/v1alpha3
-kind: DestinationRule
-metadata:
-  name: productpage
-spec:
-  host: productpage
-  subsets:
-    - name: v1
-      labels:
-        version: v1
----
-apiVersion: networking.istio.io/v1alpha3
-kind: DestinationRule
-metadata:
-  name: reviews
-spec:
-  host: reviews
-  subsets:
-    - name: v1
-      labels:
-        version: v1
-    - name: v2
-      labels:
-        version: v2
-    - name: v3
-      labels:
-        version: v3
----
-apiVersion: networking.istio.io/v1alpha3
-kind: DestinationRule
-metadata:
-  name: ratings
-spec:
-  host: ratings
-  subsets:
-    - name: v1
-      labels:
-        version: v1
-    - name: v2
-      labels:
-        version: v2
-    - name: v2-mysql
-      labels:
-        version: v2-mysql
-    - name: v2-mysql-vm
-      labels:
-        version: v2-mysql-vm
----
-apiVersion: networking.istio.io/v1alpha3
-kind: DestinationRule
-metadata:
-  name: details
-spec:
-  host: details
-  subsets:
-    - name: v1
-      labels:
-        version: v1
-    - name: v2
-      labels:
-        version: v2
+name: WorkshopIstio
+services:
+  reviews:
+    name: reviews
+    type: DestinationRule.Istio
+    version: 1.12.9
+    namespace: default
+    settings:
+      host: reviews
+      subsets:
+      - labels:
+          version: v1
+        name: v1
+      - labels:
+          version: v2
+        name: v2
+      - labels:
+          version: v3
+        name: v3
+  details:
+    name: details
+    type: DestinationRule.Istio
+    namespace: default
+    version: 1.12.9
+    settings:
+      host: details
+      subsets:
+      - labels:
+          version: v1
+        name: v1
+      - labels:
+          version: v2
+        name: v2
+  ratings:
+    name: ratings
+    type: DestinationRule.Istio
+    version: 1.12.9
+    namespace: default
+    settings:
+      host: ratings
+      subsets:
+      - labels:
+          version: v1
+        name: v1
+      - labels:
+          version: v2
+        name: v2
+      - labels:
+          version: v2-mysql
+        name: v2-mysql
+      - labels:
+          version: v2-mysql-vm
+        name: v2-mysql-vm
+  productpage:
+    name: productpage
+    type: DestinationRule.Istio
+    namespace: default
+    version: 1.12.9
+    settings:
+      host: productpage
+      subsets:
+      - labels:
+          version: v1
+        name: v1
+
 ```
 This creates destination rules for each of the BookInfo services and defines version subsets
 

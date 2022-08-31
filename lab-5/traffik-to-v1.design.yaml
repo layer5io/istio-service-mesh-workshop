@@ -1,0 +1,14 @@
+name: Lab5
+services:
+  vs:
+    settings:
+      hosts:
+        - reviews
+      http:
+        - route:
+            - destination:
+                host: reviews
+                subset: v1
+    type: VirtualService.Istio
+    name: vs
+    namespace: default

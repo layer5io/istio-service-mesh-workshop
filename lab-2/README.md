@@ -48,6 +48,14 @@ Output:
 NAME                     DATA   AGE
 istio-sidecar-injector   2      9h
 ```
+#### Enable automatic sidecar injection
+Using Meshery, navigate to the Istio management page. 
+1. Enter `default` in the namespace field. 
+2. Then click on `+` under `Apply Service Mesh Configuration` and click on `Automatic Sidecar injection`
+<a href="img/sidecar-injection.png">
+<img src="img/sidecar-injection.png" width="50%" align="center" />
+</a>
+
 
 NamespaceSelector decides whether to run the webhook on an object based on whether the namespace for that object matches the [selector](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors).
 
@@ -65,14 +73,15 @@ kube-public    Active    1h
 kube-system    Active    1h
 ```
 
+
+
 Using Meshery, navigate to the Istio management page.
 
 1. Enter `default` in the `Namespace` field.
 1. Click the (+) icon on the `Sample Application` card and select `BookInfo Application` from the list.
 
-This will do 3 things:
+This will do 2 things:
 
-1. Label `default` namespace for sidecar injection.
 1. Deploys all the BookInfo services in the `default` namespace.
 1. Deploys the virtual service and gateway needed to expose the BookInfo's productpage application in the `default` namespace.
 
