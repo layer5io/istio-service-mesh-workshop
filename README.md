@@ -54,8 +54,6 @@ This workshop and other service mesh resources have been created by the [Layer5 
 
 ### About Layer5
 
-**Community First**
-
 [Layer5](https://layer5.io)'s cloud native application and infrastructure management software enables organizations to expect more from their infrastructure. We embrace developer-defined infrastructure. We empower engineer to change how they write applications, support operators in rethinking how they run modern infrastructure and enable product owners to regain full control over their product portfolio.
 
 - Engage in [Slack](http://slack.layer5.io)
