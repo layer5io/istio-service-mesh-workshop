@@ -56,11 +56,7 @@ This workshop and other service mesh resources have been created by the [Layer5 
 
 **Community First**
 
-<p>The <a href="https://layer5.io">Layer5</a> community represents the largest collection of service mesh projects and their maintainers in the world.</p>
-
-**Open Source First**
-
-<p>Our projects establish industry standards and enable service developers, owners, and operators with repeatable patterns and best practices for managing all aspects of distributed services. Our shared commitment to the open-source spirit push the Layer5 community and its projects forward.</p>
+[Layer5](https://layer5.io)'s cloud native application and infrastructure management software enables organizations to expect more from their infrastructure. We embrace developer-defined infrastructure. We empower engineer to change how they write applications, support operators in rethinking how they run modern infrastructure and enable product owners to regain full control over their product portfolio.
 
 - Engage in [Slack](http://slack.layer5.io)
 - Follow on Twitter: [@layer5](https://twitter.com/layer5), [@mesheryio](https://twitter.com/mesheryio), [@smp_spec](https://twitter.com/smp_spec)
