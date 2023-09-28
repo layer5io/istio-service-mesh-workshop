@@ -1,4 +1,4 @@
-name: Slack Notify on Star
+name: Slack Notify
 on: 
   watch:
     types: [started]
