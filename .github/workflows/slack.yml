@@ -5,12 +5,12 @@ jobs:
     name: Notify Slack on star
     runs-on: ubuntu-latest
     steps:
-    - name: Get current star count
-      run: |
-        echo ::set-env name=STARS::$(curl --silent 'https://api.github.com/repos/layer5io/istio-service-mesh-workshop' -H 'Accept: application/vnd.github.preview' | jq '.watchers_count')
-    - name: Notify slack
-      env:
-        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-      uses: pullreminders/slack-action@master
-      with:
-        args: '{\"channel\":\"CSK7N9TGX\",\"text\":\"${{ github.actor }} just starred Istio Service Mesh Workshop! (https://github.com/layer5io/istio-service-mesh-workshop/stargazers) Total ⭐️: ${{env.STARS}}\"}'
+      - name: Get current star count
+        run: |
+          echo "STARS=$(curl --silent 'https://api.github.com/repos/${{github.repository}}' -H 'Accept: application/vnd.github.preview' | jq '.stargazers_count')" >> $GITHUB_ENV
+      - name: Notify slack
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        uses: pullreminders/slack-action@master
+        with:
+          args: '{\"channel\":\"CSK7N9TGX\",\"text\":\"${{ github.actor }} just starred ${{github.repository}}! (https://github.com/${{github.repository}}/stargazers) Total ⭐️: ${{env.STARS}}\"}'
