@@ -46,7 +46,7 @@ Wrap up / Q&A (10 minutes)
 
 # Authors
 
-- Layer5 Authors [Twitter](https://twitter.com/layer5), [Slack](http://slack.layer5.io)
+- Layer5 Authors [Twitter](https://x.com/layer5), [Slack](https://slack.layer5.io)
 
 ## Workshop Resources
 
