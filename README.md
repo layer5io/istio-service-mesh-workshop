@@ -46,7 +46,7 @@ Wrap up / Q&A (10 minutes)
 
 # Authors
 
-- Layer5 Authors [Twitter](https://x.com/layer5), [Slack](https://slack.layer5.io)
+- Layer5 Authors [X (formerly Twitter)](https://x.com/layer5), [Slack](https://slack.layer5.io)
 
 ## Workshop Resources
 
@@ -59,7 +59,7 @@ This workshop and other service mesh resources have been created by the [Layer5 
 [Layer5](https://layer5.io)'s cloud native application and infrastructure management software enables organizations to expect more from their infrastructure. We embrace developer-defined infrastructure. We empower engineer to change how they write applications, support operators in rethinking how they run modern infrastructure and enable product owners to regain full control over their product portfolio.
 
 - Engage in [Slack](https://slack.layer5.io)
-- Follow on Twitter: [@layer5](https://x.com/layer5), [@mesheryio](https://x.com/mesheryio), [@smp_spec](https://x.com/smp_spec)
+- Follow on X (formerly Twitter): [@layer5](https://x.com/layer5), [@mesheryio](https://x.com/mesheryio), [@smp_spec](https://x.com/smp_spec)
 - Watch on [YouTube](https://www.youtube.com/channel/UCFL1af7_wdnhHXL1InzaMvA?sub_confirmation=1), Follow on [LinkedIn](https://www.linkedin.com/company/layer5)
 - Discuss in the [Community Forum](https://discuss.layer5.io).
 
